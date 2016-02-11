@@ -9,6 +9,12 @@ Probably emberjs using bootstrap to style because we want a strict division betw
 
 Django because it uses python and we have already extensively used that during our education.
 
+## Non-required features ideas
+
+* Prediction
+* Premium
+* Privacy statement
+
 # Current tasks
 
 * ER-diagram: David
