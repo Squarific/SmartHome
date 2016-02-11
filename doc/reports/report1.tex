@@ -1,6 +1,13 @@
 \documentclass[11pt]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{xcolor,listings}
+\usepackage{graphicx}
+\usepackage{float}
+
 %Gummi|065|=)
-\title{\textbf{Report 1}}
+\title{\textbf{Rapport 1}}
 \author{Filip Smets\\
 		Nisse Strauven\\
 		Jens Bijtebier\\
@@ -11,23 +18,60 @@
 
 \maketitle
 
-\section{Platform requirements}
-\subsection{Clientside}
-\begin{itemize}
-\item node.js
-\item npm
-\item ember cli
-\item bower
-\item ember-material-design? (not yet included)
-\end{itemize}
+\tableofcontents
 
-\subsection{Serverside}
-\begin{itemize}
-\item python 3
-\item django (pip)
-\item djangorestframework (pip)
-\item markdown (pip)
-\item django-filter (pip)
-\end{itemize}
+\section{Status}
+\section{Design}
+  \subsection{Keuzes}
+  \subsubsection{Dependencies}
+  \paragraph{Clientside}
+  \begin{itemize}
+  \item node.js
+  \item npm
+  \item ember-cli (via npm)
+  \item bower (via npm)
+  \item ember-material-design? (via ember, not yet included)
+  \end{itemize}
+
+  \paragraph{Serverside}
+  \begin{itemize}
+  \item python 3
+  \item django (via pip)
+  \item djangorestframework (via pip)
+  \item markdown (via pip)
+  \item django-filter (via pip)
+  \end{itemize}
+  \subsection{Database Schema}
+  Zie \textbf{figuur \ref{fig:erd}}.
+  \begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{img/pew_pew.jpg}
+  \caption{Replace with ERD image.}
+  \label{fig:erd}
+  \end{figure}
+  
+  \subsection{UML Schema}
+  Zie \textbf{figuur \ref{fig:uml}}.
+  \begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{img/pew_pew.jpg}
+  \caption{Replace with UML image.}
+  \label{fig:uml}
+  \end{figure}
+\section{Product}
+  \subsection{Basisvereisten}
+  \subsection{Extra functionaliteit}
+\section{Planning}
+\section{Appendix}
+  \subsection{SQL Queries}
+\lstinputlisting[
+           language=SQL,
+           showspaces=false,
+           basicstyle=\ttfamily,
+           numbers=left,
+           numberstyle=\tiny,
+           commentstyle=\color{gray}
+        ]
+{sql/sql_queries_rapport1.sql}
 
 \end{document}
