@@ -6,6 +6,15 @@
 \usepackage{graphicx}
 \usepackage{float}
 
+\lstdefinestyle{SQL}{
+   language=SQL,
+   showspaces=false,
+   basicstyle=\ttfamily,
+   numbers=none,
+   numberstyle=\tiny,
+   commentstyle=\color{gray}
+}
+
 %Gummi|065|=)
 \title{\textbf{Rapport 1}}
 \author{Filip Smets\\
@@ -64,14 +73,16 @@
 \section{Planning}
 \section{Appendix}
   \subsection{SQL Queries}
-\lstinputlisting[
-           language=SQL,
-           showspaces=false,
-           basicstyle=\ttfamily,
-           numbers=left,
-           numberstyle=\tiny,
-           commentstyle=\color{gray}
-        ]
-{sql/sql_queries_rapport1.sql}
+  \subsubsection{Retrieve user data by ID}
+\begin{lstlisting}[style=SQL]
+/* comment */
+SELECT * FROM users WHERE id=42
+\end{lstlisting}
+
+  \subsubsection{Retrieve users by username}
+\begin{lstlisting}[style=SQL]
+/* comment */
+SELECT * FROM users WHERE username LIKE 'foo%'
+\end{lstlisting}
 
 \end{document}
