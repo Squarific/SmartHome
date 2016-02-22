@@ -5,11 +5,11 @@ Excused: David
 
 Date: 18/02/2016
 
- #Status
+#Status
 
- Logo is af.
+Logo is af.
 
- #Onderwerpen
+#Onderwerpen
 De structuren en logo zijn aangemaakt. We hebben keuzen gemaakt omtrent het design.
 
 #Afspraken en planning
