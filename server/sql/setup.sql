@@ -205,18 +205,27 @@ INSERT INTO `sensors_tags` (`id`, `sensor_id`, `tag_id`, `date_created`) VALUES
 --
 
 --
--- Beperkingen voor tabel `exercice_translations`
+-- Beperkingen voor tabel `homes`
 --
 ALTER TABLE `homes`
   ADD CONSTRAINT `homes_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`);
 
+--
+-- Beperkingen voor tabel `users_homes`
+--
 ALTER TABLE `users_homes`
   ADD CONSTRAINT `users_homes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `users_homes_ibfk_2` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`);
 
+--
+-- Beperkingen voor tabel `sensors`
+--
 ALTER TABLE `sensors`
   ADD CONSTRAINT `sensors_ibfk_1` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`);
 
+--
+-- Beperkingen voor tabel `sensors_tags`
+--
 ALTER TABLE `sensors_tags`
   ADD CONSTRAINT `sensors_tags_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`),
   ADD CONSTRAINT `sensors_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`);
