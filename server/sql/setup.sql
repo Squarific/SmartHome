@@ -206,11 +206,11 @@ INSERT INTO `sensors_tags` (`sensor_id`, `tag_id`, `date_created`) VALUES
 DROP TABLE IF EXISTS `minutely_data`;
 CREATE TABLE `minutely_data` (
   `sensor_id` tinyint(4) NOT NULL,
-  `minute` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `minute` tinyint(4) NOT NULL,
   `usage` INT(8) NOT NULL,
   PRIMARY KEY (`sensor_id`, `minute`),
   KEY `fk_sensor` (`sensor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `minutely_data`
@@ -225,11 +225,11 @@ CREATE TABLE `minutely_data` (
 DROP TABLE IF EXISTS `hourly_data`;
 CREATE TABLE `hourly_data` (
   `sensor_id` tinyint(4) NOT NULL,
-  `hour` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `hour` tinyint(4) NOT NULL,
   `usage` INT(8) NOT NULL,
   PRIMARY KEY (`sensor_id`, `hour`),
   KEY `fk_sensor` (`sensor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `hourly_data`
@@ -244,11 +244,11 @@ CREATE TABLE `hourly_data` (
 DROP TABLE IF EXISTS `daily_data`;
 CREATE TABLE `daily_data` (
   `sensor_id` tinyint(4) NOT NULL,
-  `day` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `day` tinyint(4) NOT NULL,
   `usage` INT(8) NOT NULL,
   PRIMARY KEY (`sensor_id`, `day`),
   KEY `fk_sensor` (`sensor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `daily_data`
@@ -263,11 +263,11 @@ CREATE TABLE `daily_data` (
 DROP TABLE IF EXISTS `monthly_data`;
 CREATE TABLE `monthly_data` (
   `sensor_id` tinyint(4) NOT NULL,
-  `month` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `month` tinyint(4) NOT NULL,
   `usage` INT(8) NOT NULL,
   PRIMARY KEY (`sensor_id`, `month`),
   KEY `fk_sensor` (`sensor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `monthly_data`
@@ -282,11 +282,11 @@ CREATE TABLE `monthly_data` (
 DROP TABLE IF EXISTS `yearly_data`;
 CREATE TABLE `yearly_data` (
   `sensor_id` tinyint(4) NOT NULL,
-  `year` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `year` tinyint(4) NOT NULL,
   `usage` INT(8) NOT NULL,
   PRIMARY KEY (`sensor_id`, `year`),
   KEY `fk_sensor` (`sensor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `yearly_data`
@@ -341,6 +341,12 @@ ALTER TABLE `daily_data`
 --
 ALTER TABLE `hourly_data`
   ADD CONSTRAINT `hourly_data_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+
+--
+-- Beperkingen voor tabel `monthly_data`
+--
+ALTER TABLE `monthly_data`
+  ADD CONSTRAINT `monthly_data_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
 
 --
 -- Beperkingen voor tabel `yearly_data`
