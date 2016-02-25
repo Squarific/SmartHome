@@ -41,7 +41,7 @@ CREATE TABLE `users` (
   `role` tinyint(4) NOT NULL,
   `date_registered` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `users`
@@ -77,7 +77,7 @@ CREATE TABLE `homes` (
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_owner` (`owner_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `homes`
@@ -98,26 +98,25 @@ INSERT INTO `homes` (`id`, `owner_id`, `name`, `country`, `city`, `zipcode`, `st
 
 DROP TABLE IF EXISTS `users_homes`;
 CREATE TABLE `users_homes` (
-  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `user_id` tinyint(4) NOT NULL,
   `home_id` tinyint(4) NOT NULL,
   `permission_flags` tinyint(4) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`user_id`, `home_id`),
   KEY `fk_users` (`user_id`),
   KEY `fk_homes` (`home_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `users_homes`
 --
 
-INSERT INTO `users_homes` (`id`, `user_id`, `home_id`, `permission_flags`, `date_created`) VALUES
-(1, 1, 1, 4294967296, '2015-03-02 23:41:09'),
-(2, 2, 2, 4294967296, '2015-03-02 23:41:09'),
-(3, 3, 2, 4294967296, '2015-03-02 23:41:09'),
-(4, 4, 3, 4294967296, '2015-03-02 23:41:09'),
-(5, 5, 3, 4294967296, '2015-03-02 23:41:09');
+INSERT INTO `users_homes` (`user_id`, `home_id`, `permission_flags`, `date_created`) VALUES
+(1, 1, 4294967296, '2015-03-02 23:41:09'),
+(2, 2, 4294967296, '2015-03-02 23:41:09'),
+(3, 2, 4294967296, '2015-03-02 23:41:09'),
+(4, 3, 4294967296, '2015-03-02 23:41:09'),
+(5, 3, 4294967296, '2015-03-02 23:41:09');
 
 -- --------------------------------------------------------
 
@@ -135,7 +134,7 @@ CREATE TABLE `sensors` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_home` (`home_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `sensors`
@@ -161,7 +160,7 @@ CREATE TABLE `tags` (
   `description` varchar(256) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `tags`
@@ -179,27 +178,122 @@ INSERT INTO `tags` (`id`, `name`, `description`, `date_created`) VALUES
 
 DROP TABLE IF EXISTS `sensors_tags`;
 CREATE TABLE `sensors_tags` (
-  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `sensor_id` tinyint(4) NOT NULL,
   `tag_id` tinyint(4) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`sensor_id`, `tag_id`),
   KEY `fk_sensors` (`sensor_id`),
   KEY `fk_tags` (`tag_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `users_homes`
 --
 
-INSERT INTO `sensors_tags` (`id`, `sensor_id`, `tag_id`, `date_created`) VALUES
-(1, 1, 1, '2015-03-02 23:41:09'),
-(2, 2, 1, '2015-03-02 23:41:09'),
-(3, 3, 1, '2015-03-02 23:41:09'),
-(4, 4, 1, '2015-03-02 23:41:09'),
-(5, 5, 2, '2015-03-02 23:41:09');
+INSERT INTO `sensors_tags` (`sensor_id`, `tag_id`, `date_created`) VALUES
+(1, 1, '2015-03-02 23:41:09'),
+(2, 1, '2015-03-02 23:41:09'),
+(3, 1, '2015-03-02 23:41:09'),
+(4, 1, '2015-03-02 23:41:09'),
+(5, 2, '2015-03-02 23:41:09');
 
 -- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `minutely_data`
+--
+
+DROP TABLE IF EXISTS `minutely_data`;
+CREATE TABLE `minutely_data` (
+  `sensor_id` tinyint(4) NOT NULL,
+  `minute` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `usage` INT(8) NOT NULL,
+  PRIMARY KEY (`sensor_id`, `minute`),
+  KEY `fk_sensor` (`sensor_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+
+--
+-- Gegevens worden uitgevoerd voor tabel `minutely_data`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `hourly_data`
+--
+
+DROP TABLE IF EXISTS `hourly_data`;
+CREATE TABLE `hourly_data` (
+  `sensor_id` tinyint(4) NOT NULL,
+  `hour` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `usage` INT(8) NOT NULL,
+  PRIMARY KEY (`sensor_id`, `hour`),
+  KEY `fk_sensor` (`sensor_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+
+--
+-- Gegevens worden uitgevoerd voor tabel `hourly_data`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `daily_data`
+--
+
+DROP TABLE IF EXISTS `daily_data`;
+CREATE TABLE `daily_data` (
+  `sensor_id` tinyint(4) NOT NULL,
+  `day` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `usage` INT(8) NOT NULL,
+  PRIMARY KEY (`sensor_id`, `day`),
+  KEY `fk_sensor` (`sensor_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+
+--
+-- Gegevens worden uitgevoerd voor tabel `daily_data`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `monthly_data`
+--
+
+DROP TABLE IF EXISTS `monthly_data`;
+CREATE TABLE `monthly_data` (
+  `sensor_id` tinyint(4) NOT NULL,
+  `month` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `usage` INT(8) NOT NULL,
+  PRIMARY KEY (`sensor_id`, `month`),
+  KEY `fk_sensor` (`sensor_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+
+--
+-- Gegevens worden uitgevoerd voor tabel `monthly_data`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `yearly_data`
+--
+
+DROP TABLE IF EXISTS `yearly_data`;
+CREATE TABLE `yearly_data` (
+  `sensor_id` tinyint(4) NOT NULL,
+  `year` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `usage` INT(8) NOT NULL,
+  PRIMARY KEY (`sensor_id`, `year`),
+  KEY `fk_sensor` (`sensor_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+
+--
+-- Gegevens worden uitgevoerd voor tabel `yearly_data`
+--
+
+-- --------------------------------------------------------
+
 --
 -- Beperkingen voor gedumpte tabellen
 --
@@ -229,6 +323,30 @@ ALTER TABLE `sensors`
 ALTER TABLE `sensors_tags`
   ADD CONSTRAINT `sensors_tags_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`),
   ADD CONSTRAINT `sensors_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`);
+
+--
+-- Beperkingen voor tabel `minutely_data`
+--
+ALTER TABLE `minutely_data`
+  ADD CONSTRAINT `minutely_data_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+
+--
+-- Beperkingen voor tabel `daily_data`
+--
+ALTER TABLE `daily_data`
+  ADD CONSTRAINT `daily_data_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+
+--
+-- Beperkingen voor tabel `hourly_data`
+--
+ALTER TABLE `hourly_data`
+  ADD CONSTRAINT `hourly_data_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+
+--
+-- Beperkingen voor tabel `yearly_data`
+--
+ALTER TABLE `yearly_data`
+  ADD CONSTRAINT `yearly_data_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
