@@ -8,7 +8,7 @@
 -- PHP-versie: 5.5.9-1ubuntu4.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+SET time_zone = "+01:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -98,25 +98,26 @@ INSERT INTO `homes` (`id`, `owner_id`, `name`, `country`, `city`, `zipcode`, `st
 
 DROP TABLE IF EXISTS `users_homes`;
 CREATE TABLE `users_homes` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `user_id` tinyint(4) NOT NULL,
   `home_id` tinyint(4) NOT NULL,
   `permission_flags` tinyint(4) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_id`, `home_id`),
+  PRIMARY KEY (`id`),
   KEY `fk_users` (`user_id`),
   KEY `fk_homes` (`home_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `users_homes`
 --
 
-INSERT INTO `users_homes` (`user_id`, `home_id`, `permission_flags`, `date_created`) VALUES
-(1, 1, 4294967296, '2015-03-02 23:41:09'),
-(2, 2, 4294967296, '2015-03-02 23:41:09'),
-(3, 2, 4294967296, '2015-03-02 23:41:09'),
-(4, 3, 4294967296, '2015-03-02 23:41:09'),
-(5, 3, 4294967296, '2015-03-02 23:41:09');
+INSERT INTO `users_homes` (`id`, `user_id`, `home_id`, `permission_flags`, `date_created`) VALUES
+(1, 1, 1, 4294967296, '2015-03-02 23:41:09'),
+(2, 2, 2, 4294967296, '2015-03-02 23:41:09'),
+(3, 2, 3, 4294967296, '2015-03-02 23:41:09'),
+(4, 3, 4, 4294967296, '2015-03-02 23:41:09'),
+(5, 3, 5, 4294967296, '2015-03-02 23:41:09');
 
 -- --------------------------------------------------------
 
@@ -178,43 +179,51 @@ INSERT INTO `tags` (`id`, `name`, `description`, `date_created`) VALUES
 
 DROP TABLE IF EXISTS `sensors_tags`;
 CREATE TABLE `sensors_tags` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `sensor_id` tinyint(4) NOT NULL,
   `tag_id` tinyint(4) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`sensor_id`, `tag_id`),
+  PRIMARY KEY (`id`),
   KEY `fk_sensors` (`sensor_id`),
   KEY `fk_tags` (`tag_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Gegevens worden uitgevoerd voor tabel `users_homes`
 --
 
-INSERT INTO `sensors_tags` (`sensor_id`, `tag_id`, `date_created`) VALUES
-(1, 1, '2015-03-02 23:41:09'),
-(2, 1, '2015-03-02 23:41:09'),
-(3, 1, '2015-03-02 23:41:09'),
-(4, 1, '2015-03-02 23:41:09'),
-(5, 2, '2015-03-02 23:41:09');
+INSERT INTO `sensors_tags` (`id`, `sensor_id`, `tag_id`, `date_created`) VALUES
+(1, 1, 1, '2015-03-02 23:41:09'),
+(2, 2, 1, '2015-03-02 23:41:09'),
+(3, 3, 1, '2015-03-02 23:41:09'),
+(4, 4, 1, '2015-03-02 23:41:09'),
+(5, 5, 2, '2015-03-02 23:41:09');
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `minutely_data`
+-- Tabelstructuur voor tabel `recent_data`
 --
 
-DROP TABLE IF EXISTS `minutely_data`;
-CREATE TABLE `minutely_data` (
+DROP TABLE IF EXISTS `recent_data`;
+CREATE TABLE `recent_data` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `sensor_id` tinyint(4) NOT NULL,
-  `minute` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `usage` INT(8) NOT NULL,
-  PRIMARY KEY (`sensor_id`, `minute`),
+  `n_measurements` INT(8) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  UNIQUE(`timestamp`),
   KEY `fk_sensor` (`sensor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4;
 
 --
--- Gegevens worden uitgevoerd voor tabel `minutely_data`
+-- Gegevens worden uitgevoerd voor tabel `recent_data`
 --
+INSERT INTO `recent_data` (`id`, `sensor_id`, `timestamp`, `usage`, `n_measurements`) VALUES
+(1, 1, '2015-03-02 13:04:09', 1000, 1),
+(2, 1, '2015-03-02 13:27:19', 900, 1),
+(3, 1, '2015-03-02 13:41:45', 1100, 1);
 
 -- --------------------------------------------------------
 
@@ -224,10 +233,13 @@ CREATE TABLE `minutely_data` (
 
 DROP TABLE IF EXISTS `hourly_data`;
 CREATE TABLE `hourly_data` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `sensor_id` tinyint(4) NOT NULL,
-  `hour` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `usage` INT(8) NOT NULL,
-  PRIMARY KEY (`sensor_id`, `hour`),
+  `n_measurements` INT(8) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE(`timestamp`),
   KEY `fk_sensor` (`sensor_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
 
@@ -243,10 +255,13 @@ CREATE TABLE `hourly_data` (
 
 DROP TABLE IF EXISTS `daily_data`;
 CREATE TABLE `daily_data` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `sensor_id` tinyint(4) NOT NULL,
-  `day` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `usage` INT(8) NOT NULL,
-  PRIMARY KEY (`sensor_id`, `day`),
+  `n_measurements` INT(8) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE(`timestamp`),
   KEY `fk_sensor` (`sensor_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
 
@@ -262,10 +277,13 @@ CREATE TABLE `daily_data` (
 
 DROP TABLE IF EXISTS `monthly_data`;
 CREATE TABLE `monthly_data` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `sensor_id` tinyint(4) NOT NULL,
-  `month` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `usage` INT(8) NOT NULL,
-  PRIMARY KEY (`sensor_id`, `month`),
+  `n_measurements` INT(8) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE(`timestamp`),
   KEY `fk_sensor` (`sensor_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
 
@@ -281,10 +299,13 @@ CREATE TABLE `monthly_data` (
 
 DROP TABLE IF EXISTS `yearly_data`;
 CREATE TABLE `yearly_data` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `sensor_id` tinyint(4) NOT NULL,
-  `year` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `usage` INT(8) NOT NULL,
-  PRIMARY KEY (`sensor_id`, `year`),
+  `n_measurements` INT(8) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE(`timestamp`),
   KEY `fk_sensor` (`sensor_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;
 
@@ -325,10 +346,10 @@ ALTER TABLE `sensors_tags`
   ADD CONSTRAINT `sensors_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`);
 
 --
--- Beperkingen voor tabel `minutely_data`
+-- Beperkingen voor tabel `recent_data`
 --
-ALTER TABLE `minutely_data`
-  ADD CONSTRAINT `minutely_data_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+ALTER TABLE `recent_data`
+  ADD CONSTRAINT `recent_data_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
 
 --
 -- Beperkingen voor tabel `daily_data`
@@ -347,6 +368,67 @@ ALTER TABLE `hourly_data`
 --
 ALTER TABLE `yearly_data`
   ADD CONSTRAINT `yearly_data_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+
+--
+-- Triggers `recent_data`
+--
+DELIMITER $$
+CREATE TRIGGER `recent_data_aggregation` AFTER INSERT ON `recent_data`
+ FOR EACH ROW BEGIN
+INSERT INTO `hourly_data` (`sensor_id`, `timestamp`, `usage`, `n_measurements`)
+SELECT `sensor_id`, DATE_FORMAT(`timestamp`, "%Y-%m-%d %H:00:00") AS `hour`, AVG(`usage`), SUM(`n_measurements`)
+FROM `recent_data`
+WHERE `sensor_id` = NEW.sensor_id AND HOUR(`timestamp`) = (SELECT HOUR(MAX(`timestamp`)) FROM `recent_data`)
+GROUP BY `sensor_id`, `hour`
+ON DUPLICATE KEY UPDATE `id`=`id`;
+END;
+$$
+DELIMITER ;
+
+--
+-- Triggers `hourly_data`
+--
+DELIMITER $$
+CREATE TRIGGER `hourly_data_aggregation` AFTER INSERT ON `hourly_data`
+ FOR EACH ROW
+INSERT INTO `daily_data` (`sensor_id`, `timestamp`, `usage`, `n_measurements`)
+SELECT `sensor_id`, DATE_FORMAT(`timestamp`, "%Y-%m-%d 00:00:00") AS `day`, AVG(`usage`), SUM(`n_measurements`)
+FROM `hourly_data`
+WHERE `sensor_id` = NEW.sensor_id AND DAY(`timestamp`) = (SELECT DAY(MAX(`timestamp`)) FROM `hourly_data`)
+GROUP BY `sensor_id`, `day`
+ON DUPLICATE KEY UPDATE `id`=`id`
+$$
+DELIMITER ;
+
+--
+-- Triggers `daily_data`
+--
+DELIMITER $$
+CREATE TRIGGER `daily_data_aggregation` AFTER INSERT ON `daily_data`
+ FOR EACH ROW
+INSERT INTO `monthly_data` (`sensor_id`, `timestamp`, `usage`, `n_measurements`)
+SELECT `sensor_id`, DATE_FORMAT(`timestamp`, "%Y-%m-01 00:00:00") AS `month`, AVG(`usage`), SUM(`n_measurements`)
+FROM `daily_data`
+WHERE `sensor_id` = NEW.sensor_id AND MONTH(`timestamp`) = (SELECT MONTH(MAX(`timestamp`)) FROM `daily_data`)
+GROUP BY `sensor_id`, `month`
+ON DUPLICATE KEY UPDATE `id`=`id`
+$$
+DELIMITER ;
+
+--
+-- Triggers `monthly_data`
+--
+DELIMITER $$
+CREATE TRIGGER `monthly_data_aggregation` AFTER INSERT ON `monthly_data`
+ FOR EACH ROW
+INSERT INTO `yearly_data` (`sensor_id`, `timestamp`, `usage`, `n_measurements`)
+SELECT `sensor_id`, DATE_FORMAT(`timestamp`, "%Y-01-01 00:00:00") AS `year`, AVG(`usage`), SUM(`n_measurements`)
+FROM `monthly_data`
+WHERE `sensor_id` = NEW.sensor_id AND YEAR(`timestamp`) = (SELECT YEAR(MAX(`timestamp`)) FROM `monthly_data`)
+GROUP BY `sensor_id`, `year`
+ON DUPLICATE KEY UPDATE `id`=`id`
+$$
+DELIMITER ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
