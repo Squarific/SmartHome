@@ -7,7 +7,9 @@ django.setup()
 from backend.views import ParseData
 import csv
 
-with open('data_1_week.csv', 'rb') as csvfile:
+filename = sys.argv[1] or data_1_day.csv
+
+with open(filename, 'rb') as csvfile:
     reader = csv.reader(csvfile, delimiter=';', quotechar='"')
     ParseData(reader)
 
