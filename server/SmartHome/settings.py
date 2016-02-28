@@ -80,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'smarthome',
-        'USER': 'root',
-        'PASSWORD': 'e=m*c^2',
+        'USER': 'smarthome',
+        'PASSWORD': 'smarthome',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -112,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Brussels'
 
 USE_I18N = True
 
