@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'backend',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'SmartHome',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -80,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'smarthome',
-        'USER': 'smarthome',
-        'PASSWORD': 'smarthome',
+        'USER': 'root',
+        'PASSWORD': 'e=m*c^2',
         'HOST': 'localhost',
         'PORT': '5432',
     }
