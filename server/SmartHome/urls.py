@@ -17,7 +17,22 @@ from django.conf.urls import url
 from django.conf.urls import include
 from django.contrib import admin
 
+from rest_framework.urlpatterns import format_suffix_patterns
+from backend import views
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^rest-auth/facebook/$', views.FacebookLogin.as_view(), name='fb_login'),
+    url(r'^rest-auth/twitter/$', views.TwitterLogin.as_view(), name='twitter_login'),
+    url(r'^homes/$', views.HomeList.as_view()),
+    url(r'^homes/(?P<pk>[0-9]+)/$', views.HomeDetail.as_view()),
+    url(r'^sensors/$', views.SensorList.as_view()),
+    url(r'^sensors/(?P<pk>[0-9]+)/$', views.SensorDetail.as_view()),
+    url(r'^tags/$', views.TagList.as_view()),
+    url(r'^tags/(?P<pk>[0-9]+)/$', views.TagList.as_view()),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

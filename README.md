@@ -9,10 +9,7 @@ SmartHome made for the course Programming Project Databases at the University of
 
 ###Server
 
-    pip install django
-    pip install djangorestframework
-    pip install markdown
-    pip install django-filter
+    pip install django djangorestframework==3.2.0 markdown django-filter djangorestframework-jsonapi==2.0.0-beta.2 django-rest-auth[with_social]
 
 ###Client
 

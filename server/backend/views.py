@@ -1,7 +1,15 @@
 from backend.models import *
+from backend.serializers import *
 from django.utils import timezone, dateparse
+from rest_framework import generics
 
-import json
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from rest_auth.registration.views import SocialLoginView
+
+from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
+from rest_auth.views import LoginView
+from rest_auth.social_serializers import TwitterLoginSerializer
+
 
 def ParseConfig(data):
     for x in data:
@@ -28,5 +36,60 @@ def ParseData(csvreader):
         for i, x in enumerate(row[3:-1]):
             datapoint = RecentData(sensor_id=sensor_map[i], timestamp=timestamp, usage=round(float(x)*1000), n_measurements=1)
             datapoint.save()
-        
-    
+
+
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+
+
+class TwitterLogin(LoginView):
+    serializer_class = TwitterLoginSerializer
+    adapter_class = TwitterOAuthAdapter
+
+
+class HomeList(generics.ListCreateAPIView):
+    """
+    List all homes, or create a new home.
+    """
+    queryset = Home.objects.all()
+    serializer_class = HomeSerializer
+
+
+class HomeDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a home instance.
+    """
+    queryset = Home.objects.all()
+    serializer_class = HomeSerializer
+
+
+class SensorList(generics.ListCreateAPIView):
+    """
+    List all sensors, or create a new sensor.
+    """
+    queryset = Sensor.objects.all()
+    serializer_class = SensorSerializer
+
+
+class SensorDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a sensor instance.
+    """
+    queryset = Sensor.objects.all()
+    serializer_class = SensorSerializer
+
+
+class TagList(generics.ListCreateAPIView):
+    """
+    List all tags, or create a new tag.
+    """
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
+class SensorDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a tag instance.
+    """
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
