@@ -115,21 +115,21 @@ class MonthlyData(models.Model):
 
 
 
-class DailyData(models.Model):
+class WeeklyData(models.Model):
     sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
     timestamp = models.DateTimeField()
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
 
     class Meta:
-        db_table = 'daily_data'
+        db_table = 'weekly_data'
 
     def save(self, *args, **kwargs):
-        DailyData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(days=31) )).delete() # old data cleanup
+        WeeklyData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(days=7) )).delete() # old data cleanup
 
-        super(DailyData, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(WeeklyData, self).save(*args, **kwargs) # Call the "real" save() method.
 
-        results = DailyData.objects.filter(sensor_id = self.sensor_id, timestamp__month = self.timestamp.month)
+        results = WeeklyData.objects.filter(sensor_id = self.sensor_id, timestamp__month = self.timestamp.month, timestamp__day = self.timestamp.day)
         usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
         n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
 
@@ -143,31 +143,31 @@ class DailyData(models.Model):
 
 
 
-class HourlyData(models.Model):
+class DailyData(models.Model):
     sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
     timestamp = models.DateTimeField()
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
 
     class Meta:
-        db_table = 'hourly_data'
+        db_table = 'daily_data'
 
     def save(self, *args, **kwargs):
-        HourlyData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(hours=24) )).delete() # old data cleanup
+        DailyData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(days=7) )).delete() # old data cleanup
 
-        super(HourlyData, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(DailyData, self).save(*args, **kwargs) # Call the "real" save() method.
 
-        results = HourlyData.objects.filter(sensor_id = self.sensor_id, timestamp__day = self.timestamp.day)
+        results = DailyData.objects.filter(sensor_id = self.sensor_id, timestamp__week = self.timestamp.isocalendar[1])
         usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
         n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
 
-        timestamp = self.timestamp.replace(hour=0, minute = 0, second=0, microsecond=0)
+        timestamp = self.timestamp - timedelta( self.timestamp.weekday() )
 
         try:
-            existing = DailyData.objects.get(sensor_id = self.sensor_id, timestamp__month = timestamp.month, timestamp__day = timestamp.day)
-            DailyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
+            existing = WeeklyData.objects.get(sensor_id = self.sensor_id, timestamp__week = self.timestamp.isocalendar[1])
+            WeeklyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
         except ObjectDoesNotExist:
-            DailyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
+            WeeklyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
 
 
 
@@ -181,19 +181,19 @@ class RecentData(models.Model):
         db_table = 'recent_data'
 
     def save(self, *args, **kwargs):
-        RecentData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(minutes=60) )).delete() # old data cleanup
+        RecentData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(minutes=1440) )).delete() # old data cleanup
 
         super(RecentData, self).save(*args, **kwargs) # Call the "real" save() method.
 
-        results = RecentData.objects.filter(sensor_id = self.sensor_id, timestamp__hour = self.timestamp.hour)
+        results = RecentData.objects.filter(sensor_id = self.sensor_id, timestamp__day = self.timestamp.day, timestamp__hour = self.timestamp.hour)
         usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
         n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
 
-        timestamp = self.timestamp.replace(minute = 0, second=0, microsecond=0)
+        timestamp = self.timestamp.replace(hour = 0, minute = 0, second=0, microsecond=0)
         
         try:
             existing = HourlyData.objects.get(sensor_id = self.sensor_id, timestamp__day = timestamp.day, timestamp__hour = timestamp.hour)
-            HourlyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
+            DailyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
         except ObjectDoesNotExist:
-            HourlyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
+            DailyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
 
