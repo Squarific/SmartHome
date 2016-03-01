@@ -1,6 +1,9 @@
 from backend.models import *
 from backend.serializers import *
 from django.utils import timezone, dateparse
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework import generics
 
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
@@ -93,3 +96,10 @@ class SensorDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
+
+class DataList(APIView):
+    def get(self, request, sensor_id, format=None):
+        recent_data = RecentData.objects.filter(sensor_id=sensor_id)
+        content = [{'timestamp':data.timestamp, 'sensor_id':sensor_id, 'usage':data.usage, 'n_measurements':data.n_measurements, 'interval':'daily'} for data in recent_data]
+        return Response(content)

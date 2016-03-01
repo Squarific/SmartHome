@@ -11,7 +11,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg, Sum
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 class Home(models.Model):
     owner = models.ForeignKey(User, models.CASCADE, related_name='owned_homes')
@@ -79,7 +79,7 @@ class UsersHomes(models.Model):
 
 class YearlyData(models.Model):
     sensor = models.ForeignKey(Sensor, models.DO_NOTHING)
-    timestamp = models.DateTimeField()
+    year = models.IntegerField()
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
 
@@ -89,7 +89,8 @@ class YearlyData(models.Model):
 
 class MonthlyData(models.Model):
     sensor_id = models.IntegerField()
-    timestamp = models.DateTimeField()
+    year = models.IntegerField()
+    month = models.IntegerField()
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
 
@@ -97,27 +98,27 @@ class MonthlyData(models.Model):
         db_table = 'monthly_data'
 
     def save(self, *args, **kwargs):
-        MonthlyData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(days=366) )).delete() # old data cleanup
+        MonthlyData.objects.filter(sensor_id = self.sensor_id, month__lte = self.month, year__lt = self.year).delete() # old data cleanup
 
         super(MonthlyData, self).save(*args, **kwargs) # Call the "real" save() method.
 
-        results = MonthlyData.objects.filter(sensor_id = self.sensor_id, timestamp__year = self.timestamp.year)
+        results = MonthlyData.objects.filter(sensor_id = self.sensor_id, year = self.year)
         usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
         n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
 
-        timestamp = self.timestamp.replace(month=1, day=1, hour=0, minute = 0, second=0, microsecond=0)
-        
         try:
-            existing = YearlyData.objects.get(sensor_id = self.sensor_id, timestamp__year = timestamp.year)
+            existing = YearlyData.objects.get(sensor_id = self.sensor_id, year = self.year)
             YearlyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
         except ObjectDoesNotExist:
-            YearlyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
+            YearlyData.objects.create(sensor_id = self.sensor_id, year = self.year, usage = usage, n_measurements = n_measurements) # data aggregation
 
 
 
 class WeeklyData(models.Model):
     sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
-    timestamp = models.DateTimeField()
+    year = models.IntegerField()
+    month = models.IntegerField()
+    week = models.IntegerField()
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
 
@@ -125,27 +126,28 @@ class WeeklyData(models.Model):
         db_table = 'weekly_data'
 
     def save(self, *args, **kwargs):
-        WeeklyData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(days=7) )).delete() # old data cleanup
+        WeeklyData.objects.filter(sensor_id = self.sensor_id, week__lt = (self.week - 5) % 52 ).delete() # old data cleanup
 
         super(WeeklyData, self).save(*args, **kwargs) # Call the "real" save() method.
 
-        results = WeeklyData.objects.filter(sensor_id = self.sensor_id, timestamp__month = self.timestamp.month, timestamp__day = self.timestamp.day)
+        results = WeeklyData.objects.filter(sensor_id = self.sensor_id, month = self.month)
         usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
         n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
 
-        timestamp = self.timestamp.replace(day = 1, hour=0, minute = 0, second=0, microsecond=0)
-
         try:
-            existing = MonthlyData.objects.get(sensor_id = self.sensor_id, timestamp__year = timestamp.year, timestamp__month = timestamp.month)
+            existing = MonthlyData.objects.get(sensor_id = self.sensor_id, month = self.month)
             MonthlyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
         except ObjectDoesNotExist:
-            MonthlyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
+            MonthlyData.objects.create(sensor_id = self.sensor_id, year = self.year, month = self.month, usage = usage, n_measurements = n_measurements) # data aggregation
 
 
 
 class DailyData(models.Model):
     sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
-    timestamp = models.DateTimeField()
+    year = models.IntegerField()
+    month = models.IntegerField()
+    week = models.IntegerField()
+    day = models.IntegerField()
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
 
@@ -153,21 +155,19 @@ class DailyData(models.Model):
         db_table = 'daily_data'
 
     def save(self, *args, **kwargs):
-        DailyData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(days=7) )).delete() # old data cleanup
+        DailyData.objects.filter(sensor_id = self.sensor_id, day__lt = (datetime(self.year, self.month, self.day) - timedelta(days=7)).day).delete() # old data cleanup
 
         super(DailyData, self).save(*args, **kwargs) # Call the "real" save() method.
 
-        results = DailyData.objects.filter(sensor_id = self.sensor_id, timestamp__week = self.timestamp.isocalendar()[1])
+        results = DailyData.objects.filter(sensor_id = self.sensor_id, week = self.week)
         usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
         n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
 
-        timestamp = self.timestamp - timedelta( self.timestamp.weekday() )
-
         try:
-            existing = WeeklyData.objects.get(sensor_id = self.sensor_id, timestamp__week = self.timestamp.isocalendar()[1])
+            existing = WeeklyData.objects.get(sensor_id = self.sensor_id, week = self.week)
             WeeklyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
         except ObjectDoesNotExist:
-            WeeklyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
+            WeeklyData.objects.create(sensor_id = self.sensor_id, year = self.year, month = self.month, week = self.week, usage = usage, n_measurements = n_measurements) # data aggregation
 
 
 
@@ -189,11 +189,9 @@ class RecentData(models.Model):
         usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
         n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
 
-        timestamp = self.timestamp.replace(hour = 0, minute = 0, second=0, microsecond=0)
-        
         try:
-            existing = DailyData.objects.get(sensor_id = self.sensor_id, timestamp__day = timestamp.day, timestamp__hour = timestamp.hour)
+            existing = DailyData.objects.get(sensor_id = self.sensor_id, day = self.timestamp.day)
             DailyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
         except ObjectDoesNotExist:
-            DailyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
+            DailyData.objects.create(sensor_id = self.sensor_id, year = self.timestamp.year, month = self.timestamp.month, week = self.timestamp.isocalendar()[1], day = self.timestamp.day, usage = usage, n_measurements = n_measurements) # data aggregation
 
