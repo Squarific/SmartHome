@@ -157,14 +157,14 @@ class DailyData(models.Model):
 
         super(DailyData, self).save(*args, **kwargs) # Call the "real" save() method.
 
-        results = DailyData.objects.filter(sensor_id = self.sensor_id, timestamp__week = self.timestamp.isocalendar[1])
+        results = DailyData.objects.filter(sensor_id = self.sensor_id, timestamp__week = self.timestamp.isocalendar()[1])
         usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
         n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
 
         timestamp = self.timestamp - timedelta( self.timestamp.weekday() )
 
         try:
-            existing = WeeklyData.objects.get(sensor_id = self.sensor_id, timestamp__week = self.timestamp.isocalendar[1])
+            existing = WeeklyData.objects.get(sensor_id = self.sensor_id, timestamp__week = self.timestamp.isocalendar()[1])
             WeeklyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
         except ObjectDoesNotExist:
             WeeklyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
@@ -192,7 +192,7 @@ class RecentData(models.Model):
         timestamp = self.timestamp.replace(hour = 0, minute = 0, second=0, microsecond=0)
         
         try:
-            existing = HourlyData.objects.get(sensor_id = self.sensor_id, timestamp__day = timestamp.day, timestamp__hour = timestamp.hour)
+            existing = DailyData.objects.get(sensor_id = self.sensor_id, timestamp__day = timestamp.day, timestamp__hour = timestamp.hour)
             DailyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
         except ObjectDoesNotExist:
             DailyData.objects.create(sensor_id = self.sensor_id, timestamp = timestamp, usage = usage, n_measurements = n_measurements) # data aggregation
