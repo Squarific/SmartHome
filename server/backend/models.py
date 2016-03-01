@@ -24,6 +24,9 @@ class Home(models.Model):
     house_number = models.CharField(max_length=8)
     date_added = models.DateTimeField()
 
+    def __str__(self):
+        return self.pk
+
     class Meta:
         db_table = 'homes'
 
@@ -35,6 +38,9 @@ class Sensor(models.Model):
     tags = models.ManyToManyField('Tag', through='SensorsTags')
     power_unit = models.CharField(max_length=3)
     date_created = models.DateTimeField()
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'sensors'
@@ -53,6 +59,9 @@ class Tag(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256)
     date_created = models.DateTimeField()
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'tags'
