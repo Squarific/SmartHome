@@ -25,7 +25,7 @@ class Home(models.Model):
     date_added = models.DateTimeField()
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
     class Meta:
         db_table = 'homes'
