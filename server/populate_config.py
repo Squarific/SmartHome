@@ -7,7 +7,7 @@ django.setup()
 from backend.views import ParseConfig
 import json
 
-filename = sys.argv[1] or 'conf.json'
+filename = sys.argv[1] or 'homes_config.json'
 
 with open(filename) as jsonfile:
     data = json.load(jsonfile)

@@ -10,7 +10,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Avg, Sum
+from django.db.models import Avg, Sum, Max
 from datetime import datetime, timedelta
 
 class Home(models.Model):
@@ -77,121 +77,141 @@ class UsersHomes(models.Model):
         db_table = 'users_homes'
         
 
-class YearlyData(models.Model):
-    sensor = models.ForeignKey(Sensor, models.DO_NOTHING)
-    year = models.IntegerField()
-    usage = models.IntegerField()
-    n_measurements = models.IntegerField()
-
-    class Meta:
-        db_table = 'yearly_data'
-
-
-class MonthlyData(models.Model):
-    sensor_id = models.IntegerField()
-    year = models.IntegerField()
-    month = models.IntegerField()
-    usage = models.IntegerField()
-    n_measurements = models.IntegerField()
-
-    class Meta:
-        db_table = 'monthly_data'
-
-    def save(self, *args, **kwargs):
-        MonthlyData.objects.filter(sensor_id = self.sensor_id, month__lte = self.month, year__lt = self.year).delete() # old data cleanup
-
-        super(MonthlyData, self).save(*args, **kwargs) # Call the "real" save() method.
-
-        results = MonthlyData.objects.filter(sensor_id = self.sensor_id, year = self.year)
-        usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
-        n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
-
-        try:
-            existing = YearlyData.objects.get(sensor_id = self.sensor_id, year = self.year)
-            YearlyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
-        except ObjectDoesNotExist:
-            YearlyData.objects.create(sensor_id = self.sensor_id, year = self.year, usage = usage, n_measurements = n_measurements) # data aggregation
-
-
-
-class WeeklyData(models.Model):
-    sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
-    year = models.IntegerField()
-    month = models.IntegerField()
-    week = models.IntegerField()
-    usage = models.IntegerField()
-    n_measurements = models.IntegerField()
-
-    class Meta:
-        db_table = 'weekly_data'
-
-    def save(self, *args, **kwargs):
-        WeeklyData.objects.filter(sensor_id = self.sensor_id, week__lt = (self.week - 5) % 52 ).delete() # old data cleanup
-
-        super(WeeklyData, self).save(*args, **kwargs) # Call the "real" save() method.
-
-        results = WeeklyData.objects.filter(sensor_id = self.sensor_id, month = self.month)
-        usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
-        n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
-
-        try:
-            existing = MonthlyData.objects.get(sensor_id = self.sensor_id, month = self.month)
-            MonthlyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
-        except ObjectDoesNotExist:
-            MonthlyData.objects.create(sensor_id = self.sensor_id, year = self.year, month = self.month, usage = usage, n_measurements = n_measurements) # data aggregation
-
-
-
-class DailyData(models.Model):
-    sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
-    year = models.IntegerField()
-    month = models.IntegerField()
-    week = models.IntegerField()
-    day = models.IntegerField()
-    usage = models.IntegerField()
-    n_measurements = models.IntegerField()
-
-    class Meta:
-        db_table = 'daily_data'
-
-    def save(self, *args, **kwargs):
-        DailyData.objects.filter(sensor_id = self.sensor_id, day__lt = (datetime(self.year, self.month, self.day) - timedelta(days=7)).day).delete() # old data cleanup
-
-        super(DailyData, self).save(*args, **kwargs) # Call the "real" save() method.
-
-        results = DailyData.objects.filter(sensor_id = self.sensor_id, week = self.week)
-        usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
-        n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
-
-        try:
-            existing = WeeklyData.objects.get(sensor_id = self.sensor_id, week = self.week)
-            WeeklyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
-        except ObjectDoesNotExist:
-            WeeklyData.objects.create(sensor_id = self.sensor_id, year = self.year, month = self.month, week = self.week, usage = usage, n_measurements = n_measurements) # data aggregation
-
-
-
-class RecentData(models.Model):
+class SensorData(models.Model):
     sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
     timestamp = models.DateTimeField()
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
+    
+    class Meta:
+        abstract = True
+        ordering = ['timestamp']
+
+    def save(self, *args, **kwargs):
+        sensors = type(self).objects.filter(sensor_id = self.sensor_id)
+        max_timestamp = sensors.aggregate(Max('timestamp'))['timestamp__max'] or self.timestamp
+        needs_rollup = self.needs_rollup(max_timestamp, self.timestamp)
+
+        if needs_rollup == True:
+            cleanup_time = self.get_cleanup_time(self.timestamp)
+            sensors.filter(timestamp__lt = cleanup_time).delete()
+            rollup_time = self.get_rollup_time(self.timestamp)
+            RollupClass = self.get_rollup_class()
+
+            print(str(self.sensor_id) + ", " + str(rollup_time))
+            
+            results = sensors.filter(timestamp__gte = rollup_time)
+
+            usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
+            n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
+
+            #try:
+            #    existing = RollupClass.objects.get(sensor_id = self.sensor_id, timestamp = rollup_time)
+            #    RollupClass.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
+            #except ObjectDoesNotExist:
+            RollupClass.objects.create(sensor_id = self.sensor_id, timestamp = rollup_time, usage = usage, n_measurements = n_measurements) # data aggregation
+
+        super(SensorData, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
+class YearlyData(SensorData):
+
+    def needs_rollup(self, max_timestamp, timestamp):
+        return False
+
+    def get_cleanup_time(self, timestamp):
+        pass
+
+    def get_rollup_time(self, timestamp):
+        pass
+
+    def get_rollup_class(self):
+        return None
+
+    def get_resolution(self):
+        return 'yearly'
+
+    class Meta(SensorData.Meta):
+        db_table = 'yearly_data'
+
+
+class MonthlyData(SensorData):
+
+    def needs_rollup(self, max_timestamp, timestamp):
+        return max_timestamp.year < timestamp.year
+
+    def get_cleanup_time(self, timestamp):
+        return timestamp.replace(month=1)
+
+    def get_rollup_time(self, timestamp):
+        return timestamp.replace(month=1)
+
+    def get_rollup_class(self):
+        return YearlyData
+
+    def get_resolution(self):
+        return 'monthly'
+
+    class Meta:
+        db_table = 'monthly_data'
+
+
+#class WeeklyData(SensorData):
+#
+#    def needs_rollup(self, max_timestamp, timestamp):
+#        return max_timestamp.month <> timestamp.month
+#
+#    def get_cleanup_time(self, timestamp):
+#        return timestamp.replace(day=1)
+#
+#    def get_rollup_time(self, timestamp):
+#        return timestamp.replace(day=1)
+#
+#    def get_rollup_class(self):
+#        return MonthlyData
+#
+#    class Meta:
+#        db_table = 'weekly_data'
+
+
+class DailyData(SensorData):
+
+    def needs_rollup(self, max_timestamp, timestamp):
+        return max_timestamp.month <> timestamp.month
+
+    def get_cleanup_time(self, timestamp):
+        return timestamp.replace(day=1)
+
+    def get_rollup_time(self, timestamp):
+        return timestamp.replace(day=1)
+
+    def get_rollup_class(self):
+        return MonthlyData
+
+    def get_resolution(self):
+        return 'daily'
+
+    class Meta:
+        db_table = 'daily_data'
+
+
+class RecentData(SensorData):
+
+    def needs_rollup(self, max_timestamp, timestamp):
+        return max_timestamp.day <> timestamp.day
+
+    def get_cleanup_time(self, timestamp):
+        return timestamp.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
+
+    def get_rollup_time(self, timestamp):
+        return timestamp.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
+
+    def get_rollup_class(self):
+        return DailyData
+
+    def get_resolution(self):
+        return 'minutely'
 
     class Meta:
         db_table = 'recent_data'
-
-    def save(self, *args, **kwargs):
-        RecentData.objects.filter(sensor_id = self.sensor_id, timestamp__lt = (self.timestamp - timedelta(minutes=1440) )).delete() # old data cleanup
-
-        super(RecentData, self).save(*args, **kwargs) # Call the "real" save() method.
-
-        results = RecentData.objects.filter(sensor_id = self.sensor_id, timestamp__day = self.timestamp.day, timestamp__hour = self.timestamp.hour)
-        usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
-        n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
-
-        try:
-            existing = DailyData.objects.get(sensor_id = self.sensor_id, day = self.timestamp.day)
-            DailyData.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
-        except ObjectDoesNotExist:
-            DailyData.objects.create(sensor_id = self.sensor_id, year = self.timestamp.year, month = self.timestamp.month, week = self.timestamp.isocalendar()[1], day = self.timestamp.day, usage = usage, n_measurements = n_measurements) # data aggregation
 
