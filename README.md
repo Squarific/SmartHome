@@ -13,8 +13,7 @@ SmartHome made for the course Programming Project Databases at the University of
 
 ###Client
 
-    cd client
-    bower install
+    None
 
 ##Run instructions
 ###Server
@@ -58,6 +57,7 @@ You can generate your own configurations and sensor data using ElecSim (found on
 
 ###Client
 
-    cd client
-    ember server
+    python -m SimpleHTTPServer
+
+Then open your browser to localhost:8000
 
