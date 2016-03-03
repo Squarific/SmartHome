@@ -24,8 +24,8 @@ from django.db.models import F
 dateformat = '%Y-%m-%dT%H:%M'
 
 config_file = 'homes_config.json'
-from_date = datetime.strptime("2016-02-01T00:00", dateformat) #default 2015
-to_date = datetime.now()                       #default now
+from_date = datetime.strptime("2011-01-01T00:00", dateformat)   #default 2011
+to_date = datetime.now()                                        #default now
 
 if len(sys.argv) > 1:
     config_file = sys.argv[1]
@@ -76,7 +76,7 @@ def populate_config(config_file):
     return config
 
 def populate_data(config, from_date, to_date):
-    data = []
+    data = {'yearly':[], 'monthly':[], 'daily':[], 'recent':[]}
 
     for household in config:
         household_id = household['id_household']
@@ -93,22 +93,22 @@ def populate_data(config, from_date, to_date):
 
         for year in range(from_date.year, to_date.year):
             start_date = datetime(year, 1, 1)
-            averages = generate_averages( household, appliance_status, from_date, datetime(year+1, 1, 1) )
-            data += [YearlyData(sensor_id=sensor_map[ v['sensor_name'] ], usage=v['average'], n_measurements=v['count'], timestamp=start_date) for v in averages]
+            averages = generate_averages( household, appliance_status, start_date, datetime(year+1, 1, 1) )
+            data['yearly'] += [YearlyData(sensor_id=sensor_map[ v['sensor_name'] ], usage=v['average'], n_measurements=v['count'], timestamp=start_date) for v in averages]
         
         for month in range(1, to_date.month):
             start_date = datetime(to_date.year, month, 1)
             if start_date < from_date:
                 continue
             averages = generate_averages( household, appliance_status, start_date, datetime(to_date.year, month+1, 1) )
-            data += [MonthlyData(sensor_id=sensor_map[ v['sensor_name'] ], usage=v['average'], n_measurements=v['count'], timestamp=start_date) for v in averages]
+            data['monthly'] += [MonthlyData(sensor_id=sensor_map[ v['sensor_name'] ], usage=v['average'], n_measurements=v['count'], timestamp=start_date) for v in averages]
 
         for day in range(1, to_date.day):
             start_date = datetime(to_date.year, to_date.month, day)
             if start_date < from_date:
                 continue
             averages = generate_averages( household, appliance_status, start_date, datetime(to_date.year, to_date.month, day+1) )
-            data += [DailyData(sensor_id=sensor_map[ v['sensor_name'] ], usage=v['average'], n_measurements=v['count'], timestamp=start_date) for v in averages]
+            data['daily'] += [DailyData(sensor_id=sensor_map[ v['sensor_name'] ], usage=v['average'], n_measurements=v['count'], timestamp=start_date) for v in averages]
 
         start_date = max(to_date.replace(hour=0, minute=0, second=0, microsecond=0), from_date)
         raw_data = generate_data.generate_data_range(
@@ -121,10 +121,28 @@ def populate_data(config, from_date, to_date):
 
         header = raw_data[0][3:]
         for v in raw_data[1:]:
-            data += [ RecentData(sensor_id=sensor_map[ header[i] ], usage=v[i]*1000, n_measurements=1, timestamp=v[0]) for i in range(3, len(header)) ]
+            data['recent'] += [ RecentData(sensor_id=sensor_map[ header[i] ], usage=v[i]*1000, n_measurements=1, timestamp=v[0]) for i in range(3, len(header)) ]
 
-    for datum in data:
-        datum.save()
+
+    #data_count = len(data)
+    #print("Saving " + str(data_count) + " objects...")
+    #data_1000 = data_count/1000
+    #for i, datum in enumerate(data):
+    #    if ((i % data_1000) == 0):
+    #        print(str(datetime.now()) + " - progress: " + str(float(i*100)/float(data_count)) + "%")
+    #    super(SensorData, datum).save()
+
+    print("Saving " + str(len(data['yearly'])) + " yearly data entries...")
+    YearlyData.objects.bulk_create(data['yearly'])
+
+    print("Saving " + str(len(data['monthly'])) + " monthly data entries...")
+    MonthlyData.objects.bulk_create(data['monthly'])
+
+    print("Saving " + str(len(data['daily'])) + " daily data entries...")
+    DailyData.objects.bulk_create(data['daily'])
+
+    print("Saving " + str(len(data['recent'])) + " recent data entries...")
+    RecentData.objects.bulk_create(data['recent'])
 
     return data
         

@@ -124,10 +124,10 @@ class DataList(APIView):
 
 class UserDataList(APIView):
     def get(self, request, user_id, format=None):
-        recent_data = RecentData.objects.filter(sensor__home__owner_id=user_id, timestamp__gte='2016-02-28 00:00:00.000000').annotate(home_id=F('sensor__home_id')).values('home_id', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
-        daily_data = DailyData.objects.filter(sensor__home__owner_id=user_id, timestamp__gte='2016-02-21 00:00:00.000000').annotate(home_id=F('sensor__home_id')).values('home_id', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
-        data = chain(daily_data, recent_data)
-        content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(data, lambda x: x['home_id'])]
+        recent_data = RecentData.objects.filter(sensor__home__owner_id=user_id, timestamp__gte='2011-02-28 00:00:00.000000').annotate(home_id=F('sensor__home_id'), home_name=F('sensor__home__name')).values('home_id', 'home_name', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
+        #daily_data = DailyData.objects.filter(sensor__home__owner_id=user_id, timestamp__gte='2011-01-1 00:00:00.000000').annotate(home_id=F('sensor__home_id')).values('home_id', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
+        data = recent_data #chain(daily_data, recent_data)
+        content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(data, lambda x: x['home_name'])]
         return Response(content)
 
 class HomeDataList(APIView):
