@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="nv.d3.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js" charset="utf-8"></script>
+    <script src="nv.d3.js"></script>
+
+    <style>
+        text {
+            font: 12px sans-serif;
+        }
+        svg {
+            display: block;
+        }
+        html, body, svg {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            width: 100%;
+        }
+
+        .nvd3 .nv-axis .nv-axisMaxMin text {
+          font-weight: normal;
+        }
+    </style>
+</head>
+<body class='with-3d-shadow with-transitions'>
+
+Period: <select id="period" onchange="update()">
+    <option value="today">Today</option>
+    <option value="last_month">Last Month</option>
+    <option value="last_year">Last Year</option>
+    <option value="past_years">Past Years</option>
+</select>
+
+&ensp;User: <select id="user" onchange="update()">
+    <option value="1">David</option>
+    <option value="2">Filip</option>
+    <option value="3">Jens</option>
+    <option value="4">Nisse</option>
+    <option value="5">Thanh Danh</option>
+</select>
+
+<svg id="chart1"></svg>
+
+<script>
+    var update = function() {
+        d3.json(getDataURL(), function(error, json) {
+            d3.select('#chart1').datum(json.data).call(chart);
+            chart.update();
+        });
+    }
+
+    var getDataURL = function() {
+        return "http://localhost:8000/data/user/"+ document.getElementById("period").value + "/"+ document.getElementById("user").value +"/?format=vnd.api%2Bjson";
+    }
+
+    var getTimeFormat = function() {
+        console.log(document.getElementById("period").value);
+        switch(document.getElementById("period").value) {
+            case "today":
+                format = d3.time.format('%X');
+                break;
+            case "last_month":
+                format = d3.time.format('%d %B');
+                break;
+            case "last_year":
+                format = d3.time.format('%B %Y');
+                break;
+            case "past_years":
+                format = d3.time.format('%Y');
+                break;
+            default:
+                format = d3.time.format("%Y-%m-%d %X");
+        }
+
+        return format;
+    }
+
+    var colors = d3.scale.category20();
+
+    var chart;
+d3.json(getDataURL(), function(error, json) {
+    nv.addGraph(function() {
+        chart = nv.models.lineChart()
+            .options({
+                transitionDuration: 300,
+                useInteractiveGuideline: false
+            })
+            .x(function(d) { return d3.time.format("%Y-%m-%dT%X").parse(d.timestamp) })
+            .y(function(d) { return d.usage })
+            .showLegend(true)
+            .useInteractiveGuideline(false)
+        ;
+
+        // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
+        chart.xAxis.tickFormat(function(d) { return getTimeFormat()(new Date(d)) });
+
+        chart.yAxis.tickFormat(d3.format(',d'))
+        .axisLabel("Usage (Wh)");
+
+        /*json.data[0].area = false;
+        json.data[0].color = '#2ca02c';
+
+        json.data[1].area = false;
+        json.data[1].color = '#ff7f0e';*/
+
+        d3.select('#chart1').append('svg')
+            .datum(json.data)
+            .call(chart);
+
+        nv.utils.windowResize(chart.update);
+
+        return chart;
+    });
+});
+
+</script>
+</body>
+</html>
