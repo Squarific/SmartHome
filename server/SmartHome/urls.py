@@ -33,8 +33,11 @@ urlpatterns = [
     url(r'^sensors/(?P<pk>[0-9]+)/$', views.SensorDetail.as_view()),
     url(r'^tags/$', views.TagList.as_view()),
     url(r'^tags/(?P<pk>[0-9]+)/$', views.TagList.as_view()),
-    url(r'^data/user/(?P<user_id>[0-9]+)/$', views.UserDataList.as_view()),
     url(r'^data/home/(?P<home_id>[0-9]+)/$', views.HomeDataList.as_view()),
+    url(r'^data/user/today/(?P<user_id>[0-9]+)/$', views.RecentUserDataList.as_view()),
+    url(r'^data/user/last_month/(?P<user_id>[0-9]+)/$', views.DailyUserDataList.as_view()),
+    url(r'^data/user/last_year/(?P<user_id>[0-9]+)/$', views.MonthlyUserDataList.as_view()),
+    url(r'^data/user/past_years/(?P<user_id>[0-9]+)/$', views.YearlyUserDataList.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

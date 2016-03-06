@@ -16,6 +16,8 @@ from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
 from rest_auth.views import LoginView
 from rest_auth.social_serializers import TwitterLoginSerializer
 
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from itertools import chain, groupby
 
 
@@ -124,14 +126,47 @@ class DataList(APIView):
 
 class UserDataList(APIView):
     def get(self, request, user_id, format=None):
-        recent_data = RecentData.objects.filter(sensor__home__owner_id=user_id, timestamp__gte='2011-02-28 00:00:00.000000').annotate(home_id=F('sensor__home_id'), home_name=F('sensor__home__name')).values('home_id', 'home_name', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
-        #daily_data = DailyData.objects.filter(sensor__home__owner_id=user_id, timestamp__gte='2011-01-1 00:00:00.000000').annotate(home_id=F('sensor__home_id')).values('home_id', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
-        data = recent_data #chain(daily_data, recent_data)
+        now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        from_date = self.get_from_date(now)
+        data = self.get_class().objects.filter(sensor__home__owner_id=user_id, timestamp__gte=from_date).annotate(home_id=F('sensor__home_id'), home_name=F('sensor__home__name')).values('home_id', 'home_name', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
         content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(data, lambda x: x['home_name'])]
         return Response(content)
 
+class RecentUserDataList(UserDataList):
+    def get_class(self):
+        return RecentData
+
+    def get_from_date(self, to_date):
+        return to_date - timedelta(days=1)
+
+
+class DailyUserDataList(UserDataList):
+    def get_class(self):
+        return DailyData
+
+    def get_from_date(self, to_date):
+        return to_date - relativedelta(months=1)
+
+
+class MonthlyUserDataList(UserDataList):
+    def get_class(self):
+        return MonthlyData
+
+    def get_from_date(self, to_date):
+        return to_date - relativedelta(years=1)
+
+
+
+class YearlyUserDataList(UserDataList):
+    def get_class(self):
+        return YearlyData
+
+    def get_from_date(self, to_date):
+        return datetime.min
+
 class HomeDataList(APIView):
     def get(self, request, home_id, format=None):
-        recent_data = RecentData.objects.filter(sensor__home_id=home_id, timestamp__gte='2016-02-28 00:00:00.000000').annotate(sensor_name=F('sensor__name')).values('sensor_id', 'sensor_name', 'timestamp').annotate(usage=Sum('usage')).order_by('sensor_name', 'timestamp')
+        from_date = datetime.now() - relativedelta(years=1)
+        recent_data = RecentData.objects.filter(sensor__home_id=home_id, timestamp__gte=from_date).annotate(sensor_name=F('sensor__name')).values('sensor_id', 'sensor_name', 'timestamp').annotate(usage=Sum('usage')).order_by('sensor_name', 'timestamp')
         content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(recent_data, lambda x: x['sensor_name'])]
         return Response(content)

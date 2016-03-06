@@ -4,7 +4,8 @@ import sys
 import getopt
 import time
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import re
 from os.path import dirname
 sys.path.append(dirname(__file__))
@@ -96,19 +97,25 @@ def populate_data(config, from_date, to_date):
             averages = generate_averages( household, appliance_status, start_date, datetime(year+1, 1, 1) )
             data['yearly'] += [YearlyData(sensor_id=sensor_map[ v['sensor_name'] ], usage=v['average'], n_measurements=v['count'], timestamp=start_date) for v in averages]
         
-        for month in range(1, to_date.month):
-            start_date = datetime(to_date.year, month, 1)
+        monthly_start = to_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0) - relativedelta(years=1)
+        for month in range(12):
+            start_date = monthly_start + relativedelta(months=month)
+            stop_date = monthly_start + relativedelta(months=month+1)
             if start_date < from_date:
                 continue
-            averages = generate_averages( household, appliance_status, start_date, datetime(to_date.year, month+1, 1) )
+            averages = generate_averages( household, appliance_status, start_date, stop_date )
             data['monthly'] += [MonthlyData(sensor_id=sensor_map[ v['sensor_name'] ], usage=v['average'], n_measurements=v['count'], timestamp=start_date) for v in averages]
 
-        for day in range(1, to_date.day):
-            start_date = datetime(to_date.year, to_date.month, day)
+
+        daily_start = to_date.replace(hour=0, minute=0, second=0, microsecond=0) - relativedelta(months=1)
+        for day in range((to_date-daily_start).days):
+            start_date = daily_start + timedelta(days=day)
+            stop_date = daily_start + timedelta(days=day+1)
             if start_date < from_date:
                 continue
-            averages = generate_averages( household, appliance_status, start_date, datetime(to_date.year, to_date.month, day+1) )
+            averages = generate_averages( household, appliance_status, start_date, stop_date )
             data['daily'] += [DailyData(sensor_id=sensor_map[ v['sensor_name'] ], usage=v['average'], n_measurements=v['count'], timestamp=start_date) for v in averages]
+
 
         start_date = max(to_date.replace(hour=0, minute=0, second=0, microsecond=0), from_date)
         raw_data = generate_data.generate_data_range(
