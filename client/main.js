@@ -8,6 +8,18 @@
 	Register component
 */
 
+var RegisterForm = React.createClass({
+	render: function () {
+		return (
+			<div className="registerForm">
+				<label for="username">Username</label>
+				<input type="text" name="username" placeholder="Username">
+				<label for="password">Password</label>
+				<input type="text" name="password" placeholder="Password">
+			</div>
+		);
+	}
+});
 
 
 /*
