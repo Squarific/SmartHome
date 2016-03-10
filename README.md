@@ -5,7 +5,6 @@ SmartHome made for the course Programming Project Databases at the University of
 ###Dependencies
 
     sudo apt-get install nodejs nodejs-legacy npm python3 python3-pip
-    sudo npm -g install bower ember-cli
 
 ###Server
 
