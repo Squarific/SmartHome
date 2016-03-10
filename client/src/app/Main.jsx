@@ -6,11 +6,12 @@
 import React from 'react';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
-import {deepOrange500, lightGreenA700} from 'material-ui/lib/styles/colors';
+import {green500} from 'material-ui/lib/styles/colors';
 import FlatButton from 'material-ui/lib/flat-button';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 import AppBar from 'material-ui/lib/app-bar';
+import HouseHoldCard from './HouseHoldCard'
 
 
 const styles = {
@@ -23,7 +24,7 @@ const styles = {
 
 const muiTheme = getMuiTheme({
   palette: {
-	primary1Color: lightGreenA700,
+	primary1Color: green500,
   },
 });
 
@@ -63,11 +64,14 @@ class Main extends React.Component {
 		<div style={styles.container}>
 			<div style={styles.header}>
 				<AppBar
-				title="SmartHome"
-				conClassNameRight="muidocs-icon-navigation-expand-more"/>
+				title="SmartHome"/>
 			</div>
 			<div>
-
+				<HouseHoldCard
+				title="Naam card (bv Huis van Bart: Vaatwasmachine)"
+				subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
+				prev="vorige week"
+				next="volgende week"/>
 			</div>
 		</div>
 	  </MuiThemeProvider>
