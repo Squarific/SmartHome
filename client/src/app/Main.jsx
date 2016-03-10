@@ -103,7 +103,7 @@ class Main extends React.Component {
 					anchorEl={this.state.anchorEl}
 					anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
 					targetOrigin={{horizontal: 'right', vertical: 'top'}}
-					onRequestClose={this.handleRequestLoginClose}>
+					onRequestClose={this.handleLoginRequestClose}>
 					<div style={styles.popover}>
 						<RegisterForm/>
 					</div>
