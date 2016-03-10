@@ -5,11 +5,10 @@ SmartHome made for the course Programming Project Databases at the University of
 ###Dependencies
 
     sudo apt-get install nodejs nodejs-legacy npm python3 python3-pip
-    sudo npm -g install bower ember-cli
 
 ###Server
 
-    pip install django djangorestframework==3.2.0 markdown django-filter djangorestframework-jsonapi==2.0.0-beta.2 django-rest-auth[with_social] django-cors-headers
+    sudo pip install django djangorestframework==3.2.0 markdown django-filter djangorestframework-jsonapi==2.0.0-beta.2 django-rest-auth[with_social] django-cors-headers
 
 ###Client
 
@@ -17,6 +16,8 @@ SmartHome made for the course Programming Project Databases at the University of
 
 ##Run instructions
 ###Server
+
+Your database should run on localhost and have the user smarthome with pass smarthome
 
     cd server
     ./manage.py migrate                 # create database tables
