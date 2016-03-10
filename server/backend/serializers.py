@@ -24,4 +24,10 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ('name', 'description')
 
+class DataSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = SensorData
+        fields = ('sensor', 'timestamp', 'usage', 'n_measurements')
+
 

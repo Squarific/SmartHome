@@ -132,6 +132,7 @@ class UserDataList(APIView):
         content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(data, lambda x: x['home_name'])]
         return Response(content)
 
+
 class RecentUserDataList(UserDataList):
     def get_class(self):
         return RecentData
@@ -156,7 +157,6 @@ class MonthlyUserDataList(UserDataList):
         return to_date - relativedelta(years=1)
 
 
-
 class YearlyUserDataList(UserDataList):
     def get_class(self):
         return YearlyData
@@ -164,9 +164,17 @@ class YearlyUserDataList(UserDataList):
     def get_from_date(self, to_date):
         return datetime.min
 
+
 class HomeDataList(APIView):
     def get(self, request, home_id, format=None):
         from_date = datetime.now() - relativedelta(years=1)
         recent_data = RecentData.objects.filter(sensor__home_id=home_id, timestamp__gte=from_date).annotate(sensor_name=F('sensor__name')).values('sensor_id', 'sensor_name', 'timestamp').annotate(usage=Sum('usage')).order_by('sensor_name', 'timestamp')
         content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(recent_data, lambda x: x['sensor_name'])]
         return Response(content)
+
+    def put(self, request, home_id, format=None):
+        serializer = DataSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
