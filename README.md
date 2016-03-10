@@ -17,6 +17,8 @@ SmartHome made for the course Programming Project Databases at the University of
 ##Run instructions
 ###Server
 
+Your database should run on localhost and have the user smarthome with pass smarthome
+
     cd server
     ./manage.py migrate                 # create database tables
     ./manage.py loaddata initial_data   # load users and tags
