@@ -105,7 +105,7 @@ class Main extends React.Component {
 					targetOrigin={{horizontal: 'right', vertical: 'top'}}
 					onRequestClose={this.handleRequestLoginClose}>
 					<div style={styles.popover}>
-						<RaisedButton primary={true} label="Here is a button"/>
+						<RegisterForm/>
 					</div>
 				</Popover>
 
