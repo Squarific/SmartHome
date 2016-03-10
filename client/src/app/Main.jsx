@@ -15,6 +15,8 @@ import HouseHoldCard from './HouseHoldCard';
 import LeftNav from 'material-ui/lib/left-nav';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
+import {RegisterForm, LoginForm} from './Authentication'
+//import GraphCard from './Graphing';
 
 //-------------------------------------------------------------
 
