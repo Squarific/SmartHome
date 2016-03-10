@@ -14,6 +14,7 @@ import AppBar from 'material-ui/lib/app-bar';
 import HouseHoldCard from './HouseHoldCard';
 import LeftNav from 'material-ui/lib/left-nav';
 import MenuItem from 'material-ui/lib/menus/menu-item';
+import Popover from 'material-ui/lib/popover/popover';
 
 //-------------------------------------------------------------
 
@@ -25,6 +26,9 @@ const styles = {
 	},
 	loginButton: {
 		color: green500,
+	},
+	popover: {
+		padding: 20,
 	},
 };
 
@@ -41,9 +45,12 @@ class Main extends React.Component {
 		super(props, context);
 		this.handleNavRequestClose = this.handleNavRequestClose.bind(this);
 		this.handleNavTouchTap = this.handleNavTouchTap.bind(this);
+		this.handleLoginRequestClose = this.handleLoginRequestClose.bind(this);
+		this.handleLoginTouchTap = this.handleLoginTouchTap.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
+		  loginOpen: false,
 		};
 	}
 
@@ -59,6 +66,19 @@ class Main extends React.Component {
 		});
 	}
 
+	handleLoginRequestClose() {
+		this.setState({
+		  loginOpen: false,
+		});
+	}
+
+	handleLoginTouchTap(event) {
+		this.setState({
+		  loginOpen: true,
+		  anchorEl: event.currentTarget,
+		});
+	}
+
 	render() {
 	return (
 		<MuiThemeProvider muiTheme={muiTheme}>
@@ -71,9 +91,21 @@ class Main extends React.Component {
 					backgroundColor={"#FFFFFF"}
 					hoverColor={"#DDDDDD"}
 					rippleColor={"#BBBBBB"}
-					label="Log in"/>
+					label="Log in"
+					onTouchTap={this.handleLoginTouchTap}/>
 				}
 				onLeftIconButtonTouchTap={this.handleNavTouchTap}/>
+
+				<Popover
+					open={this.state.loginOpen}
+					anchorEl={this.state.anchorEl}
+					anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+					targetOrigin={{horizontal: 'right', vertical: 'top'}}
+					onRequestClose={this.handleRequestLoginClose}>
+					<div style={styles.popover}>
+						<RaisedButton primary={true} label="Here is a button"/>
+					</div>
+				</Popover>
 
 				<LeftNav open={this.state.navbarOpen} style={styles.leftnav}>
 					<MenuItem onTouchTap={this.handleNavRequestClose}>Close</MenuItem>
