@@ -6,65 +6,80 @@
 import React from 'react';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
-import {green500} from 'material-ui/lib/styles/colors';
+import {green500, green300, green100} from 'material-ui/lib/styles/colors';
 import FlatButton from 'material-ui/lib/flat-button';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 import AppBar from 'material-ui/lib/app-bar';
-import HouseHoldCard from './HouseHoldCard'
+import HouseHoldCard from './HouseHoldCard';
+import LeftNav from 'material-ui/lib/left-nav';
+import MenuItem from 'material-ui/lib/menus/menu-item';
 
+//-------------------------------------------------------------
 
 const styles = {
-  container: {
-	textAlign: 'center',
-  },
-  header: {
-  },
+	container: {
+		textAlign: 'center',
+	},
+	header: {
+	},
+	loginButton: {
+		color: green500,
+	},
 };
 
 const muiTheme = getMuiTheme({
-  palette: {
-	primary1Color: green500,
-  },
+	palette: {
+		primary1Color: green500,
+		primary2Color: green300,
+		primary3Color: green100,
+	},
 });
 
 class Main extends React.Component {
-  constructor(props, context) {
-	super(props, context);
-	this.handleRequestClose = this.handleRequestClose.bind(this);
-	this.handleTouchTap = this.handleTouchTap.bind(this);
+	constructor(props, context) {
+		super(props, context);
+		this.handleNavRequestClose = this.handleNavRequestClose.bind(this);
+		this.handleNavTouchTap = this.handleNavTouchTap.bind(this);
 
-	this.state = {
-	  open: false,
-	};
-  }
+		this.state = {
+		  navbarOpen: false,
+		};
+	}
 
-  handleRequestClose() {
-	this.setState({
-	  open: false,
-	});
-  }
+	handleNavRequestClose() {
+		this.setState({
+		  navbarOpen: false,
+		});
+	}
 
-  handleTouchTap() {
-	this.setState({
-	  open: true,
-	});
-  }
+	handleNavTouchTap() {
+		this.setState({
+		  navbarOpen: true,
+		});
+	}
 
-  render() {
-	const standardActions = (
-	  <FlatButton
-		label="Okey"
-		secondary={true}
-		onTouchTap={this.handleRequestClose}/>
-	);
-
+	render() {
 	return (
-	  <MuiThemeProvider muiTheme={muiTheme}>
+		<MuiThemeProvider muiTheme={muiTheme}>
 		<div style={styles.container}>
 			<div style={styles.header}>
 				<AppBar
-				title="SmartHome"/>
+				title="SmartHome"
+				iconElementRight={
+					<FlatButton style={styles.loginButton}
+					backgroundColor={"#FFFFFF"}
+					hoverColor={"#DDDDDD"}
+					rippleColor={"#BBBBBB"}
+					label="Log in"/>
+				}
+				onLeftIconButtonTouchTap={this.handleNavTouchTap}/>
+
+				<LeftNav open={this.state.navbarOpen} style={styles.leftnav}>
+					<MenuItem onTouchTap={this.handleNavRequestClose}>Close</MenuItem>
+					<MenuItem>...</MenuItem>
+					<MenuItem>...</MenuItem>
+				</LeftNav>
 			</div>
 			<div>
 				<HouseHoldCard
@@ -74,9 +89,9 @@ class Main extends React.Component {
 				next="volgende week"/>
 			</div>
 		</div>
-	  </MuiThemeProvider>
+		</MuiThemeProvider>
 	);
-  }
+	}
 }
 
 export default Main;
