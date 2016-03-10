@@ -10,18 +10,17 @@ import TextField from 'material-ui/lib/text-field';
 /*
 	Register component
 */
-
-var RegisterForm = React.createClass({
+const RegisterForm = React.createClass({
 	render: function () {
 		return (
 			<form className="register">
 				<label for="username">Username</label>
-				<TextField hintText="Username">
+				<TextField hintText="Username" />
 				<label for="password">Password</label>
-				<TextField hintText="Password">
+				<TextField type="password" hintText="Password" />
 			</form>
 		);
-	}
+	},
 });
 
 
@@ -29,20 +28,20 @@ var RegisterForm = React.createClass({
 	Login component
 */
 
-var LoginForm = React.createClass({
+const LoginForm = React.createClass({
 	render: function () {
 		return (
 			<form className="register">
 				<label for="username">Username</label>
-				<TextField hintText="Username">
+				<TextField hintText="Username" />
 				<label for="password">Password</label>
-				<TextField hintText="Password">
+				<TextField type="password" hintText="Password" />
 			</form>
 		);
-	}
+	},
 });
 
 module.exports = {
 	RegisterForm: RegisterForm,
-	LoginForm: LoginForm
+	LoginForm: LoginForm,
 };
