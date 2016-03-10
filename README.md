@@ -4,7 +4,7 @@ SmartHome made for the course Programming Project Databases at the University of
 ##Build instructions
 ###Dependencies
 
-    sudo apt-get install nodejs nodejs-legacy npm python3 python3-pip
+    sudo apt-get install nodejs nodejs-legacy npm python python-pip python-mysqldb
 
 ###Server
 
