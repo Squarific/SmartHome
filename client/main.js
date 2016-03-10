@@ -11,12 +11,12 @@
 var RegisterForm = React.createClass({
 	render: function () {
 		return (
-			<div className="registerForm">
+			<form className="register">
 				<label for="username">Username</label>
 				<input type="text" name="username" placeholder="Username">
 				<label for="password">Password</label>
 				<input type="text" name="password" placeholder="Password">
-			</div>
+			</form>
 		);
 	}
 });
@@ -25,6 +25,19 @@ var RegisterForm = React.createClass({
 /*
 	Login component
 */
+
+var LoginForm = React.createClass({
+	render: function () {
+		return (
+			<form className="login">
+				<label for="username">Username</label>
+				<input type="text" name="username" placeholder="Username">
+				<label for="password">Password</label>
+				<input type="text" name="password" placeholder="Password">
+			</form>
+		);
+	}
+});
 
 
 
