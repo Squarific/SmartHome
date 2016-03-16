@@ -89,18 +89,18 @@ WSGI_APPLICATION = 'SmartHome.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'smarthome',
-        'USER': 'smarthome',
-        'PASSWORD': 'smarthome',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
     #'default': {
-    #    'ENGINE': 'django.db.backends.sqlite3',
-    #    'NAME': 'database.sqlite3',
+    #    'ENGINE': 'django.db.backends.mysql',
+    #    'NAME': 'smarthome',
+    #    'USER': 'smarthome',
+    #    'PASSWORD': 'smarthome',
+    #    'HOST': 'localhost',
+    #    'PORT': '5432',
     #}
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'database.sqlite3',
+    }
 }
 
 
