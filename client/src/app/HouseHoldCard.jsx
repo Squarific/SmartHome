@@ -9,19 +9,19 @@ import CardText from 'material-ui/lib/card/card-text';
 import {GraphCard} from './Graphing';
 
 const HouseHoldCard = (args) => (
-  <Card>
+	<Card>
 	<CardHeader
 		title={args.title}
 		subtitle={args.subtitle}/>
 	<CardMedia>
 		<GraphCard title="Wasmachine"
-                   subtitle="Verbruik"
-                   data={args.data}
-                   graphType="Bar"
-                   graphTypes={["Line", "Bar", "Radar"]}>
+				subtitle="Verbruik"
+				data={args.data}
+				graphType="Bar"
+				graphTypes={["Line", "Bar", "Radar"]}>
 			<div>Test lol</div>
 			<div>Omg xD</div>
-        </GraphCard>
+		</GraphCard>
 	</CardMedia>
 	<CardText>
 
@@ -30,7 +30,7 @@ const HouseHoldCard = (args) => (
 		<FlatButton label={args.prev} />
 		<FlatButton label={args.next} />
 	</CardActions>
-  </Card>
+	</Card>	
 );
 
 export default HouseHoldCard;

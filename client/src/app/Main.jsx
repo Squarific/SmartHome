@@ -131,7 +131,7 @@ class Main extends React.Component {
 					targetOrigin={{horizontal: 'right', vertical: 'top'}}
 					onRequestClose={this.handleLoginRequestClose}>
 					<div style={styles.popover}>
-						<RegisterForm/>
+						<LoginForm/>
 					</div>
 				</Popover>
 

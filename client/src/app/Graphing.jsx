@@ -26,6 +26,12 @@ import CardText from 'material-ui/lib/card/card-text';
 	}
 */
 
+const styles = {
+	chart: {
+		padding: 20,
+	},
+}
+
 const GraphCard = React.createClass({
 	getInitialState: function () {
 		const value = this.props.graphType || "Line";
@@ -56,25 +62,15 @@ const GraphCard = React.createClass({
 			);
 
 		return (
-			<Card>
-				<CardHeader
-					title={this.props.title || "Graph"}
-					subtitle={this.props.subtitle || ""}/>
+			<div style={styles.chart}>
 				{selectField}
 				<CardMedia>
 					<Chart data={this.props.data}/>
 				</CardMedia>
-				<CardText>
-					{this.props.children}
-				</CardText>
-			</Card>
+			</div>
 		)
 	},
 });
-
-/*
-
-					*/
 
 module.exports = {
 	GraphCard: GraphCard,
