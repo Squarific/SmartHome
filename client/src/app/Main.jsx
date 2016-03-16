@@ -33,7 +33,11 @@ const styles = {
 		padding: 20,
 	},
 	body: {
-		margin: 20,
+		marginLeft: "auto",
+		marginRight: "auto",
+		marginTop: 20,
+		marginBottom: 20,
+		maxWidth: 1024,
 	},
 };
 
@@ -164,7 +168,7 @@ class Main extends React.Component {
 					targetOrigin={{horizontal: 'right', vertical: 'top'}}
 					onRequestClose={this.handleLoginRequestClose}>
 					<div style={styles.popover}>
-						<RegisterForm/>
+						<LoginForm/>
 					</div>
 				</Popover>
 
