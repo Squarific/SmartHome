@@ -14,9 +14,9 @@ const RegisterForm = React.createClass({
 	render: function () {
 		return (
 			<form className="register">
-				<label for="username">Username</label>
+				<label htmlFor="username">Username</label>
 				<TextField hintText="Username" />
-				<label for="password">Password</label>
+				<label htmlFor="password">Password</label>
 				<TextField type="password" hintText="Password" />
 			</form>
 		);
@@ -26,15 +26,48 @@ const RegisterForm = React.createClass({
 
 /*
 	Login component
+
+	Props: {
+		restClient: new Rest()
+	}
 */
 
 const LoginForm = React.createClass({
+	handleLogin: function () {
+		this.props.restClient.request("GET", ["rest-auth"], {
+			username,
+			password,
+		}, function (data) {
+			if (data.error) {
+				this.setState({error: data.error});
+			} else {
+				this.setState({success: true});
+			}
+		});
+	},
 	render: function () {
+		if (this.state.success) {
+			return (<div>We are logged in but I am to lazy to already implement something here!</div>);
+		}
+
+		let error;
+		if (this.state.error) {
+			error = (
+				<div>
+					Error: 
+					{this.state.error}
+					<br/>
+				</div>
+			);
+		}
+
 		return (
-			<form className="register">
-				<label for="username">Username</label>
+			<form className="login">
+				{error}
+				<label htmlFor="username">Username</label>
 				<TextField hintText="Username" />
-				<label for="password">Password</label>
+				<br/>
+				<label htmlFor="password">Password</label>
 				<TextField type="password" hintText="Password" />
 			</form>
 		);

@@ -11,10 +11,11 @@ import FlatButton from 'material-ui/lib/flat-button';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 
-import {RegisterForm, LoginForm} from './Authentication'
+import {RegisterForm, LoginForm} from './Authentication';
 import AppBar from 'material-ui/lib/app-bar';
 import HouseHoldCard from './HouseHoldCard';
 import {GraphCard} from './Graphing';
+//-------------------------------------------------------------
 
 const styles = {
   container: {
