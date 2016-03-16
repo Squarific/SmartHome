@@ -1,31 +1,13 @@
 import React from 'react';
 import Charts from 'react-chartjs';
 
-const Bar = Charts.Bar;
-const Doughnut = Charts.Doughnut;
-const Line = Charts.Line;
-const Pie = Charts.Pie;
-const PolarArea = Charts.PolarArea;
-const Radar = Charts.Radar;
-
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 
-export default class SelectFieldExampleSimple extends React.Component {
-
-  constructor(props) {
-	super(props);
-	this.state = {value: 2};
-  }
-
-  handleChange = (event, index, value) => this.setState({value});
-
-  render() {
-	return (
-	  
-	);
-  }
-}
+import Card from 'material-ui/lib/card/card';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardMedia from 'material-ui/lib/card/card-media';
+import CardText from 'material-ui/lib/card/card-text';
 
 /*
 	######################################
@@ -34,46 +16,65 @@ export default class SelectFieldExampleSimple extends React.Component {
 */
 
 /*
-	Graph cards
+	Graph cards with children
+	Can have a title and a subtitle
 
 	Props: {
-		data: {
-			
-		}
+		data: GRAPHJS data,
+		graphType: "Line", //Current graphtype
+		graphTypes: ["Line", "Bar", "Doughnut", "Pie", "PolarArea", "Radar"] //Userselectable graph types
 	}
 */
 
 const GraphCard = React.createClass({
-  render: function() {
-	return (
-		<Card>
-			<CardHeader
-				title={this.props.title || "Graph"}
-				subtitle={this.props.subtitle || ""}/>
-			<CardMedia>
-				<LineChart data={this.props.data}/>
-			</CardMedia>
-			<div>
+	getInitialState: function () {
+		const value = this.props.graphType || "Line";
+		return {value};
+	},
+	handleChange: function (event, index, value) {
+		this.setState({value});
+	},
+	render: function() {
+		const Chart = Charts[this.state.value];
+
+		// Create menuoptions if we have multiple graphtypes
+		const MenuItems = [];
+		const graphTypes = this.props.graphTypes || [];
+		for (let k = 0; k < graphTypes.length; k++) {
+			MenuItems.push((
+				<MenuItem value={graphTypes[k]} primaryText={graphTypes[k]}/>
+			));
+		}
+
+		// Create selectField
+		let selectField;
+		if (MenuItems.length !== 0)
+			selectField = (
 				<SelectField value={this.state.value} onChange={this.handleChange}>
-					<MenuItem value={1} primaryText="Never"/>
-					<MenuItem value={2} primaryText="Every Night"/>
-					<MenuItem value={3} primaryText="Weeknights"/>
-					<MenuItem value={4} primaryText="Weekends"/>
-					<MenuItem value={5} primaryText="Weekly"/>
+					{MenuItems}
 				</SelectField>
-				<br />
-				<SelectField value={1} disabled={true}>
-					<MenuItem value={1} primaryText="Never"/>
-					<MenuItem value={2} primaryText="Every Night"/>
-				</SelectField>
-			  </div>
-			<CardText>
-				{this.props.children}
-			</CardText>
-		</Card>
-	)
-  },
+			);
+
+		return (
+			<Card>
+				<CardHeader
+					title={this.props.title || "Graph"}
+					subtitle={this.props.subtitle || ""}/>
+				{selectField}
+				<CardMedia>
+					<Chart data={this.props.data}/>
+				</CardMedia>
+				<CardText>
+					{this.props.children}
+				</CardText>
+			</Card>
+		)
+	},
 });
+
+/*
+
+					*/
 
 module.exports = {
 	GraphCard: GraphCard,
