@@ -7,7 +7,7 @@ class HomeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Home
-        fields = ('owner', 'users')
+        fields = ('name', 'owner', 'users', 'sensor_set')
 
 
 class SensorSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class SensorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sensor
-        fields = ('home', 'tags', 'power_unit')
+        fields = ('name', 'home', 'description', 'tags', 'power_unit')
 
 class TagSerializer(serializers.ModelSerializer):
 
