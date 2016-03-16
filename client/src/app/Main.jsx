@@ -33,7 +33,11 @@ const styles = {
 		padding: 20,
 	},
 	body: {
-		margin: 20,
+		marginLeft: "auto",
+		marginRight: "auto",
+		marginTop: 20,
+		marginBottom: 20,
+		maxWidth: 1024,
 	},
 };
 
