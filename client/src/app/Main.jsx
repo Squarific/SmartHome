@@ -52,10 +52,13 @@ class Main extends React.Component {
 		this.handleNavTouchTap = this.handleNavTouchTap.bind(this);
 		this.handleLoginRequestClose = this.handleLoginRequestClose.bind(this);
 		this.handleLoginTouchTap = this.handleLoginTouchTap.bind(this);
+		this.handleCreateRequest = this.handleCreateRequest.bind(this);
+		this.handleCreateClose = this.handleCreateClose.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
 		  loginOpen: false,
+		  createOpen: false,
 		};
 	}
 
@@ -84,6 +87,20 @@ class Main extends React.Component {
 		});
 	}
 
+	handleCreateRequest(event) {
+		this.setState({
+			createOpen: true,
+			navbarOpen: false,
+			anchorEl: event.currentTarget,
+		});
+	}
+
+	handleCreateClose() {
+		this.setState({
+			createOpen: false,
+		});
+	}
+
 	render() {
 
 	const data = {
@@ -107,6 +124,22 @@ class Main extends React.Component {
           },
       ],
   	};
+
+	const actions = [
+		  <FlatButton
+		    label="Cancel"
+		    secondary={true}
+		    onTouchTap={this.handleCreateClose}
+		  />,
+		  <FlatButton
+		    label="Submit"
+		    primary={true}
+		    keyboardFocused={true}
+		    onTouchTap={this.handleCreateClose}
+		  />,
+		];
+
+	
 
 	return (
 		<MuiThemeProvider muiTheme={muiTheme}>
@@ -140,7 +173,7 @@ class Main extends React.Component {
 				<LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
 					<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose} />
 					<MenuItem>...</MenuItem>
-					<MenuItem>...</MenuItem>
+					<MenuItem onTouchTap={this.handleCreateRequest}>Create HouseHold</MenuItem>
 				</LeftNav>
 			</div>
 			<div style={styles.body}>
@@ -150,6 +183,15 @@ class Main extends React.Component {
 				prev="vorige week"
 				next="volgende week"
 				data={data}/>
+				<Dialog
+					title="Create HouseHold"
+					open={this.state.createOpen}
+					onRequestClose={this.handleCreateClose}
+					actions={actions}>
+
+					just close it
+          			
+				</Dialog>
 			</div>
     	<div>
       </div>
