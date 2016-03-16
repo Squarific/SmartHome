@@ -6,6 +6,7 @@ import CardMedia from 'material-ui/lib/card/card-media';
 import CardTitle from 'material-ui/lib/card/card-title';
 import FlatButton from 'material-ui/lib/flat-button';
 import CardText from 'material-ui/lib/card/card-text';
+import {GraphCard} from './Graphing';
 
 const HouseHoldCard = (args) => (
   <Card>
@@ -13,7 +14,14 @@ const HouseHoldCard = (args) => (
 		title={args.title}
 		subtitle={args.subtitle}/>
 	<CardMedia>
-		<img src="http://lorempixel.com/600/337/nature/"/>
+		<GraphCard title="Wasmachine"
+                   subtitle="Verbruik"
+                   data={args.data}
+                   graphType="Bar"
+                   graphTypes={["Line", "Bar", "Radar"]}>
+			<div>Test lol</div>
+			<div>Omg xD</div>
+        </GraphCard>
 	</CardMedia>
 	<CardText>
 

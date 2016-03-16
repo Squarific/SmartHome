@@ -32,6 +32,9 @@ const styles = {
 	popover: {
 		padding: 20,
 	},
+	body: {
+		margin: 20,
+	},
 };
 
 const muiTheme = getMuiTheme({
@@ -140,22 +143,15 @@ class Main extends React.Component {
 					<MenuItem>...</MenuItem>
 				</LeftNav>
 			</div>
-			<div>
+			<div style={styles.body}>
 				<HouseHoldCard
 				title="Naam card (bv Huis van Bart: Vaatwasmachine)"
 				subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
 				prev="vorige week"
-				next="volgende week"/>
+				next="volgende week"
+				data={data}/>
 			</div>
-      <div>
-        <GraphCard title="Wasmachine"
-                   subtitle="Verbruik"
-                   data={data}
-                   graphType="Bar"
-                   graphTypes={["Line", "Bar", "Radar"]}>
-          <div>Test lol</div>
-          <div>Omg xD</div>
-        </GraphCard>
+    	<div>
       </div>
 		</div>
 		</MuiThemeProvider>
