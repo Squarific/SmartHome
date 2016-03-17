@@ -56,10 +56,13 @@ class Main extends React.Component {
 		this.handleNavTouchTap = this.handleNavTouchTap.bind(this);
 		this.handleLoginRequestClose = this.handleLoginRequestClose.bind(this);
 		this.handleLoginTouchTap = this.handleLoginTouchTap.bind(this);
+		this.handleCreateHouseHoldRequest = this.handleCreateHouseHoldRequest.bind(this);
+		this.handleCreateHouseHoldClose = this.handleCreateHouseHoldClose.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
 		  loginOpen: false,
+		  createHouseHoldOpen: false,
 		};
 	}
 
@@ -88,80 +91,113 @@ class Main extends React.Component {
 		});
 	}
 
+	handleCreateHouseHoldRequest(event) {
+		this.setState({
+			createHouseHoldOpen: true,
+			navbarOpen: false,
+			anchorEl: event.currentTarget,
+		});
+	}
+
+	handleCreateHouseHoldClose() {
+		this.setState({
+			createHouseHoldOpen: false,
+		});
+	}
+
 	render() {
+		const data = {
+			labels: ["January", "February", "March", "April", "May", "June", "July"],
+			datasets: [
+				{
+					label: "My First dataset",
+					fillColor: "rgba(220,220,220,0.5)",
+					strokeColor: "rgba(220,220,220,0.8)",
+					highlightFill: "rgba(220,220,220,0.75)",
+					highlightStroke: "rgba(220,220,220,1)",
+					data: [65, 59, 80, 81, 56, 55, 40],
+				},
+				{
+					label: "My Second dataset",
+					fillColor: "rgba(76,175,80,0.5)",
+					strokeColor: "rgba(151,187,205,0.8)",
+					highlightFill: "rgba(151,187,205,0.75)",
+					highlightStroke: "rgba(151,187,205,1)",
+					data: [28, 48, 40, 19, 86, 27, 90],
+				},
+			],
+		};
 
-	const data = {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [
-          {
-              label: "My First dataset",
-              fillColor: "rgba(220,220,220,0.5)",
-              strokeColor: "rgba(220,220,220,0.8)",
-              highlightFill: "rgba(220,220,220,0.75)",
-              highlightStroke: "rgba(220,220,220,1)",
-              data: [65, 59, 80, 81, 56, 55, 40],
-          },
-          {
-              label: "My Second dataset",
-              fillColor: "rgba(76,175,80,0.5)",
-              strokeColor: "rgba(151,187,205,0.8)",
-              highlightFill: "rgba(151,187,205,0.75)",
-              highlightStroke: "rgba(151,187,205,1)",
-              data: [28, 48, 40, 19, 86, 27, 90],
-          },
-      ],
-  	};
+		const actions = [
+			<FlatButton
+			label="Cancel"
+			secondary={true}
+			onTouchTap={this.handleCreateClose}
+			/>,
+			<FlatButton
+			label="Submit"
+			primary={true}
+			keyboardFocused={true}
+			onTouchTap={this.handleCreateClose}
+			/>,
+		];
 
-	return (
-		<MuiThemeProvider muiTheme={muiTheme}>
-		<div style={styles.container}>
-			<div style={styles.header}>
-				<AppBar
-				title="SmartHome"
-				iconElementRight={
-					<FlatButton style={styles.loginButton}
-					backgroundColor={"#FFFFFF"}
-					hoverColor={"#DDDDDD"}
-					rippleColor={"#BBBBBB"}
-					label="Log in"
-					onTouchTap={this.handleLoginTouchTap}/>
-				}
-				onLeftIconButtonTouchTap={this.handleNavTouchTap}/>
+		return (
+			<MuiThemeProvider muiTheme={muiTheme}>
+			<div style={styles.container}>
+				<div style={styles.header}>
+					<AppBar
+					title="SmartHome"
+					iconElementRight={
+						<FlatButton style={styles.loginButton}
+						backgroundColor={"#FFFFFF"}
+						hoverColor={"#DDDDDD"}
+						rippleColor={"#BBBBBB"}
+						label="Log in"
+						onTouchTap={this.handleLoginTouchTap}/>
+					}
+					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>
 
-				<Popover
-					open={this.state.loginOpen}
-					anchorEl={this.state.anchorEl}
-					anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-					targetOrigin={{horizontal: 'right', vertical: 'top'}}
-					onRequestClose={this.handleLoginRequestClose}>
-					<div style={styles.popover}>
-						<LoginForm/>
-					</div>
-				</Popover>
+					<Popover
+						open={this.state.loginOpen}
+						anchorEl={this.state.anchorEl}
+						anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+						targetOrigin={{horizontal: 'right', vertical: 'top'}}
+						onRequestClose={this.handleLoginRequestClose}>
+						<div style={styles.popover}>
+							<LoginForm/>
+						</div>
+					</Popover>				
 
-				
+					<LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
+						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose} />
+						<MenuItem>...</MenuItem>
+						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create HouseHold</MenuItem>
+					</LeftNav>
+				</div>
+				<div style={styles.body}>
+					<HouseHoldCard
+					title="Naam card (bv Huis van Bart: Vaatwasmachine)"
+					subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
+					prev="vorige week"
+					next="volgende week"
+					data={data}/>
 
-				<LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
-					<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose} />
-					<MenuItem>...</MenuItem>
-					<MenuItem>...</MenuItem>
-				</LeftNav>
+					<Dialog
+						title="Create HouseHold"
+						open={this.state.createHouseHoldOpen}
+						onRequestClose={this.handleCreateHouseHoldClose}
+						actions={actions}>
+
+						just close it
+					</Dialog>
+				</div>
 			</div>
-			<div style={styles.body}>
-				<HouseHoldCard
-				title="Naam card (bv Huis van Bart: Vaatwasmachine)"
-				subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
-				prev="vorige week"
-				next="volgende week"
-				data={data}/>
-			</div>
-    	<div>
-      </div>
-		</div>
-		</MuiThemeProvider>
-	);
+			</MuiThemeProvider>
+		);
 	}
 }
+
 /*
   data={data}
 */
