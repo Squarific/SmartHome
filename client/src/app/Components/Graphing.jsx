@@ -48,7 +48,7 @@ const GraphCard = React.createClass({
 		const graphTypes = this.props.graphTypes || [];
 		for (let k = 0; k < graphTypes.length; k++) {
 			MenuItems.push((
-				<MenuItem value={graphTypes[k]} primaryText={graphTypes[k]}/>
+				<MenuItem value={graphTypes[k]} primaryText={graphTypes[k]} key={k}/>
 			));
 		}
 

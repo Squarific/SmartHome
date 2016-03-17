@@ -6,7 +6,7 @@
 import React from 'react';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
-import {green500, green300, green100} from 'material-ui/lib/styles/colors';
+import {green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
 import FlatButton from 'material-ui/lib/flat-button';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
@@ -39,6 +39,15 @@ const styles = {
 		marginBottom: 20,
 		maxWidth: 1024,
 	},
+	cancelButton: {
+		color: grey500,
+	},
+	submitButton: {
+		color: green500,
+	},
+	horizontalLine: {
+		margin: 10,
+	},
 };
 
 const muiTheme = getMuiTheme({
@@ -58,11 +67,14 @@ class Main extends React.Component {
 		this.handleLoginTouchTap = this.handleLoginTouchTap.bind(this);
 		this.handleCreateHouseHoldRequest = this.handleCreateHouseHoldRequest.bind(this);
 		this.handleCreateHouseHoldClose = this.handleCreateHouseHoldClose.bind(this);
+		this.handleCreateSensorRequest = this.handleCreateSensorRequest.bind(this);
+		this.handleCreateSensorClose = this.handleCreateSensorClose.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
 		  loginOpen: false,
 		  createHouseHoldOpen: false,
+		  createSensorOpen: false,
 		};
 	}
 
@@ -105,6 +117,20 @@ class Main extends React.Component {
 		});
 	}
 
+	handleCreateSensorRequest(event) {
+		this.setState({
+			createSensorOpen: true,
+			navbarOpen: false,
+			anchorEl: event.currentTarget,
+		});
+	}
+
+	handleCreateSensorClose() {
+		this.setState({
+			createSensorOpen: false,
+		});
+	}
+
 	render() {
 		const data = {
 			labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -128,18 +154,30 @@ class Main extends React.Component {
 			],
 		};
 
-		const actions = [
-			<FlatButton
-			label="Cancel"
-			secondary={true}
-			onTouchTap={this.handleCreateClose}
-			/>,
-			<FlatButton
-			label="Submit"
-			primary={true}
-			keyboardFocused={true}
-			onTouchTap={this.handleCreateClose}
-			/>,
+		const houseHoldActions = [
+			<FlatButton style={styles.cancelButton}
+				label="Cancel"
+				secondary={true}
+				onTouchTap={this.handleCreateHouseHoldClose}/>,
+
+			<FlatButton style={styles.submitButton}
+				label="Submit"
+				primary={true}
+				keyboardFocused={true}
+				onTouchTap={this.handleCreateHouseHoldClose}/>,
+		];
+
+		const sensorActions = [
+			<FlatButton style={styles.cancelButton}
+				label="Cancel"
+				secondary={true}
+				onTouchTap={this.handleCreateSensorClose}/>,
+
+			<FlatButton style={styles.submitButton}
+				label="Submit"
+				primary={true}
+				keyboardFocused={true}
+				onTouchTap={this.handleCreateSensorClose}/>,
 		];
 
 		return (
@@ -171,8 +209,11 @@ class Main extends React.Component {
 
 					<LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
 						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose} />
-						<MenuItem>...</MenuItem>
-						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create HouseHold</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem>View Households</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
+						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
 					</LeftNav>
 				</div>
 				<div style={styles.body}>
@@ -184,12 +225,21 @@ class Main extends React.Component {
 					data={data}/>
 
 					<Dialog
-						title="Create HouseHold"
+						title="Create Household"
 						open={this.state.createHouseHoldOpen}
 						onRequestClose={this.handleCreateHouseHoldClose}
-						actions={actions}>
+						actions={houseHoldActions}>
 
-						just close it
+						INSERT FORM
+					</Dialog>
+
+					<Dialog
+						title="Create Sensor"
+						open={this.state.createSensorOpen}
+						onRequestClose={this.handleCreateSensorClose}
+						actions={sensorActions}>
+
+						INSERT FORM
 					</Dialog>
 				</div>
 			</div>
