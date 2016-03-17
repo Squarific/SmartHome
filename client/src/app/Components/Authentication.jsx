@@ -1,5 +1,6 @@
 import React from 'react';
 import TextField from 'material-ui/lib/text-field';
+import FlatButton from 'material-ui/lib/flat-button';
 
 /*
 	######################################
@@ -11,14 +12,30 @@ import TextField from 'material-ui/lib/text-field';
 	Register component
 */
 
+const style = {
+	submitButton: {
+		display: "block",
+		width: "100%",
+	},
+	label: {
+		display: "block",
+	},
+}
+
 const RegisterForm = React.createClass({
+	handleRegister: function () {
+		console.log("Register");
+	},
 	render: function () {
 		return (
-			<form className="register">
-				<label for="username">Username</label>
-				<TextField hintText="Username" />
-				<label for="password">Password</label>
-				<TextField type="password" hintText="Password" />
+			<form submit={handleRegister} className="register">
+				<label style={style.label} for="username">Username</label>
+				<TextField hintText="username" />
+				<br/>
+				<label style={style.label} for="password">Password</label>
+				<TextField type="password" hintText="password" />
+				<br/>
+				<FlatButton onTouchStart={this.handleRegister} label="Submit" />
 			</form>
 		);
 	},
@@ -29,14 +46,19 @@ const RegisterForm = React.createClass({
 */
 
 const LoginForm = React.createClass({
+	handleLogin: function () {
+		console.log("Login");
+	},
 	render: function () {
 		return (
-			<form className="register">
-				<label htmlFor="username">Username: </label>
+			<form submit={this.handleLogin} className="login">
+				<label style={style.label} htmlFor="username">Username: </label>
 				<TextField hintText="Username" />
 				<br/>
-				<label htmlFor="password">Password: </label>
+				<label style={style.label} htmlFor="password">Password: </label>
 				<TextField type="password" hintText="Password" />
+				<br/>
+				<FlatButton style={style.submitButton} onclick={this.handleLogin} label="Submit" />
 			</form>
 		);
 	},
