@@ -28,14 +28,17 @@ const RegisterForm = React.createClass({
 	},
 	render: function () {
 		return (
-			<form submit={handleRegister} className="register">
+			<form submit={this.handleRegister} className="register">
 				<label style={style.label} for="username">Username</label>
 				<TextField hintText="username" />
 				<br/>
 				<label style={style.label} for="password">Password</label>
 				<TextField type="password" hintText="password" />
 				<br/>
-				<FlatButton onTouchStart={this.handleRegister} label="Submit" />
+				<label style={style.label} for="password">Password again</label>
+				<TextField type="password" hintText="password again" />
+				<br/>
+				<FlatButton style={style.submitButton} onTouchStart={this.handleRegister} label="Submit" />
 			</form>
 		);
 	},

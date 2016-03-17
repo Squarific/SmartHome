@@ -6,7 +6,7 @@
 import React from 'react';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
-import {green500, green300, green100} from 'material-ui/lib/styles/colors';
+import {green700, green600, green500, green300, green100} from 'material-ui/lib/styles/colors';
 import FlatButton from 'material-ui/lib/flat-button';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
@@ -27,10 +27,11 @@ const styles = {
 	header: {
 	},
 	loginButton: {
-		color: green500,
+		marginLeft: "1em",
+		color: "white",
 	},
 	registerButton: {
-		marginLeft: "2em",
+		color: green500,
 	},
 	popover: {
 		padding: 20,
@@ -58,6 +59,7 @@ class Main extends React.Component {
 		this.handleNavRequestClose = this.handleNavRequestClose.bind(this);
 		this.handleNavTouchTap = this.handleNavTouchTap.bind(this);
 		this.handleLoginRequestClose = this.handleLoginRequestClose.bind(this);
+		this.handleRegisterRequestClose = this.handleRegisterRequestClose.bind(this);
 		this.handleLoginTouchTap = this.handleLoginTouchTap.bind(this);
 		this.handleRegisterTouchTap = this.handleRegisterTouchTap.bind(this);
 		this.handleCreateHouseHoldRequest = this.handleCreateHouseHoldRequest.bind(this);
@@ -167,15 +169,15 @@ class Main extends React.Component {
 					title="SmartHome"
 					iconElementRight={
 						<div>
-							<FlatButton style={styles.loginButton}
+							<FlatButton style={styles.registerButton}
 							backgroundColor={"#FFFFFF"}
 							hoverColor={"#DDDDDD"}
 							rippleColor={"#BBBBBB"}
 							label="Register"
 							onTouchTap={this.handleRegisterTouchTap}/>
-							<FlatButton style={styles.registerButton}
-							backgroundColor={"#FFFFFF"}
-							hoverColor={"#DDDDDD"}
+							<FlatButton style={styles.loginButton}
+							backgroundColor={green600}
+							hoverColor={green700}
 							rippleColor={"#BBBBBB"}
 							label="Log in"
 							onTouchTap={this.handleLoginTouchTap}/>

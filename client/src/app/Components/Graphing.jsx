@@ -41,7 +41,7 @@ const GraphCard = React.createClass({
 		this.setState({value});
 	},
 	handleResize: function (event) {
-		this.forceUpdate();
+		this.setState({lastResize: Date.now()});
 	},
 	componentDidMount: function () {
 		window.addEventListener("resize", this.handleResize);
@@ -71,7 +71,8 @@ const GraphCard = React.createClass({
 			);
 
 		// Hacky way to force the graph to rerender
-		let OurChart = (<Chart data={this.props.data} key={Date.now()}/>);
+		let key = this.state.lastResize;
+		let OurChart = (<Chart data={this.props.data} key={key}/>);
 
 		return (
 			<div style={styles.chart}>
