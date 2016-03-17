@@ -6,7 +6,7 @@
 import React from 'react';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
-import {green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
+import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
 import FlatButton from 'material-ui/lib/flat-button';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
@@ -16,9 +16,13 @@ import LeftNav from 'material-ui/lib/left-nav';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
+import SelectField from 'material-ui/lib/select-field';
 import {RegisterForm, LoginForm} from './Components/Authentication'
 import {GraphCard} from './Components/Graphing';
 import Divider from 'material-ui/lib/divider';
+import {HouseHoldSelect} from './Components/HouseHoldSelect';
+import {PowerUnitSelect} from './Components/PowerUnitSelect';
+
 
 //-------------------------------------------------------------
 
@@ -29,6 +33,10 @@ const styles = {
 	header: {
 	},
 	loginButton: {
+		marginLeft: "1em",
+		color: "white",
+	},
+	registerButton: {
 		color: green500,
 	},
 	popover: {
@@ -59,6 +67,9 @@ const styles = {
 		minWidth: "10em",
 		display: "inline-block",
 	},
+	dialog: {
+		textAlign: "center",
+	},
 };
 
 const muiTheme = getMuiTheme({
@@ -66,6 +77,7 @@ const muiTheme = getMuiTheme({
 		primary1Color: green500,
 		primary2Color: green300,
 		primary3Color: green100,
+		accent1Color: green500,
 	},
 });
 
@@ -75,7 +87,9 @@ class Main extends React.Component {
 		this.handleNavRequestClose = this.handleNavRequestClose.bind(this);
 		this.handleNavTouchTap = this.handleNavTouchTap.bind(this);
 		this.handleLoginRequestClose = this.handleLoginRequestClose.bind(this);
+		this.handleRegisterRequestClose = this.handleRegisterRequestClose.bind(this);
 		this.handleLoginTouchTap = this.handleLoginTouchTap.bind(this);
+		this.handleRegisterTouchTap = this.handleRegisterTouchTap.bind(this);
 		this.handleCreateHouseHoldRequest = this.handleCreateHouseHoldRequest.bind(this);
 		this.handleCreateHouseHoldClose = this.handleCreateHouseHoldClose.bind(this);
 		this.handleCreateSensorRequest = this.handleCreateSensorRequest.bind(this);
@@ -125,6 +139,23 @@ class Main extends React.Component {
 		this.setState({
 		  loginOpen: true,
 		  anchorEl: event.currentTarget,
+		});
+	}
+
+	/**
+	 * Register
+	 */
+
+	handleRegisterTouchTap (event) {
+		this.setState({
+		  registerOpen: true,
+		  anchorEl: event.currentTarget,
+		});
+	}
+
+	handleRegisterRequestClose() {
+		this.setState({
+		  registerOpen: false,
 		});
 	}
 
@@ -214,6 +245,16 @@ class Main extends React.Component {
 		};
 
 		/**
+		 * Household data (static atm)
+		 */
+
+		const houseHoldList = ["UA", "Thuis", "Den Bakker"];
+		const houseHoldItems = [];
+		for (let i = 0; i < 100; i++) {
+			houseHoldItems.push(<MenuItem value={i} key={i} primaryText={houseHoldList[i]}/>);
+		}
+
+		/**
 		 * Create HouseHold Actions
 		 */
 
@@ -288,12 +329,20 @@ class Main extends React.Component {
 			logInBar = <AppBar
 					title="SmartHome"
 					iconElementRight={
-						<FlatButton style={styles.loginButton}
-						backgroundColor={"#FFFFFF"}
-						hoverColor={"#DDDDDD"}
-						rippleColor={"#BBBBBB"}
-						label="Log in"
-						onTouchTap={this.handleLoginTouchTap}/>
+						<div>
+							<FlatButton style={styles.registerButton}
+							backgroundColor={"#FFFFFF"}
+							hoverColor={"#DDDDDD"}
+							rippleColor={"#BBBBBB"}
+							label="Register"
+							onTouchTap={this.handleRegisterTouchTap}/>
+							<FlatButton style={styles.loginButton}
+							backgroundColor={green600}
+							hoverColor={green700}
+							rippleColor={"#BBBBBB"}
+							label="Log in"
+							onTouchTap={this.handleLoginTouchTap}/>
+						</div>
 					}
 
 					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
@@ -324,7 +373,18 @@ class Main extends React.Component {
 						<div style={styles.popover}>
 							<LoginForm/>
 						</div>
-					</Popover>				
+					</Popover>		
+
+					<Popover
+						open={this.state.registerOpen}
+						anchorEl={this.state.anchorEl}
+						anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+						targetOrigin={{horizontal: 'right', vertical: 'top'}}
+						onRequestClose={this.handleRegisterRequestClose}>
+						<div style={styles.popover}>
+							<RegisterForm/>
+						</div>
+					</Popover>			
 
 					{/* LeftNav */}
 
@@ -339,6 +399,7 @@ class Main extends React.Component {
           					case "Home": return "shit on the homepage";
           					case "blue":  return "#0000FF";
           					default:      return <HouseHoldCard
+
 													title="Naam card (bv Huis van Bart: Vaatwasmachine)"
 													subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
 													prev="vorige week"
@@ -367,13 +428,13 @@ class Main extends React.Component {
 
 					{/* Create HouseHold */}
 
-					<Dialog
+					<Dialog style={styles.dialog}
+
 						title="Create Household"
 						open={this.state.createHouseHoldOpen}
 						onRequestClose={this.handleCreateHouseHoldClose}
 						actions={houseHoldActions}>
 
-						
 
 						<form className="createHouseHold" style={styles.form}>
 							<label style={styles.formLabel} htmlFor="houseHoldName">Name: </label>
@@ -392,7 +453,7 @@ class Main extends React.Component {
 					</Dialog>
 
 					{/* Create Sensor */}
-					<Dialog
+					<Dialog style={styles.dialog}
 						title="Create Sensor"
 						open={this.state.createSensorOpen}
 						onRequestClose={this.handleCreateSensorClose}
@@ -400,13 +461,16 @@ class Main extends React.Component {
 
 						<form className="createSensor" style={styles.form}>
 							<label style={styles.formLabel} htmlFor="sensorName">Name: </label>
-							<TextField hintText="name" />
+							<HouseHoldSelect/>
 							<br/>
 							<label style={styles.formLabel} htmlFor="sensorDescription">Description: </label>
-							<TextField hintText="description" />
+							<TextField hintText="description"
+								multiLine={true}
+								rows={3}
+								rowsMax={3}/>
 							<br/>
 							<label style={styles.formLabel} htmlFor="sensorPowerUnit">Power Unit: </label>
-							<TextField hintText="power unit" />
+							<PowerUnitSelect/>
 							<br/>
 							<label style={styles.formLabel} htmlFor="sensorTags">Tags: </label>
 							<TextField hintText="tags" />
