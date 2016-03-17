@@ -8,3 +8,11 @@ body {
   margin: 0;
   padding: 0;
 }
+
+::selection {
+	background: #cccccc;
+}
+
+textarea:nth-child(3) {
+	height: initial !important;
+}

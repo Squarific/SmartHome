@@ -40,6 +40,15 @@ const GraphCard = React.createClass({
 	handleChange: function (event, index, value) {
 		this.setState({value});
 	},
+	handleResize: function (event) {
+		this.setState({lastResize: Date.now()});
+	},
+	componentDidMount: function () {
+		window.addEventListener("resize", this.handleResize);
+	},
+	componentWillUnmount: function () {
+		window.removeEventListener("resize", this.handleResize);
+	},
 	render: function() {
 		const Chart = Charts[this.state.value];
 
@@ -48,7 +57,7 @@ const GraphCard = React.createClass({
 		const graphTypes = this.props.graphTypes || [];
 		for (let k = 0; k < graphTypes.length; k++) {
 			MenuItems.push((
-				<MenuItem value={graphTypes[k]} primaryText={graphTypes[k]}/>
+				<MenuItem value={graphTypes[k]} primaryText={graphTypes[k]} key={k}/>
 			));
 		}
 
@@ -61,11 +70,15 @@ const GraphCard = React.createClass({
 				</SelectField>
 			);
 
+		// Hacky way to force the graph to rerender
+		let key = this.state.lastResize;
+		let OurChart = (<Chart data={this.props.data} key={key}/>);
+
 		return (
 			<div style={styles.chart}>
 				{selectField}
 				<CardMedia>
-					<Chart data={this.props.data}/>
+					{OurChart}
 				</CardMedia>
 			</div>
 		)
