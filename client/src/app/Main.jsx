@@ -6,7 +6,7 @@
 import React from 'react';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
-import {green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
+import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
 import FlatButton from 'material-ui/lib/flat-button';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
@@ -31,6 +31,10 @@ const styles = {
 	header: {
 	},
 	loginButton: {
+		marginLeft: "1em",
+		color: "white",
+	},
+	registerButton: {
 		color: green500,
 	},
 	popover: {
@@ -81,7 +85,9 @@ class Main extends React.Component {
 		this.handleNavRequestClose = this.handleNavRequestClose.bind(this);
 		this.handleNavTouchTap = this.handleNavTouchTap.bind(this);
 		this.handleLoginRequestClose = this.handleLoginRequestClose.bind(this);
+		this.handleRegisterRequestClose = this.handleRegisterRequestClose.bind(this);
 		this.handleLoginTouchTap = this.handleLoginTouchTap.bind(this);
+		this.handleRegisterTouchTap = this.handleRegisterTouchTap.bind(this);
 		this.handleCreateHouseHoldRequest = this.handleCreateHouseHoldRequest.bind(this);
 		this.handleCreateHouseHoldClose = this.handleCreateHouseHoldClose.bind(this);
 		this.handleCreateSensorRequest = this.handleCreateSensorRequest.bind(this);
@@ -128,6 +134,23 @@ class Main extends React.Component {
 		this.setState({
 		  loginOpen: true,
 		  anchorEl: event.currentTarget,
+		});
+	}
+
+	/**
+	 * Register
+	 */
+
+	handleRegisterTouchTap (event) {
+		this.setState({
+		  registerOpen: true,
+		  anchorEl: event.currentTarget,
+		});
+	}
+
+	handleRegisterRequestClose() {
+		this.setState({
+		  registerOpen: false,
 		});
 	}
 
@@ -257,12 +280,20 @@ class Main extends React.Component {
 					<AppBar
 					title="SmartHome"
 					iconElementRight={
-						<FlatButton style={styles.loginButton}
-						backgroundColor={"#FFFFFF"}
-						hoverColor={"#DDDDDD"}
-						rippleColor={"#BBBBBB"}
-						label="Log in"
-						onTouchTap={this.handleLoginTouchTap}/>
+						<div>
+							<FlatButton style={styles.registerButton}
+							backgroundColor={"#FFFFFF"}
+							hoverColor={"#DDDDDD"}
+							rippleColor={"#BBBBBB"}
+							label="Register"
+							onTouchTap={this.handleRegisterTouchTap}/>
+							<FlatButton style={styles.loginButton}
+							backgroundColor={green600}
+							hoverColor={green700}
+							rippleColor={"#BBBBBB"}
+							label="Log in"
+							onTouchTap={this.handleLoginTouchTap}/>
+						</div>
 					}
 					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>
 
@@ -276,7 +307,18 @@ class Main extends React.Component {
 						<div style={styles.popover}>
 							<LoginForm/>
 						</div>
-					</Popover>				
+					</Popover>		
+
+					<Popover
+						open={this.state.registerOpen}
+						anchorEl={this.state.anchorEl}
+						anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+						targetOrigin={{horizontal: 'right', vertical: 'top'}}
+						onRequestClose={this.handleRegisterRequestClose}>
+						<div style={styles.popover}>
+							<RegisterForm/>
+						</div>
+					</Popover>			
 
 					{/* LeftNav */}
 					<LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
