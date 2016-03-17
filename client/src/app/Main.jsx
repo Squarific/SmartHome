@@ -15,6 +15,7 @@ import HouseHoldCard from './Components/HouseHoldCard';
 import LeftNav from 'material-ui/lib/left-nav';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
+import TextField from 'material-ui/lib/text-field';
 import {RegisterForm, LoginForm} from './Components/Authentication'
 import {GraphCard} from './Components/Graphing';
 
@@ -47,6 +48,15 @@ const styles = {
 	},
 	horizontalLine: {
 		margin: 10,
+	},
+	form: {
+		textAlign: "center",
+	},
+	formLabel: {
+		fontWeight: 500,
+		textAlign: "left",
+		minWidth: "10em",
+		display: "inline-block",
 	},
 };
 
@@ -81,6 +91,10 @@ class Main extends React.Component {
 		};
 	}
 
+	/**
+	 * NavBar
+	 */
+
 	handleNavRequestClose() {
 		this.setState({
 		  navbarOpen: false,
@@ -92,6 +106,10 @@ class Main extends React.Component {
 		  navbarOpen: true,
 		});
 	}
+
+	/**
+	 * Login
+	 */
 
 	handleLoginRequestClose() {
 		this.setState({
@@ -106,6 +124,10 @@ class Main extends React.Component {
 		});
 	}
 
+	/**
+	 * Create HouseHold
+	 */
+
 	handleCreateHouseHoldRequest(event) {
 		this.setState({
 			createHouseHoldOpen: true,
@@ -119,6 +141,10 @@ class Main extends React.Component {
 			createHouseHoldOpen: false,
 		});
 	}
+
+	/**
+	 * Create Sensor
+	 */
 
 	handleCreateSensorRequest(event) {
 		this.setState({
@@ -142,6 +168,10 @@ class Main extends React.Component {
 	}
 
 	render() {
+		/**
+		 * Chart data (static atm)
+		 */
+
 		const data = {
 			labels: ["January", "February", "March", "April", "May", "June", "July"],
 			datasets: [
@@ -164,6 +194,10 @@ class Main extends React.Component {
 			],
 		};
 
+		/**
+		 * Create HouseHold Actions
+		 */
+
 		const houseHoldActions = [
 			<FlatButton style={styles.cancelButton}
 				label="Cancel"
@@ -176,6 +210,10 @@ class Main extends React.Component {
 				keyboardFocused={true}
 				onTouchTap={this.handleCreateHouseHoldClose}/>,
 		];
+
+		/**
+		 * Create Sensor Actions
+		 */
 
 		const sensorActions = [
 			<FlatButton style={styles.cancelButton}
@@ -190,10 +228,15 @@ class Main extends React.Component {
 				onTouchTap={this.handleCreateSensorClose}/>,
 		];
 
+		/**
+		 * The actual components
+		 */
+
 		return (
 			<MuiThemeProvider muiTheme={muiTheme}>
 			<div style={styles.container}>
 				<div style={styles.header}>
+					{/* AppBar */}
 					<AppBar
 					title="SmartHome"
 					iconElementRight={
@@ -206,6 +249,7 @@ class Main extends React.Component {
 					}
 					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>
 
+					{/* Login Popover */}
 					<Popover
 						open={this.state.loginOpen}
 						anchorEl={this.state.anchorEl}
@@ -217,46 +261,99 @@ class Main extends React.Component {
 						</div>
 					</Popover>				
 
+					{/* LeftNav */}
 					<LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
-						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose} />
+						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleViewHouseHold}>View Households</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
 						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem>Account Options</MenuItem>
 					</LeftNav>
 				</div>
 				<div style={styles.body}>
+<<<<<<< HEAD
 					{(() => {
         				switch (this.state.active) {
           					case "Second":   return "TRoL";
           					case "green": return "#00FF00";
           					case "blue":  return "#0000FF";
           					default:      return <HouseHoldCard
+=======
+
+					{/**
+					  * Body
+					  * This should become a PageComponent so that it can be switched
+					  * (so we dont need to refresh the page)
+					  */}
+
+					<HouseHoldCard
+>>>>>>> 15978689370015750df8cbd21835b8ad80cfefcc
 					title="Naam card (bv Huis van Bart: Vaatwasmachine)"
 					subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
 					prev="vorige week"
 					next="volgende week"
+<<<<<<< HEAD
 					data={data}/>;
         				}
       				})()}
 						
+=======
+					data={data}/>
+
+					{/**
+					  * Dialog boxes
+					  */}
+
+					{/* Create HouseHold */}
+>>>>>>> 15978689370015750df8cbd21835b8ad80cfefcc
 					<Dialog
 						title="Create Household"
 						open={this.state.createHouseHoldOpen}
 						onRequestClose={this.handleCreateHouseHoldClose}
 						actions={houseHoldActions}>
 
+<<<<<<< HEAD
 						
+=======
+						<form className="createHouseHold" style={styles.form}>
+							<label style={styles.formLabel} htmlFor="houseHoldName">Name: </label>
+							<TextField hintText="name" />
+							<br/>
+							<label style={styles.formLabel} htmlFor="houseHoldCity">City: </label>
+							<TextField hintText="city" />
+							<br/>
+							<label style={styles.formLabel} htmlFor="houseHoldStreet">Street Name: </label>
+							<TextField hintText="street name" />
+							<br/>
+							<label style={styles.formLabel} htmlFor="houseHoldNumber">House Number: </label>
+							<TextField hintText="house number" />
+						</form>
+>>>>>>> 15978689370015750df8cbd21835b8ad80cfefcc
 					</Dialog>
 
+					{/* Create Sensor */}
 					<Dialog
 						title="Create Sensor"
 						open={this.state.createSensorOpen}
 						onRequestClose={this.handleCreateSensorClose}
 						actions={sensorActions}>
 
-						INSERT FORM
+						<form className="createSensor" style={styles.form}>
+							<label style={styles.formLabel} htmlFor="sensorName">Name: </label>
+							<TextField hintText="name" />
+							<br/>
+							<label style={styles.formLabel} htmlFor="sensorDescription">Description: </label>
+							<TextField hintText="description" />
+							<br/>
+							<label style={styles.formLabel} htmlFor="sensorPowerUnit">Power Unit: </label>
+							<TextField hintText="power unit" />
+							<br/>
+							<label style={styles.formLabel} htmlFor="sensorTags">Tags: </label>
+							<TextField hintText="tags" />
+						</form>
 					</Dialog>
 				</div>
 			</div>
