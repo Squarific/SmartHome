@@ -11,12 +11,12 @@ import FlatButton from 'material-ui/lib/flat-button';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 import AppBar from 'material-ui/lib/app-bar';
-import HouseHoldCard from './HouseHoldCard';
+import HouseHoldCard from './Components/HouseHoldCard';
 import LeftNav from 'material-ui/lib/left-nav';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
-import {RegisterForm, LoginForm} from './Authentication'
-import {GraphCard} from './Graphing';
+import {RegisterForm, LoginForm} from './Components/Authentication'
+import {GraphCard} from './Components/Graphing';
 
 //-------------------------------------------------------------
 
