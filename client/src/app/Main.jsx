@@ -16,8 +16,11 @@ import LeftNav from 'material-ui/lib/left-nav';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
+import SelectField from 'material-ui/lib/select-field';
 import {RegisterForm, LoginForm} from './Components/Authentication'
 import {GraphCard} from './Components/Graphing';
+import {HouseHoldSelect} from './Components/HouseHoldSelect';
+import {PowerUnitSelect} from './Components/PowerUnitSelect';
 
 //-------------------------------------------------------------
 
@@ -58,6 +61,9 @@ const styles = {
 		minWidth: "10em",
 		display: "inline-block",
 	},
+	dialog: {
+		textAlign: "center",
+	},
 };
 
 const muiTheme = getMuiTheme({
@@ -65,6 +71,7 @@ const muiTheme = getMuiTheme({
 		primary1Color: green500,
 		primary2Color: green300,
 		primary3Color: green100,
+		accent1Color: green500,
 	},
 });
 
@@ -185,6 +192,16 @@ class Main extends React.Component {
 		};
 
 		/**
+		 * Household data (static atm)
+		 */
+
+		const houseHoldList = ["UA", "Thuis", "Den Bakker"];
+		const houseHoldItems = [];
+		for (let i = 0; i < 100; i++) {
+			houseHoldItems.push(<MenuItem value={i} key={i} primaryText={houseHoldList[i]}/>);
+		}
+
+		/**
 		 * Create HouseHold Actions
 		 */
 
@@ -283,7 +300,7 @@ class Main extends React.Component {
 					  */}
 
 					{/* Create HouseHold */}
-					<Dialog
+					<Dialog style={styles.dialog}
 						title="Create Household"
 						open={this.state.createHouseHoldOpen}
 						onRequestClose={this.handleCreateHouseHoldClose}
@@ -305,7 +322,7 @@ class Main extends React.Component {
 					</Dialog>
 
 					{/* Create Sensor */}
-					<Dialog
+					<Dialog style={styles.dialog}
 						title="Create Sensor"
 						open={this.state.createSensorOpen}
 						onRequestClose={this.handleCreateSensorClose}
@@ -313,13 +330,16 @@ class Main extends React.Component {
 
 						<form className="createSensor" style={styles.form}>
 							<label style={styles.formLabel} htmlFor="sensorName">Name: </label>
-							<TextField hintText="name" />
+							<HouseHoldSelect/>
 							<br/>
 							<label style={styles.formLabel} htmlFor="sensorDescription">Description: </label>
-							<TextField hintText="description" />
+							<TextField hintText="description"
+								multiLine={true}
+								rows={3}
+								rowsMax={3}/>
 							<br/>
 							<label style={styles.formLabel} htmlFor="sensorPowerUnit">Power Unit: </label>
-							<TextField hintText="power unit" />
+							<PowerUnitSelect/>
 							<br/>
 							<label style={styles.formLabel} htmlFor="sensorTags">Tags: </label>
 							<TextField hintText="tags" />
