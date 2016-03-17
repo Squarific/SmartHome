@@ -19,7 +19,7 @@ const PowerUnitSelect = React.createClass({
 	render: function() {
 		// Create menuoptions (static atm)
 		const MenuItems = [];
-		const PowerUnits = ["kWh", "MJ", "J"]
+		const PowerUnits = ["kWh", "Wh"]
 		for (let k = 0; k < PowerUnits.length; k++) {
 			MenuItems.push((
 				<MenuItem value={PowerUnits[k]} primaryText={PowerUnits[k]} key={k}/>

@@ -86,12 +86,15 @@ class Main extends React.Component {
 		this.handleCreateHouseHoldClose = this.handleCreateHouseHoldClose.bind(this);
 		this.handleCreateSensorRequest = this.handleCreateSensorRequest.bind(this);
 		this.handleCreateSensorClose = this.handleCreateSensorClose.bind(this);
+		this.handleViewHouseHold = this.handleViewHouseHold.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
 		  loginOpen: false,
 		  createHouseHoldOpen: false,
 		  createSensorOpen: false,
+		  active: "HouseHoldCard",
+
 		};
 	}
 
@@ -164,6 +167,13 @@ class Main extends React.Component {
 		});
 	}
 
+	handleViewHouseHold() {
+		this.setState({
+			navbarOpen: false,	
+			active: "Second",
+		});
+	}
+
 	render() {
 		/**
 		 * Chart data (static atm)
@@ -229,7 +239,7 @@ class Main extends React.Component {
 				onTouchTap={this.handleCreateSensorClose}/>,
 
 			<FlatButton style={styles.submitButton}
-				label="Submit"
+				label="Create"
 				primary={true}
 				keyboardFocused={true}
 				onTouchTap={this.handleCreateSensorClose}/>,
@@ -272,7 +282,7 @@ class Main extends React.Component {
 					<LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
 						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
 						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem>View Households</MenuItem>
+						<MenuItem onTouchTap={this.handleViewHouseHold}>View Households</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
 						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
@@ -281,19 +291,19 @@ class Main extends React.Component {
 					</LeftNav>
 				</div>
 				<div style={styles.body}>
-
-					{/**
-					  * Body
-					  * This should become a PageComponent so that it can be switched
-					  * (so we dont need to refresh the page)
-					  */}
-
-					<HouseHoldCard
+					{(() => {
+        				switch (this.state.active) {
+          					case "Second":   return "TRoL";
+          					case "green": return "#00FF00";
+          					case "blue":  return "#0000FF";
+          					default:      return <HouseHoldCard
 					title="Naam card (bv Huis van Bart: Vaatwasmachine)"
 					subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
 					prev="vorige week"
 					next="volgende week"
-					data={data}/>
+					data={data}/>;
+        				}
+      				})()}
 
 					{/**
 					  * Dialog boxes
