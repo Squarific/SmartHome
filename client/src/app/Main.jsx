@@ -18,6 +18,7 @@ import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
 import {RegisterForm, LoginForm} from './Components/Authentication'
 import {GraphCard} from './Components/Graphing';
+import Divider from 'material-ui/lib/divider';
 
 //-------------------------------------------------------------
 
@@ -80,13 +81,16 @@ class Main extends React.Component {
 		this.handleCreateSensorRequest = this.handleCreateSensorRequest.bind(this);
 		this.handleCreateSensorClose = this.handleCreateSensorClose.bind(this);
 		this.handleViewHouseHold = this.handleViewHouseHold.bind(this);
+		this.handleHome = this.handleHome.bind(this);
+		this.handleSignOut = this.handleSignOut.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
 		  loginOpen: false,
 		  createHouseHoldOpen: false,
 		  createSensorOpen: false,
-		  active: "HouseHoldCard",
+		  active: "Home",
+		  loggedIn: true,
 
 		};
 	}
@@ -167,6 +171,21 @@ class Main extends React.Component {
 		});
 	}
 
+	handleHome() {
+		this.setState({
+			navbarOpen: false,
+			active: "default",
+		});
+	}
+
+	handleSignOut() {
+		this.setState({
+			navbarOpen: false,
+			active: "Home",
+			loggedIn: false,
+		});
+	}
+
 	render() {
 		/**
 		 * Chart data (static atm)
@@ -205,7 +224,7 @@ class Main extends React.Component {
 				onTouchTap={this.handleCreateHouseHoldClose}/>,
 
 			<FlatButton style={styles.submitButton}
-				label="Submit"
+				label="Create"
 				primary={true}
 				keyboardFocused={true}
 				onTouchTap={this.handleCreateHouseHoldClose}/>,
@@ -232,12 +251,41 @@ class Main extends React.Component {
 		 * The actual components
 		 */
 
-		return (
-			<MuiThemeProvider muiTheme={muiTheme}>
-			<div style={styles.container}>
-				<div style={styles.header}>
-					{/* AppBar */}
-					<AppBar
+		let userMenu;
+		if (this.state.loggedIn) {
+
+		
+			userMenu = <LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
+						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleHome}><b>Home</b></MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleViewHouseHold}>View Households</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
+						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem>Account Options</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<Divider />
+						<MenuItem onTouchTap={this.handleSignOut}>Sign Out</MenuItem>
+						
+					</LeftNav>;
+		}
+		else {
+			
+			userMenu = <LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
+						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
+
+
+						
+						
+					</LeftNav>;
+		}
+
+		let logInBar
+		if (!this.state.loggedIn) {
+			logInBar = <AppBar
 					title="SmartHome"
 					iconElementRight={
 						<FlatButton style={styles.loginButton}
@@ -247,8 +295,25 @@ class Main extends React.Component {
 						label="Log in"
 						onTouchTap={this.handleLoginTouchTap}/>
 					}
-					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>
 
+					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
+		}
+		else if (this.state.loggedIn) {
+			logInBar = <AppBar
+					title="SmartHome"
+
+					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
+		}
+		 
+
+		return (
+			<MuiThemeProvider muiTheme={muiTheme}>
+			<div style={styles.container}>
+				<div style={styles.header}>
+					{/* AppBar */}
+					
+					{logInBar}
+					
 					{/* Login Popover */}
 					<Popover
 						open={this.state.loginOpen}
@@ -262,26 +327,27 @@ class Main extends React.Component {
 					</Popover>				
 
 					{/* LeftNav */}
-					<LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
-						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
-						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem onTouchTap={this.handleViewHouseHold}>View Households</MenuItem>
-						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
-						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
-						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem>Account Options</MenuItem>
-					</LeftNav>
+
+					{userMenu}
+
 				</div>
 				<div style={styles.body}>
-<<<<<<< HEAD
+
 					{(() => {
         				switch (this.state.active) {
           					case "Second":   return "TRoL";
-          					case "green": return "#00FF00";
+          					case "Home": return "shit on the homepage";
           					case "blue":  return "#0000FF";
           					default:      return <HouseHoldCard
-=======
+													title="Naam card (bv Huis van Bart: Vaatwasmachine)"
+													subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
+													prev="vorige week"
+													next="volgende week"
+
+													data={data}/>;
+        				}
+      				})()}
+						
 
 					{/**
 					  * Body
@@ -289,35 +355,26 @@ class Main extends React.Component {
 					  * (so we dont need to refresh the page)
 					  */}
 
-					<HouseHoldCard
->>>>>>> 15978689370015750df8cbd21835b8ad80cfefcc
-					title="Naam card (bv Huis van Bart: Vaatwasmachine)"
-					subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
-					prev="vorige week"
-					next="volgende week"
-<<<<<<< HEAD
-					data={data}/>;
-        				}
-      				})()}
-						
-=======
-					data={data}/>
+
+
+					
+
+
 
 					{/**
 					  * Dialog boxes
 					  */}
 
 					{/* Create HouseHold */}
->>>>>>> 15978689370015750df8cbd21835b8ad80cfefcc
+
 					<Dialog
 						title="Create Household"
 						open={this.state.createHouseHoldOpen}
 						onRequestClose={this.handleCreateHouseHoldClose}
 						actions={houseHoldActions}>
 
-<<<<<<< HEAD
 						
-=======
+
 						<form className="createHouseHold" style={styles.form}>
 							<label style={styles.formLabel} htmlFor="houseHoldName">Name: </label>
 							<TextField hintText="name" />
@@ -331,7 +388,7 @@ class Main extends React.Component {
 							<label style={styles.formLabel} htmlFor="houseHoldNumber">House Number: </label>
 							<TextField hintText="house number" />
 						</form>
->>>>>>> 15978689370015750df8cbd21835b8ad80cfefcc
+
 					</Dialog>
 
 					{/* Create Sensor */}
