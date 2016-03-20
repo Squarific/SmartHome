@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^rest-auth/facebook/$', views.FacebookLogin.as_view(), name='fb_login'),
     url(r'^rest-auth/twitter/$', views.TwitterLogin.as_view(), name='twitter_login'),
     url(r'^api/homes/$', views.HomeList.as_view()),
+    url(r'^api/homes/user/(?P<pk>[0-9]+)/$', views.HomeListByUser.as_view()),
     url(r'^api/homes/(?P<pk>[0-9]+)/$', views.HomeDetail.as_view()),
     url(r'^api/sensors/$', views.SensorList.as_view()),
     url(r'^api/sensors/(?P<pk>[0-9]+)/$', views.SensorDetail.as_view()),
