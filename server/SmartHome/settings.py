@@ -84,39 +84,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'SmartHome.wsgi.application'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        },
-    },
-}
-
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'smarthome',
-        'USER': 'smarthome',
-        'PASSWORD': 'smarthome',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
     #'default': {
-    #    'ENGINE': 'django.db.backends.sqlite3',
-    #    'NAME': 'database.sqlite3',
+    #    'ENGINE': 'django.db.backends.mysql',
+    #    'NAME': 'smarthome',
+    #    'USER': 'smarthome',
+    #    'PASSWORD': 'smarthome',
+    #    'HOST': 'localhost',
+    #    'PORT': '5432',
     #}
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'database.sqlite3',
+    }
 }
 
 
