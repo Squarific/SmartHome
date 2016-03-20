@@ -60,7 +60,7 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 		}
 	});
 
-	request.open("GET", this.server + cleanedMethod.join("/") + "?" + cleanedOptions.join("&"));
+	request.open("GET", this.server + cleanedMethod.join("/") + "/?" + cleanedOptions.join("&"));
 	request.send();
 };
 
