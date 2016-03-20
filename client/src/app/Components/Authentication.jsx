@@ -50,11 +50,36 @@ const RegisterForm = React.createClass({
 
 const LoginForm = React.createClass({
 	handleLogin: function () {
-		console.log("Login");
+		this.props.restClient.request("GET", ["rest-auth"], {
+			username,
+			password,
+		}, function (data) {
+			if (data.error) {
+				this.setState({error: data.error});
+			} else {
+				this.setState({success: true});
+			}
+		});
 	},
 	render: function () {
+		if (this.state.success) {
+			return (<div>We are logged in but I am to lazy to already implement something here!</div>);
+		}
+
+		let error;
+		if (this.state.error) {
+			error = (
+				<div>
+					Error: 
+					{this.state.error}
+					<br/>
+				</div>
+			);
+		}
+
 		return (
 			<form submit={this.handleLogin} className="login">
+				{error}
 				<label style={style.label} htmlFor="username">Username: </label>
 				<TextField hintText="Username" />
 				<br/>

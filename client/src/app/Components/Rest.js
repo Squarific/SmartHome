@@ -1,6 +1,8 @@
 /*
 	Creates a rest interface for the given server
 	Server should end with a '/'
+
+	Example: const restClient = new Rest("localhost:8000/");
 */
 function Rest (server) {
 	this.server = server;
@@ -20,25 +22,27 @@ function Rest (server) {
 	Callback will be called with the response
 	It is given an object, the object will have an error property set
 	if something went wrong during the request.
+
+	This function throws an error if the methodarray is not supplied.
 */
-Rest.prototype.request = function request (htmlmethod, methodArray, options, callback) {
+Rest.prototype.request = function restRequest (htmlmethod, methodArray, options, callback) {
 	if (!methodArray || typeof methodArray.length !== "number")
 		throw "Request expects a method list as second parameter";
 
-	var cleanedMethod = [];
+	const cleanedMethod = [];
 	methodArray.forEach(function (el) {
 		cleanedMethod.push(encodeUriComponent(el));
 	});
 
-	var request = new XMLHttpRequest();
+	const request = new XMLHttpRequest();
 
 	request.addEventListener("readystatechange", function (event) {
-		if (request.status == 200) {
+		if (request.status === 200) {
 			try {
-				var data = JSON.parse(request.responseText);
+				const data = JSON.parse(request.responseText);
 			} catch (e) {
 				callback({
-					error: ""
+					error: "JSON Parse error:" + e,
 				});
 				return;
 			}
@@ -46,10 +50,12 @@ Rest.prototype.request = function request (htmlmethod, methodArray, options, cal
 			callback(data);
 		} else {
 			callback({
-				error: "Problem while trying to reach the server. Server responded with status: " + request.status
+				error: "Problem while trying to reach the server. Server responded with status: " + request.status,
 			});
 		}
 	});
 
 	request.open(htmlmethod, this.server + cleanedMethod.join("/") + "?" + cleanedOptions.join("&"));
 };
+
+module.exports = Rest;
