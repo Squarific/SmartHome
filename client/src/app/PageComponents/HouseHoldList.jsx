@@ -12,15 +12,19 @@ import HouseHoldCard from '../Components/HouseHoldCard.jsx';
 
 const HouseHoldList = React.createClass({
 	getInitialState: function () {
-		return {loading: true};
+		return {loading: true, loadingMsg: "Loading homes..."};
 	},
 	componentDidMount: function () {
-		
+		if (!this.props.rest) throw "HouseHoldList Error: No rest client provided!";
+		this.props.rest.get(["api", "homes"], {}, function (data) {
+			console.log(data);
+			this.setState({loadingMsg: "Loading homes data..."});
+		}.bind(this));
 	},
 	render: function() {
-		if (this.state.loading) return (<div>Loading...</div>);
+		if (this.state.loading) return (<div>{this.state.loadingMsg}</div>);
 
-		return ();
+		return (<div></div>);
 	},
 });
 

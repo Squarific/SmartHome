@@ -50,7 +50,7 @@ const RegisterForm = React.createClass({
 
 const LoginForm = React.createClass({
 	handleLogin: function () {
-		this.props.restClient.request("GET", ["rest-auth"], {
+		this.props.restClient.get(["rest-auth"], {
 			username,
 			password,
 		}, function (data) {
@@ -63,7 +63,7 @@ const LoginForm = React.createClass({
 	},
 	render: function () {
 		if (this.state.success) {
-			return (<div>We are logged in but I am to lazy to already implement something here!</div>);
+			return (<div>We are logged in but I am too lazy to already implement something here!</div>);
 		}
 
 		let error;
