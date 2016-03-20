@@ -1,14 +1,15 @@
 /*
 	Creates a rest interface for the given server
 	Server should end with a '/'
+
+	Example: const restClient = new Rest("http://localhost:8000/");
 */
 function Rest (server) {
 	this.server = server;
 }
 
 /*
-	This function makes a request to server
-	It uses htmlmethod as the type (GET, POST, ...)
+	This function makes a GET request to server
 
 	The methodArray will be appended at the end of the server
 	Every entry will be encoded using encodeUriComponent
@@ -20,36 +21,49 @@ function Rest (server) {
 	Callback will be called with the response
 	It is given an object, the object will have an error property set
 	if something went wrong during the request.
+
+	This function throws an error if the methodarray is not supplied.
 */
-Rest.prototype.request = function request (htmlmethod, methodArray, options, callback) {
+Rest.prototype.get = function get (methodArray, options, callback) {
 	if (!methodArray || typeof methodArray.length !== "number")
 		throw "Request expects a method list as second parameter";
 
-	var cleanedMethod = [];
+	const cleanedMethod = [];
 	methodArray.forEach(function (el) {
-		cleanedMethod.push(encodeUriComponent(el));
+		cleanedMethod.push(encodeURIComponent(el));
 	});
 
-	var request = new XMLHttpRequest();
+	const cleanedOptions = [];
+	for (key in options) {
+		cleanedOptions.push(encodeURIComponent(key) + "=" + encodeURIComponent(options[key]));
+	}
+
+	const request = new XMLHttpRequest();
 
 	request.addEventListener("readystatechange", function (event) {
-		if (request.status == 200) {
+		if (request.readyState === 4 && request.status === 200) {
 			try {
-				var data = JSON.parse(request.responseText);
+				const data = JSON.parse(request.responseText);
 			} catch (e) {
 				callback({
-					error: ""
+					error: "JSON Parse error:" + e,
 				});
 				return;
 			}
 
 			callback(data);
-		} else {
+		} else if (request.readyState === 4) {
+			debugger;
 			callback({
-				error: "Problem while trying to reach the server. Server responded with status: " + request.status
+				error: "Problem while trying to reach the server. Server responded with status: " + request.status,
 			});
 		}
 	});
 
-	request.open(htmlmethod, this.server + cleanedMethod.join("/") + "?" + cleanedOptions.join("&"));
+	request.open("GET", this.server + cleanedMethod.join("/") + "?" + cleanedOptions.join("&"));
+	request.send();
+};
+
+module.exports = {
+	Rest,
 };

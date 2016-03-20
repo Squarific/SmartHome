@@ -4,6 +4,8 @@
  */
 
 import React from 'react';
+
+// Material includes
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
 import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
@@ -17,10 +19,16 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
+
+// Own components
 import {RegisterForm, LoginForm} from './Components/Authentication'
 import {GraphCard} from './Components/Graphing';
 import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
+import {Rest} from './Components/Rest';
+
+// Page components
+import {HouseHoldList} from './PageComponents/HouseHoldList';
 
 //-------------------------------------------------------------
 
@@ -69,6 +77,8 @@ const styles = {
 		textAlign: "center",
 	},
 };
+
+const rest = new Rest("http://localhost:8000/");
 
 const muiTheme = getMuiTheme({
 	palette: {
@@ -193,7 +203,7 @@ class Main extends React.Component {
 	handleViewHouseHold() {
 		this.setState({
 			navbarOpen: false,	
-			active: "Second",
+			active: "HouseHoldList",
 		});
 	}
 
@@ -223,16 +233,6 @@ class Main extends React.Component {
 				},
 			],
 		};
-
-		/**
-		 * Household data (static atm)
-		 */
-
-		const houseHoldList = ["UA", "Thuis", "Den Bakker"];
-		const houseHoldItems = [];
-		for (let i = 0; i < 100; i++) {
-			houseHoldItems.push(<MenuItem value={i} key={i} primaryText={houseHoldList[i]}/>);
-		}
 
 		/**
 		 * Create HouseHold Actions
@@ -335,7 +335,7 @@ class Main extends React.Component {
 				<div style={styles.body}>
 					{(() => {
         				switch (this.state.active) {
-          					case "Second":   return "TRoL";
+          					case "HouseHoldList":   return <HouseHoldList rest={rest}/>;
           					case "green": return "#00FF00";
           					case "blue":  return "#0000FF";
           					default:      return <HouseHoldCard
