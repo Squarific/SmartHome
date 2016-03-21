@@ -333,7 +333,7 @@ class Main extends React.Component {
 				<div style={styles.body}>
 					{(() => {
         				switch (this.state.active) {
-          					case "HouseHoldList":   return <HouseHoldList rest={rest}/>;
+          					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
           					case "green": return "#00FF00";
           					case "blue":  return "#0000FF";
           					default:      return <HouseHoldCard

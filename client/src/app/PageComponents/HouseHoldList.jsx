@@ -17,7 +17,12 @@ const HouseHoldList = React.createClass({
 	componentDidMount: function () {
 		if (!this.props.rest) throw "HouseHoldList Error: No rest client provided!";
 
-		this.props.rest.get(["api", "homes"], {}, function (data) {
+		this.props.rest.get(["api", "homes", "user", this.props.userid], {}, function (data) {
+			if (data.error) {
+				this.setState({error: data.error});
+				return;
+			}
+
 			this.setState({
 				homes: data.data,
 				loading: false,
@@ -26,10 +31,12 @@ const HouseHoldList = React.createClass({
 	},
 	render: function() {
 		if (this.state.loading) return (<div>{this.state.loadingMsg}</div>);
+		if (this.state.error) return (<div>{this.state.error}</div>);
 
 		let households = this.state.homes.map(function (household, index) {
-			return (<HouseHoldCard id={household.id} key={index} />);
-		});
+			console.log(household);
+			return (<HouseHoldCard id={household.id} rest={this.props.rest} title={household.attributes.name} key={index} />);
+		}.bind(this));
 
 		return (<div>
 			{households}
