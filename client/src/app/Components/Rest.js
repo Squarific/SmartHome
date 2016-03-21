@@ -42,8 +42,10 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 
 	request.addEventListener("readystatechange", function (event) {
 		if (request.readyState === 4 && request.status === 200) {
+			let data;
+
 			try {
-				const data = JSON.parse(request.responseText);
+				data = JSON.parse(request.responseText);
 			} catch (e) {
 				callback({
 					error: "JSON Parse error:" + e,
@@ -53,7 +55,13 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 
 			callback(data);
 		} else if (request.readyState === 4) {
-			debugger;
+			if (request.status === 0) {
+				callback({
+					error: "Could not connect to the server, either it is offline or you don't have internet.",
+				});
+				return
+			}
+
 			callback({
 				error: "Problem while trying to reach the server. Server responded with status: " + request.status,
 			});
