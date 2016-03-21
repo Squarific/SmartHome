@@ -16,8 +16,7 @@ import CardText from 'material-ui/lib/card/card-text';
 */
 
 /*
-	Graph cards with children
-	Can have a title and a subtitle
+	Graph
 
 	Props: {
 		data: GRAPHJS data,

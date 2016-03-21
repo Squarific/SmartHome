@@ -8,29 +8,114 @@ import FlatButton from 'material-ui/lib/flat-button';
 import CardText from 'material-ui/lib/card/card-text';
 import {GraphCard} from './Graphing';
 
-const HouseHoldCard = (args) => (
-	<Card>
-	<CardHeader
-		title={args.title}
-		subtitle={args.subtitle}/>
-	<CardMedia>
-		<GraphCard title="Wasmachine"
-				subtitle="Verbruik"
-				data={args.data}
-				graphType="Bar"
-				graphTypes={["Line", "Bar", "Radar"]}>
-			<div>Test lol</div>
-			<div>Omg xD</div>
-		</GraphCard>
-	</CardMedia>
-	<CardText>
+const style = {
+	margin: "2em",
+};
 
-	</CardText>
-	<CardActions>
-		<FlatButton label={args.prev} />
-		<FlatButton label={args.next} />
-	</CardActions>
-	</Card>	
-);
+let dataStyle = {
+	fillColor: "rgba(220,220,220,0.5)",
+	strokeColor: "rgba(220,220,220,0.8)",
+	highlightFill: "rgba(220,220,220,0.75)",
+	highlightStroke: "rgba(220,220,220,1)",
+};
+
+/*
+	Props: {
+		rest: new Rest(),
+		houseid: INT
+		title: "",
+		subtitle: "",
+		prev: "",
+		next: "",
+	}
+*/
+const HouseHoldCard = React.createClass({
+	getInitialState: function () {
+		return {loading: true};
+	},
+	componentDidMount: function () {
+		this.props.rest.get(["api", "data", "home", this.props.id], {}, function (data) {
+			if (data.error) {
+				this.setState({error: data.error});
+				return;
+			}
+
+			if (data.data.length === 0) {
+				this.setState({
+					loading: false,
+					subtitle: "No sensor",
+				});
+				return;
+			}
+
+			const randomElement = data.data[Math.floor(data.data.length * Math.random())];
+			let labels = [];
+			let values = [];
+			console.log(randomElement);
+
+			for (let key = randomElement.values.length - 168;
+			     key < randomElement.values.length; key += 6) {
+				labels.push(randomElement.values[key].timestamp);
+				values.push(randomElement.values[key].usage);
+			}
+
+			this.setState({
+				loading: false,
+				subtitle: randomElement.key,
+				labels,
+				values,
+			});
+		}.bind(this));
+	},
+	render: function () {
+		if (this.state.error) return (<div>{this.state.error}</div>);
+		if (this.state.loading) return (<Card style={style}>
+			<CardHeader
+				title={this.props.title || "Loading..."}
+				subtitle={this.state.subtitle || "Loading..."}/>
+			<CardMedia>
+				<div>Loading...</div>
+			</CardMedia>
+			<CardText>
+			</CardText>
+			<CardActions>
+				<FlatButton label={this.props.prev || "Vorige"} />
+				<FlatButton label={this.props.next || "Volgende"} />
+			</CardActions>
+			</Card>);
+
+		let data = {
+			labels: this.state.labels,
+			datasets: [
+				{
+					data: this.state.values,
+				},
+			],
+		};
+
+
+		for (let key in dataStyle) {
+			data.datasets[0][key] = dataStyle[key];
+		}
+
+		return (<Card style={style}>
+			<CardHeader
+				title={this.props.title || "Household"}
+				subtitle={this.state.subtitle || "Loading..."}/>
+			<CardMedia>
+				<GraphCard data={data}
+						graphType="Bar"
+						graphTypes={["Line", "Bar", "Radar"]}/>
+			</CardMedia>
+			<CardText>
+			</CardText>
+			<CardActions>
+				<FlatButton label={this.props.prev || "Vorige"} />
+				<FlatButton label={this.props.next || "Volgende"} />
+			</CardActions>
+			</Card>
+		);
+	},
+});
 
 export default HouseHoldCard;
