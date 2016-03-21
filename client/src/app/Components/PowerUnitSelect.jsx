@@ -10,7 +10,7 @@ const styles = {
 
 const PowerUnitSelect = React.createClass({
 	getInitialState: function () {
-		const value = 'kWh';
+		const value = '';
 		return {value};
 	},
 	handleChange: function (event, index, value) {
@@ -27,7 +27,7 @@ const PowerUnitSelect = React.createClass({
 		}
 
 		return (
-			<SelectField style={styles.powerunitselect} value={this.state.value} onChange={this.handleChange}>
+			<SelectField style={styles.powerunitselect} value={this.state.value} onChange={this.handleChange} floatingLabelText="Power Unit">
 				{MenuItems}
 			</SelectField>
 		)
