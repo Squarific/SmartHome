@@ -6,6 +6,7 @@ import CardMedia from 'material-ui/lib/card/card-media';
 import CardTitle from 'material-ui/lib/card/card-title';
 import FlatButton from 'material-ui/lib/flat-button';
 import CardText from 'material-ui/lib/card/card-text';
+import CircularProgress from 'material-ui/lib/circular-progress';
 import {GraphCard} from './Graphing';
 
 const style = {
@@ -74,7 +75,7 @@ const HouseHoldCard = React.createClass({
 				title={this.props.title || "Loading..."}
 				subtitle={this.state.subtitle || "Loading..."}/>
 			<CardMedia>
-				<div>Loading...</div>
+				<div><CircularProgress /></div>
 			</CardMedia>
 			<CardText>
 			</CardText>
