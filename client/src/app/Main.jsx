@@ -4,6 +4,8 @@
  */
 
 import React from 'react';
+
+// Material includes
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
 import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
@@ -17,11 +19,17 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
+
+// Own components
 import {RegisterForm, LoginForm} from './Components/Authentication'
 import {GraphCard} from './Components/Graphing';
 import Divider from 'material-ui/lib/divider';
 import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
+import {Rest} from './Components/Rest';
+
+// Page components
+import {HouseHoldList} from './PageComponents/HouseHoldList';
 
 
 //-------------------------------------------------------------
@@ -72,6 +80,8 @@ const styles = {
 	},
 };
 
+const rest = new Rest("http://localhost:8000/");
+
 const muiTheme = getMuiTheme({
 	palette: {
 		primary1Color: green500,
@@ -80,6 +90,29 @@ const muiTheme = getMuiTheme({
 		accent1Color: green500,
 	},
 });
+
+const data = {
+	labels: ["January", "February", "March", "April", "May", "June", "July"],
+	datasets: [
+		{
+			label: "My First dataset",
+			fillColor: "rgba(220,220,220,0.5)",
+			strokeColor: "rgba(220,220,220,0.8)",
+			highlightFill: "rgba(220,220,220,0.75)",
+			highlightStroke: "rgba(220,220,220,1)",
+			data: [65, 59, 80, 81, 56, 55, 40],
+		},
+		{
+			label: "My Second dataset",
+			fillColor: "rgba(76,175,80,0.5)",
+			strokeColor: "rgba(151,187,205,0.8)",
+			highlightFill: "rgba(151,187,205,0.75)",
+			highlightStroke: "rgba(151,187,205,1)",
+			data: [28, 48, 40, 19, 86, 27, 90],
+		},
+	],
+};
+
 
 class Main extends React.Component {
 	constructor(props, context) {
@@ -198,7 +231,7 @@ class Main extends React.Component {
 	handleViewHouseHold() {
 		this.setState({
 			navbarOpen: false,	
-			active: "Second",
+			active: "HouseHoldList",
 		});
 	}
 
@@ -218,41 +251,6 @@ class Main extends React.Component {
 	}
 
 	render() {
-		/**
-		 * Chart data (static atm)
-		 */
-
-		const data = {
-			labels: ["January", "February", "March", "April", "May", "June", "July"],
-			datasets: [
-				{
-					label: "My First dataset",
-					fillColor: "rgba(220,220,220,0.5)",
-					strokeColor: "rgba(220,220,220,0.8)",
-					highlightFill: "rgba(220,220,220,0.75)",
-					highlightStroke: "rgba(220,220,220,1)",
-					data: [65, 59, 80, 81, 56, 55, 40],
-				},
-				{
-					label: "My Second dataset",
-					fillColor: "rgba(76,175,80,0.5)",
-					strokeColor: "rgba(151,187,205,0.8)",
-					highlightFill: "rgba(151,187,205,0.75)",
-					highlightStroke: "rgba(151,187,205,1)",
-					data: [28, 48, 40, 19, 86, 27, 90],
-				},
-			],
-		};
-
-		/**
-		 * Household data (static atm)
-		 */
-
-		const houseHoldList = ["UA", "Thuis", "Den Bakker"];
-		const houseHoldItems = [];
-		for (let i = 0; i < 100; i++) {
-			houseHoldItems.push(<MenuItem value={i} key={i} primaryText={houseHoldList[i]}/>);
-		}
 
 		/**
 		 * Create HouseHold Actions
@@ -395,8 +393,13 @@ class Main extends React.Component {
 
 					{(() => {
         				switch (this.state.active) {
+
           					case "Second":   return "TRoL";
           					case "Home": return "shit on the homepage";
+
+          					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
+          					case "green": return "#00FF00";
+
           					case "blue":  return "#0000FF";
           					default:      return <HouseHoldCard
 

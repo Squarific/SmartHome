@@ -64,6 +64,14 @@ class HomeList(generics.ListCreateAPIView):
     queryset = Home.objects.all()
     serializer_class = HomeSerializer
 
+class HomeListByUser(APIView):
+    """
+    List homes for a given user id.
+    """
+    def get(self, request, pk, format=None):
+        homes = Home.objects.filter(owner=pk)
+        serializer = HomeSerializer(homes, many=True)
+        return Response(serializer.data)
 
 class HomeDetail(generics.RetrieveUpdateDestroyAPIView):
     """
