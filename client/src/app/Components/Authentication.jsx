@@ -32,14 +32,11 @@ const RegisterForm = React.createClass({
 	render: function () {
 		return (
 			<form submit={this.handleRegister} className="register">
-				<label style={style.label} htmlFor="username">Username</label>
-				<TextField hintText="username" />
+				<TextField hintText="" floatingLabelText="Username"/>
 				<br/>
-				<label style={style.label} htmlFor="password">Password</label>
-				<TextField type="password" hintText="password" />
+				<TextField type="password" hintText="" floatingLabelText="Password"/>
 				<br/>
-				<label style={style.label} htmlFor="password">Password again</label>
-				<TextField type="password" hintText="password again" />
+				<TextField type="password" hintText="" floatingLabelText="Confirm Password"/>
 				<br/>
 				<FlatButton style={style.submitButton} onTouchStart={this.handleRegister} label="Submit" />
 			</form>
@@ -86,11 +83,9 @@ const LoginForm = React.createClass({
 		return (
 			<form submit={this.handleLogin} className="login">
 				{error}
-				<label style={style.label} htmlFor="username">Username: </label>
-				<TextField hintText="Username" />
+				<TextField hintText="" floatingLabelText="Username"/>
 				<br/>
-				<label style={style.label} htmlFor="password">Password: </label>
-				<TextField type="password" hintText="Password" />
+				<TextField type="password" hintText="" floatingLabelText="Password"/>
 				<br/>
 				<FlatButton style={style.submitButton} onclick={this.handleLogin} label="Submit" />
 			</form>

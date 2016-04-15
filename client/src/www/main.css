@@ -16,3 +16,7 @@ body {
 textarea:nth-child(3) {
 	height: initial !important;
 }
+
+label {
+	left: 0;
+}

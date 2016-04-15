@@ -10,7 +10,7 @@ const styles = {
 
 const HouseHoldSelect = React.createClass({
 	getInitialState: function () {
-		const value = 'Household 1';
+		const value = '';
 		return {value};
 	},
 	handleChange: function (event, index, value) {
@@ -27,7 +27,7 @@ const HouseHoldSelect = React.createClass({
 		}
 
 		return (
-			<SelectField style={styles.householdselect} value={this.state.value} onChange={this.handleChange}>
+			<SelectField style={styles.householdselect} value={this.state.value} onChange={this.handleChange} floatingLabelText="Household">
 				{MenuItems}
 			</SelectField>
 		)

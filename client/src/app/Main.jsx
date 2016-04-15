@@ -357,17 +357,13 @@ class Main extends React.Component {
 						actions={houseHoldActions}>
 
 						<form className="createHouseHold" style={styles.form}>
-							<label style={styles.formLabel} htmlFor="houseHoldName">Name: </label>
-							<TextField hintText="name" />
+							<TextField hintText="" floatingLabelText="Household name"/>
 							<br/>
-							<label style={styles.formLabel} htmlFor="houseHoldCity">City: </label>
-							<TextField hintText="city" />
+							<TextField hintText="" floatingLabelText="City"/>
 							<br/>
-							<label style={styles.formLabel} htmlFor="houseHoldStreet">Street Name: </label>
-							<TextField hintText="street name" />
+							<TextField hintText="" floatingLabelText="Street"/>
 							<br/>
-							<label style={styles.formLabel} htmlFor="houseHoldNumber">House Number: </label>
-							<TextField hintText="house number" />
+							<TextField hintText="" floatingLabelText="House number"/>
 						</form>
 					</Dialog>
 
@@ -379,20 +375,18 @@ class Main extends React.Component {
 						actions={sensorActions}>
 
 						<form className="createSensor" style={styles.form}>
-							<label style={styles.formLabel} htmlFor="sensorName">Name: </label>
+							<TextField hintText="" floatingLabelText="Sensor name"/>
+							<br/>
 							<HouseHoldSelect/>
 							<br/>
-							<label style={styles.formLabel} htmlFor="sensorDescription">Description: </label>
-							<TextField hintText="description"
+							<TextField floatingLabelText="Description"
 								multiLine={true}
 								rows={3}
 								rowsMax={3}/>
 							<br/>
-							<label style={styles.formLabel} htmlFor="sensorPowerUnit">Power Unit: </label>
 							<PowerUnitSelect/>
 							<br/>
-							<label style={styles.formLabel} htmlFor="sensorTags">Tags: </label>
-							<TextField hintText="tags" />
+							<TextField hintText="" floatingLabelText="Tags"/>
 						</form>
 					</Dialog>
 				</div>
