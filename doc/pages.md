@@ -20,6 +20,7 @@ View someone's profile
 Comment on profile
 Message person
 Add friend
+Show notifcations (messages + friend requests)
 
 Create Group
 Add user to group
