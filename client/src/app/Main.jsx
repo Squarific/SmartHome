@@ -23,12 +23,14 @@ import SelectField from 'material-ui/lib/select-field';
 // Own components
 import {RegisterForm, LoginForm} from './Components/Authentication'
 import {GraphCard} from './Components/Graphing';
+import Divider from 'material-ui/lib/divider';
 import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
 import {Rest} from './Components/Rest';
 
 // Page components
 import {HouseHoldList} from './PageComponents/HouseHoldList';
+
 
 //-------------------------------------------------------------
 
@@ -126,13 +128,16 @@ class Main extends React.Component {
 		this.handleCreateSensorRequest = this.handleCreateSensorRequest.bind(this);
 		this.handleCreateSensorClose = this.handleCreateSensorClose.bind(this);
 		this.handleViewHouseHold = this.handleViewHouseHold.bind(this);
+		this.handleHome = this.handleHome.bind(this);
+		this.handleSignOut = this.handleSignOut.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
 		  loginOpen: false,
 		  createHouseHoldOpen: false,
 		  createSensorOpen: false,
-		  active: "HouseHoldCard",
+		  active: "Home",
+		  loggedIn: true,
 
 		};
 	}
@@ -230,6 +235,21 @@ class Main extends React.Component {
 		});
 	}
 
+	handleHome() {
+		this.setState({
+			navbarOpen: false,
+			active: "default",
+		});
+	}
+
+	handleSignOut() {
+		this.setState({
+			navbarOpen: false,
+			active: "Home",
+			loggedIn: false,
+		});
+	}
+
 	render() {
 
 		/**
@@ -243,7 +263,7 @@ class Main extends React.Component {
 				onTouchTap={this.handleCreateHouseHoldClose}/>,
 
 			<FlatButton style={styles.submitButton}
-				label="Submit"
+				label="Create"
 				primary={true}
 				keyboardFocused={true}
 				onTouchTap={this.handleCreateHouseHoldClose}/>,
@@ -270,32 +290,70 @@ class Main extends React.Component {
 		 * The actual components
 		 */
 
+		{/* AppBar */}
+		let userMenu;
+		if (this.state.loggedIn) {
+			userMenu = <LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
+						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleHome}><b>Home</b></MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleViewHouseHold}>View Households</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
+						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem>Account Options</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<Divider />
+						<MenuItem onTouchTap={this.handleSignOut}>Sign Out</MenuItem>
+						
+					</LeftNav>;
+		}
+		else {
+			userMenu = <LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
+						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
+						</LeftNav>;
+		}
+
+		let logInBar
+		if (!this.state.loggedIn) {
+			logInBar = <AppBar
+				title="SmartHome"
+				iconElementRight={
+					<div>
+						<FlatButton style={styles.registerButton}
+						backgroundColor={"#FFFFFF"}
+						hoverColor={"#DDDDDD"}
+						rippleColor={"#BBBBBB"}
+						label="Register"
+						onTouchTap={this.handleRegisterTouchTap}/>
+						<FlatButton style={styles.loginButton}
+						backgroundColor={green600}
+						hoverColor={green700}
+						rippleColor={"#BBBBBB"}
+						label="Log in"
+						onTouchTap={this.handleLoginTouchTap}/>
+					</div>
+				}
+
+				onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
+		}
+		else if (this.state.loggedIn) {
+			logInBar = <AppBar
+			title="SmartHome"
+
+			onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
+		}
+
 		return (
 			<MuiThemeProvider muiTheme={muiTheme}>
 			<div style={styles.container}>
 				<div style={styles.header}>
-
 					{/* AppBar */}
-					<AppBar
-					title="SmartHome"
-					iconElementRight={
-						<div>
-							<FlatButton style={styles.registerButton}
-							backgroundColor={"#FFFFFF"}
-							hoverColor={"#DDDDDD"}
-							rippleColor={"#BBBBBB"}
-							label="Register"
-							onTouchTap={this.handleRegisterTouchTap}/>
-							<FlatButton style={styles.loginButton}
-							backgroundColor={green600}
-							hoverColor={green700}
-							rippleColor={"#BBBBBB"}
-							label="Log in"
-							onTouchTap={this.handleLoginTouchTap}/>
-						</div>
-					}
-					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>
-
+					
+					{logInBar}
+					
 					{/* Login Popover */}
 					<Popover
 						open={this.state.loginOpen}
@@ -320,30 +378,37 @@ class Main extends React.Component {
 					</Popover>			
 
 					{/* LeftNav */}
-					<LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
-						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
-						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem onTouchTap={this.handleViewHouseHold}>View Households</MenuItem>
-						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
-						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
-						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem>Account Options</MenuItem>
-					</LeftNav>
+
+					{userMenu}
+
 				</div>
 
 
 				{/* Body */}
 				<div style={styles.body}>
+
+					{/**
+					  * Body
+					  * This should become a PageComponent so that it can be switched
+					  * (so we dont need to refresh the page)
+					  */}
+
 					{(() => {
         				switch (this.state.active) {
+
+          					case "Second":   return "TRoL";
+          					case "Home": return "shit on the homepage";
+
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
+
           					default:      return <HouseHoldCard
-					title="Naam card (bv Huis van Bart: Vaatwasmachine)"
-					subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
-					prev="vorige week"
-					next="volgende week"
-					data={data}/>;
+
+													title="Naam card (bv Huis van Bart: Vaatwasmachine)"
+													subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
+													prev="vorige week"
+													next="volgende week"
+
+													data={data}/>;
         				}
       				})()}
 
@@ -352,11 +417,13 @@ class Main extends React.Component {
 					  */}
 
 					{/* Create HouseHold */}
+
 					<Dialog style={styles.dialog}
 						title="Create Household"
 						open={this.state.createHouseHoldOpen}
 						onRequestClose={this.handleCreateHouseHoldClose}
 						actions={houseHoldActions}>
+
 
 						<form className="createHouseHold" style={styles.form}>
 							<TextField hintText="" floatingLabelText="Household name"/>
@@ -391,6 +458,7 @@ class Main extends React.Component {
 							<TextField hintText="" floatingLabelText="Tags"/>
 						</form>
 					</Dialog>
+					
 				</div>
 			</div>
 			</MuiThemeProvider>
