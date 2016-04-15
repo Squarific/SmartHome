@@ -274,6 +274,7 @@ class Main extends React.Component {
 			<MuiThemeProvider muiTheme={muiTheme}>
 			<div style={styles.container}>
 				<div style={styles.header}>
+
 					{/* AppBar */}
 					<AppBar
 					title="SmartHome"
@@ -330,12 +331,13 @@ class Main extends React.Component {
 						<MenuItem>Account Options</MenuItem>
 					</LeftNav>
 				</div>
+
+
+				{/* Body */}
 				<div style={styles.body}>
 					{(() => {
         				switch (this.state.active) {
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
-          					case "green": return "#00FF00";
-          					case "blue":  return "#0000FF";
           					default:      return <HouseHoldCard
 					title="Naam card (bv Huis van Bart: Vaatwasmachine)"
 					subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
