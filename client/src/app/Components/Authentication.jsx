@@ -26,34 +26,11 @@ const RegisterForm = React.createClass({
 	getInitialState: function () {
 		return {};
 	},
-	handleRegister: function () {
-		console.log("Register");
-	},
-	render: function () {
-		return (
-			<form submit={this.handleRegister} className="register">
-				<TextField hintText="" floatingLabelText="Username"/>
-				<br/>
-				<TextField type="password" hintText="" floatingLabelText="Password"/>
-				<br/>
-				<TextField type="password" hintText="" floatingLabelText="Confirm Password"/>
-				<br/>
-				<FlatButton style={style.submitButton} onTouchStart={this.handleRegister} label="Submit" />
-			</form>
-		);
-	},
-});
+	handleInputChange: function (inputname, event) {
 
-/*
-	Login component
-*/
-
-const LoginForm = React.createClass({
-	getInitialState: function () {
-		return {};
-	},
-	handleLogin: function () {
-		this.props.restClient.get(["rest-auth"], {
+	}.
+	handleRegister: function (event) {
+		this.props.rest.get(["rest-auth"], {
 			username,
 			password,
 		}, function (data) {
@@ -63,10 +40,16 @@ const LoginForm = React.createClass({
 				this.setState({success: true});
 			}
 		});
+
+		this.setState({error: "Uh this is akward, there actually is nothing implemented yet."});
+
+		// Don't refresh the page
+		event.preventDefault();
+		return false;
 	},
 	render: function () {
 		if (this.state.success) {
-			return (<div>We are logged in but I am too lazy to already implement something here!</div>);
+			return (<div>You are successfully logged in.</div>);
 		}
 
 		let error;
@@ -81,13 +64,77 @@ const LoginForm = React.createClass({
 		}
 
 		return (
-			<form submit={this.handleLogin} className="login">
+			<form onSubmit={this.handleRegister} className="register">
+				{error}
+				<TextField type="username" floatingLabelText="Username"/>
+				<br/>
+				<TextField type="password" floatingLabelText="Password"/>
+				<br/>
+				<TextField type="password" floatingLabelText="Confirm Password"/>
+				<br/>
+				<TextField type="email" floatingLabelText="Email"/>
+				<br/>
+				<FlatButton type="submit"
+				            style={style.submitButton}
+				            onTouchStart={this.handleRegister}
+				            onclick={this.handleRegister}
+				            label="Submit" />
+			</form>
+		);
+	},
+});
+
+/*
+	Login component
+*/
+
+const LoginForm = React.createClass({
+	getInitialState: function () {
+		return {};
+	},
+	handleLogin: function () {
+		this.props.rest.get(["rest-auth"], {
+			username,
+			password,
+		}, function (data) {
+			if (data.error) {
+				this.setState({error: data.error});
+			} else {
+				this.setState({success: true});
+			}
+		});
+
+		// Don't refresh the page
+		event.preventDefault();
+		return false;
+	},
+	render: function () {
+		if (this.state.success) {
+			return (<div>You are successfully logged in.</div>);
+		}
+
+		let error;
+		if (this.state.error) {
+			error = (
+				<div>
+					Error: 
+					{this.state.error}
+					<br/>
+				</div>
+			);
+		}
+
+		return (
+			<form onSubmit={this.handleLogin} className="login">
 				{error}
 				<TextField hintText="" floatingLabelText="Username"/>
 				<br/>
 				<TextField type="password" hintText="" floatingLabelText="Password"/>
 				<br/>
-				<FlatButton style={style.submitButton} onclick={this.handleLogin} label="Submit" />
+				<FlatButton style={style.submitButton}
+				            onTouchStart={this.handleLogin}
+				            onclick={this.handleLogin}
+				            label="Submit" />
 			</form>
 		);
 	},
