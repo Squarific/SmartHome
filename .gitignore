@@ -1,3 +1,4 @@
 *~
 *.pyc
 /server/database.sqlite3
+server/SmartHome/settings.py
