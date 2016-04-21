@@ -9,6 +9,7 @@ import CardText from 'material-ui/lib/card/card-text';
 import Dialog from 'material-ui/lib/dialog';
 import TextField from 'material-ui/lib/text-field';
 import {green500, grey500} from 'material-ui/lib/styles/colors';
+import {WallPost} from '../Components/WallPost';
 
 const styles = {
 	wall: {
@@ -68,6 +69,11 @@ const Wall = React.createClass({
 						primary={true}
 						onTouchTap={this.handleWallPostOpen}/>
 				</CardActions>
+
+				{/* Wall Posts here */}
+				<WallPost postid={1} rest={this.props.rest}/>
+				<WallPost postid={2} rest={this.props.rest}/>
+				<br/>
 				</Card>
 
 				<Dialog style={styles.wall}

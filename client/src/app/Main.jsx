@@ -423,14 +423,7 @@ class Main extends React.Component {
           					case "Wall":   return <Wall userid={1} rest={rest}/>;
           					case "Notifications":   return <Notifications userid={1} rest={rest}/>;
 
-          					default:      return <HouseHoldCard
-
-													title="Naam card (bv Huis van Bart: Vaatwasmachine)"
-													subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
-													prev="vorige week"
-													next="volgende week"
-
-													data={data}/>;
+          					default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
         				}
       				})()}
 
