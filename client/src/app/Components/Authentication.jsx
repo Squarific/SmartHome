@@ -26,14 +26,22 @@ const RegisterForm = React.createClass({
 	getInitialState: function () {
 		return {};
 	},
-	handleInputChange: function (inputname, event) {
-
-	}.
+	handleInputChange: function (event) {
+		let newState = {};
+		newState[event.target.id] = event.target.value;
+		this.setState(newState);
+	},
 	handleRegister: function (event) {
-		this.props.rest.get(["rest-auth"], {
-			username,
-			password,
+		// Don't refresh the page
+		event.preventDefault();
+
+		this.props.rest.post(["rest-auth", "registration"], {
+			username: this.state.Username,
+			password1: this.state.Password1,
+			password2: this.state.Password2,
+			email: this.state.Email,
 		}, function (data) {
+			console.log(data);
 			if (data.error) {
 				this.setState({error: data.error});
 			} else {
@@ -42,9 +50,6 @@ const RegisterForm = React.createClass({
 		});
 
 		this.setState({error: "Uh this is akward, there actually is nothing implemented yet."});
-
-		// Don't refresh the page
-		event.preventDefault();
 		return false;
 	},
 	render: function () {
@@ -66,13 +71,13 @@ const RegisterForm = React.createClass({
 		return (
 			<form onSubmit={this.handleRegister} className="register">
 				{error}
-				<TextField type="username" floatingLabelText="Username"/>
+				<TextField id="username" onChange={this.handleInputChange} value={this.state.username} type="username" floatingLabelText="Username"/>
 				<br/>
-				<TextField type="password" floatingLabelText="Password"/>
+				<TextField id="pass1" onChange={this.handleInputChange} value={this.state.pass1} type="password" floatingLabelText="Password"/>
 				<br/>
-				<TextField type="password" floatingLabelText="Confirm Password"/>
+				<TextField id="pass2" onChange={this.handleInputChange} value={this.state.pass2} type="password" floatingLabelText="Confirm Password"/>
 				<br/>
-				<TextField type="email" floatingLabelText="Email"/>
+				<TextField id="email" onChange={this.handleInputChange} value={this.state.email} type="email" floatingLabelText="Email"/>
 				<br/>
 				<FlatButton type="submit"
 				            style={style.submitButton}
@@ -93,6 +98,9 @@ const LoginForm = React.createClass({
 		return {};
 	},
 	handleLogin: function () {
+		// Don't refresh the page
+		event.preventDefault();
+		
 		this.props.rest.get(["rest-auth"], {
 			username,
 			password,
@@ -104,8 +112,6 @@ const LoginForm = React.createClass({
 			}
 		});
 
-		// Don't refresh the page
-		event.preventDefault();
 		return false;
 	},
 	render: function () {
@@ -127,9 +133,9 @@ const LoginForm = React.createClass({
 		return (
 			<form onSubmit={this.handleLogin} className="login">
 				{error}
-				<TextField hintText="" floatingLabelText="Username"/>
+				<TextField onChange={this.handleInputChange} hintText="" floatingLabelText="Username"/>
 				<br/>
-				<TextField type="password" hintText="" floatingLabelText="Password"/>
+				<TextField onChange={this.handleInputChange} type="password" hintText="" floatingLabelText="Password"/>
 				<br/>
 				<FlatButton style={style.submitButton}
 				            onTouchStart={this.handleLogin}
