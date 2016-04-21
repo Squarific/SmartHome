@@ -28,15 +28,18 @@ import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
 import {Rest} from './Components/Rest';
 
+
 // Page components
 import {HouseHoldList} from './PageComponents/HouseHoldList';
-
+import {Home} from './PageComponents/Home';
 
 //-------------------------------------------------------------
 
 const styles = {
 	container: {
 		textAlign: 'center',
+		maxWidth: "100%",
+		minWidth: "100%",
 	},
 	header: {
 	},
@@ -55,7 +58,13 @@ const styles = {
 		marginRight: "auto",
 		marginTop: 20,
 		marginBottom: 20,
+		maxWidth:"100%",
+		minWidth: "100",
+	},
+	body2: {
 		maxWidth: 1024,
+		marginLeft: "auto",
+		marginRight: "auto",
 	},
 	cancelButton: {
 		color: grey500,
@@ -395,20 +404,20 @@ class Main extends React.Component {
         				switch (this.state.active) {
 
           					case "Second":   return "TRoL";
-          					case "Home": return "shit on the homepage";
+          					case "Home": return <Home />;
 
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
           					case "green": return "#00FF00";
 
           					case "blue":  return "#0000FF";
-          					default:      return <HouseHoldCard
+          					default:      return <div style={styles.body2}><HouseHoldCard
 
 													title="Naam card (bv Huis van Bart: Vaatwasmachine)"
 													subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
 													prev="vorige week"
 													next="volgende week"
 
-													data={data}/>;
+													data={data}/></div>;
         				}
       				})()}
 						
