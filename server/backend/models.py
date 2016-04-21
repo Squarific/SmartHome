@@ -75,14 +75,14 @@ class UsersHomes(models.Model):
 
     class Meta:
         db_table = 'users_homes'
-        
+
 
 class SensorData(models.Model):
     sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
     timestamp = models.DateTimeField()
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
-    
+
     class Meta:
         abstract = True
         ordering = ['timestamp']
@@ -99,7 +99,7 @@ class SensorData(models.Model):
             RollupClass = self.get_rollup_class()
 
             print(str(self.sensor_id) + ", " + str(rollup_time))
-            
+
             results = sensors.filter(timestamp__gte = rollup_time)
 
             usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
@@ -215,3 +215,33 @@ class RecentData(SensorData):
     class Meta:
         db_table = 'recent_data'
 
+
+class FriendRequest(models.Model):
+    REQUEST_STATUS = (
+        (0, 'Pending'),
+        (1, 'Approved'),
+        (2, 'Denied'),
+    )
+    sender = models.ForeignKey(User, related_name='sent_requests')
+    receiver = models.ForeignKey(User, related_name='received_requests')
+    status = models.IntegerField(choices=REQUEST_STATUS)
+    date_sent = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'friend_requests'
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, related_name='sent_messages')
+    receiver = models.ForeignKey(User, related_name='received_messages')
+    content = models.TextField()
+    plot = models.TextField()
+    date_sent = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'messages'
