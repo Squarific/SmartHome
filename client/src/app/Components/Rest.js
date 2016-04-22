@@ -67,7 +67,7 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 				error: this.lang.requestError + " " + request.status,
 			});
 		}
-	});
+	}.bind(this));
 
 	request.open("GET", this.server + cleanedMethod.join("/") + "/?" + cleanedOptions.join("&"));
 	request.send();
@@ -122,14 +122,14 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 				callback({
 					error: this.lang.noInternet,
 				});
-				return
+				return;
 			}
 
 			callback({
 				error: this.lang.requestError + " " + request.status,
 			});
 		}
-	});
+	}.bind(this));
 
 	request.open("POST", this.server + cleanedMethod.join("/"));
 	request.send(options);

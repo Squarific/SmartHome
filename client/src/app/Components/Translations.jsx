@@ -12,5 +12,5 @@ const en = {
 
 module.exports = {
 	nl,
-	en
+	en,
 };

@@ -27,6 +27,7 @@ import Divider from 'material-ui/lib/divider';
 import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
 import {Rest} from './Components/Rest';
+import Translations from './Components/Translations';
 
 // Page components
 import {HouseHoldList} from './PageComponents/HouseHoldList';
@@ -56,6 +57,7 @@ const styles = {
 		marginTop: 20,
 		marginBottom: 20,
 		maxWidth: 1024,
+		minHeight: "40em",
 	},
 	cancelButton: {
 		color: grey500,
@@ -78,9 +80,16 @@ const styles = {
 	dialog: {
 		textAlign: "center",
 	},
+	footer: {
+		background:"rgb(33, 33, 33)",
+		padding: "5em",
+		color: "rgba(255, 255, 255, 0.87)",
+		fontWeight: 600,
+		fontSize: "1.2em",
+	},
 };
 
-const rest = new Rest("http://localhost:8000/");
+const rest = new Rest("http://localhost:8000/", Translations.en);
 
 const muiTheme = getMuiTheme({
 	palette: {
@@ -459,6 +468,11 @@ class Main extends React.Component {
 						</form>
 					</Dialog>
 					
+				</div>
+				<div style={styles.footer}>
+					<img className="flag" src="images/flags/en.png" onClick={this.changeLang}/>
+					<img className="flag" src="images/flags/nl.png" onClick={this.changeLang}/>
+					Proudly presented to you by CertainlyNotEvilCorp
 				</div>
 			</div>
 			</MuiThemeProvider>

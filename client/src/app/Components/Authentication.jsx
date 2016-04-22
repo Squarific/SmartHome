@@ -47,7 +47,7 @@ const RegisterForm = React.createClass({
 			} else {
 				this.setState({success: true});
 			}
-		});
+		}.bind(this));
 
 		this.setState({error: "Uh this is akward, there actually is nothing implemented yet."});
 		return false;
@@ -61,9 +61,7 @@ const RegisterForm = React.createClass({
 		if (this.state.error) {
 			error = (
 				<div>
-					Error: 
 					{this.state.error}
-					<br/>
 				</div>
 			);
 		}
@@ -123,9 +121,7 @@ const LoginForm = React.createClass({
 		if (this.state.error) {
 			error = (
 				<div>
-					Error: 
 					{this.state.error}
-					<br/>
 				</div>
 			);
 		}

@@ -20,3 +20,9 @@ textarea:nth-child(3) {
 label {
 	left: 0;
 }
+
+.flag {
+	float:left;
+	height:1em;
+	margin-right:1em;
+}
