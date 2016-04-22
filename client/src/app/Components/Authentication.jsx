@@ -49,7 +49,7 @@ const RegisterForm = React.createClass({
 			}
 		}.bind(this));
 
-		this.setState({error: "Uh this is akward, there actually is nothing implemented yet."});
+		this.setState({error: "Registering..."});
 		return false;
 	},
 	render: function () {
@@ -69,19 +69,19 @@ const RegisterForm = React.createClass({
 		return (
 			<form onSubmit={this.handleRegister} className="register">
 				{error}
-				<TextField id="username" onChange={this.handleInputChange} value={this.state.username} type="username" floatingLabelText="Username"/>
+				<TextField id="username" onChange={this.handleInputChange} value={this.state.username} type="username" floatingLabelText={this.props.lang.username}/>
 				<br/>
-				<TextField id="pass1" onChange={this.handleInputChange} value={this.state.pass1} type="password" floatingLabelText="Password"/>
+				<TextField id="pass1" onChange={this.handleInputChange} value={this.state.pass1} type="password" floatingLabelText={this.props.lang.password}/>
 				<br/>
-				<TextField id="pass2" onChange={this.handleInputChange} value={this.state.pass2} type="password" floatingLabelText="Confirm Password"/>
+				<TextField id="pass2" onChange={this.handleInputChange} value={this.state.pass2} type="password" floatingLabelText={this.props.lang.confirmPassword}/>
 				<br/>
-				<TextField id="email" onChange={this.handleInputChange} value={this.state.email} type="email" floatingLabelText="Email"/>
+				<TextField id="email" onChange={this.handleInputChange} value={this.state.email} type="email" floatingLabelText={this.props.lang.email}/>
 				<br/>
 				<FlatButton type="submit"
 				            style={style.submitButton}
 				            onTouchStart={this.handleRegister}
 				            onclick={this.handleRegister}
-				            label="Submit" />
+				            label={this.props.lang.submit} />
 			</form>
 		);
 	},
@@ -129,14 +129,14 @@ const LoginForm = React.createClass({
 		return (
 			<form onSubmit={this.handleLogin} className="login">
 				{error}
-				<TextField onChange={this.handleInputChange} hintText="" floatingLabelText="Username"/>
+				<TextField onChange={this.handleInputChange} hintText="" floatingLabelText={this.props.lang.username}/>
 				<br/>
-				<TextField onChange={this.handleInputChange} type="password" hintText="" floatingLabelText="Password"/>
+				<TextField onChange={this.handleInputChange} type="password" hintText="" floatingLabelText={this.props.lang.password}/>
 				<br/>
 				<FlatButton style={style.submitButton}
 				            onTouchStart={this.handleLogin}
 				            onclick={this.handleLogin}
-				            label="Submit" />
+				            label={this.props.lang.login} />
 			</form>
 		);
 	},
