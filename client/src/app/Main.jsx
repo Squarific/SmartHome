@@ -139,6 +139,7 @@ class Main extends React.Component {
 		this.handleViewHouseHold = this.handleViewHouseHold.bind(this);
 		this.handleHome = this.handleHome.bind(this);
 		this.handleSignOut = this.handleSignOut.bind(this);
+		this.changeLang = this.changeLang.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
@@ -147,8 +148,14 @@ class Main extends React.Component {
 		  createSensorOpen: false,
 		  active: "Home",
 		  loggedIn: true,
-
+		  lang: "en",
 		};
+	}
+
+	changeLang (event) {
+		this.setState({lang: event.target.id});
+		rest.lang = Translations[event.target.id];
+		console.log(rest.lang);
 	}
 
 	/**
@@ -470,8 +477,8 @@ class Main extends React.Component {
 					
 				</div>
 				<div style={styles.footer}>
-					<img className="flag" src="images/flags/en.png" onClick={this.changeLang}/>
-					<img className="flag" src="images/flags/nl.png" onClick={this.changeLang}/>
+					<img id="en" className="flag" src="images/flags/en.png" onClick={this.changeLang}/>
+					<img id="nl" className="flag" src="images/flags/nl.png" onClick={this.changeLang}/>
 					Proudly presented to you by CertainlyNotEvilCorp
 				</div>
 			</div>
