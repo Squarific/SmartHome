@@ -82,10 +82,9 @@ const styles = {
 		textAlign: "center",
 	},
 	footer: {
-		background:"rgb(33, 33, 33)",
+		background:"rgb(60, 60, 60)",
 		padding: "5em",
 		color: "rgba(255, 255, 255, 0.87)",
-		fontWeight: 600,
 		fontSize: "1.2em",
 	},
 };

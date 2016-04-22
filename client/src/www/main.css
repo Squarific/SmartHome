@@ -25,4 +25,5 @@ label {
 	float:left;
 	height:1em;
 	margin-right:1em;
+	cursor: pointer;
 }
