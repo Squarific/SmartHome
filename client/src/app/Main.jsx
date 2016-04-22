@@ -19,6 +19,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
+import Snackbar from 'material-ui/lib/snackbar';
 
 // Own components
 import {RegisterForm, LoginForm} from './Components/Authentication'
@@ -140,6 +141,7 @@ class Main extends React.Component {
 		this.handleHome = this.handleHome.bind(this);
 		this.handleSignOut = this.handleSignOut.bind(this);
 		this.changeLang = this.changeLang.bind(this);
+		this.handleLanguageNotficationSnackbarRequestClose = this.handleLanguageNotficationSnackbarRequestClose.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
@@ -149,13 +151,17 @@ class Main extends React.Component {
 		  active: "Home",
 		  loggedIn: true,
 		  lang: "en",
+		  languageNotificationOpen: false,
 		};
 	}
 
+	handleLanguageNotficationSnackbarRequestClose () {
+		this.setState({languageNotificationOpen: false});
+	}
+
 	changeLang (event) {
-		this.setState({lang: event.target.id});
+		this.setState({lang: event.target.id, languageNotificationOpen: true});
 		rest.lang = Translations[event.target.id];
-		console.log(rest.lang);
 	}
 
 	/**
@@ -481,6 +487,12 @@ class Main extends React.Component {
 					<img id="nl" className="flag" src="images/flags/nl.png" onClick={this.changeLang}/>
 					Proudly presented to you by CertainlyNotEvilCorp
 				</div>
+				<Snackbar
+			      open={this.state.languageNotificationOpen}
+			      message={"Language changed to " + this.state.lang}
+			      autoHideDuration={3000}
+			      onRequestClose={this.handleLanguageNotficationSnackbarRequestClose}
+			    />
 			</div>
 			</MuiThemeProvider>
 		);
