@@ -362,7 +362,7 @@ class Main extends React.Component {
 						targetOrigin={{horizontal: 'right', vertical: 'top'}}
 						onRequestClose={this.handleLoginRequestClose}>
 						<div style={styles.popover}>
-							<LoginForm/>
+							<LoginForm rest={rest}/>
 						</div>
 					</Popover>		
 
@@ -373,7 +373,7 @@ class Main extends React.Component {
 						targetOrigin={{horizontal: 'right', vertical: 'top'}}
 						onRequestClose={this.handleRegisterRequestClose}>
 						<div style={styles.popover}>
-							<RegisterForm/>
+							<RegisterForm rest={rest}/>
 						</div>
 					</Popover>			
 
