@@ -38,7 +38,6 @@ const Notifications = React.createClass({
 			{/* Notifications here */}
 			<Notification notificationid={1} rest={this.props.rest} type="FRIEND REQUEST"/>
 			<Notification notificationid={2} rest={this.props.rest} type="ALERT"/>
-			<Notification notificationid={2} rest={this.props.rest} type="DANK MEME"/>
 			<br/>
 			</Card>
 		)
