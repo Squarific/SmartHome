@@ -299,10 +299,9 @@ class Main extends React.Component {
 		 * The actual components
 		 */
 
+		{/* AppBar */}
 		let userMenu;
 		if (this.state.loggedIn) {
-
-		
 			userMenu = <LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
 						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
 						<hr style={styles.horizontalLine} color="white"/>
@@ -321,46 +320,40 @@ class Main extends React.Component {
 					</LeftNav>;
 		}
 		else {
-			
 			userMenu = <LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
 						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
-
-
-						
-						
-					</LeftNav>;
+						</LeftNav>;
 		}
 
 		let logInBar
 		if (!this.state.loggedIn) {
 			logInBar = <AppBar
-					title="SmartHome"
-					iconElementRight={
-						<div>
-							<FlatButton style={styles.registerButton}
-							backgroundColor={"#FFFFFF"}
-							hoverColor={"#DDDDDD"}
-							rippleColor={"#BBBBBB"}
-							label="Register"
-							onTouchTap={this.handleRegisterTouchTap}/>
-							<FlatButton style={styles.loginButton}
-							backgroundColor={green600}
-							hoverColor={green700}
-							rippleColor={"#BBBBBB"}
-							label="Log in"
-							onTouchTap={this.handleLoginTouchTap}/>
-						</div>
-					}
+				title="SmartHome"
+				iconElementRight={
+					<div>
+						<FlatButton style={styles.registerButton}
+						backgroundColor={"#FFFFFF"}
+						hoverColor={"#DDDDDD"}
+						rippleColor={"#BBBBBB"}
+						label="Register"
+						onTouchTap={this.handleRegisterTouchTap}/>
+						<FlatButton style={styles.loginButton}
+						backgroundColor={green600}
+						hoverColor={green700}
+						rippleColor={"#BBBBBB"}
+						label="Log in"
+						onTouchTap={this.handleLoginTouchTap}/>
+					</div>
+				}
 
-					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
+				onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
 		}
 		else if (this.state.loggedIn) {
 			logInBar = <AppBar
-					title="SmartHome"
+			title="SmartHome"
 
-					onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
+			onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
 		}
-		 
 
 		return (
 			<MuiThemeProvider muiTheme={muiTheme}>
@@ -378,7 +371,7 @@ class Main extends React.Component {
 						targetOrigin={{horizontal: 'right', vertical: 'top'}}
 						onRequestClose={this.handleLoginRequestClose}>
 						<div style={styles.popover}>
-							<LoginForm/>
+							<LoginForm rest={rest}/>
 						</div>
 					</Popover>		
 
@@ -389,7 +382,7 @@ class Main extends React.Component {
 						targetOrigin={{horizontal: 'right', vertical: 'top'}}
 						onRequestClose={this.handleRegisterRequestClose}>
 						<div style={styles.popover}>
-							<RegisterForm/>
+							<RegisterForm rest={rest}/>
 						</div>
 					</Popover>			
 
@@ -398,7 +391,16 @@ class Main extends React.Component {
 					{userMenu}
 
 				</div>
+
+
+				{/* Body */}
 				<div style={styles.body}>
+
+					{/**
+					  * Body
+					  * This should become a PageComponent so that it can be switched
+					  * (so we dont need to refresh the page)
+					  */}
 
 					{(() => {
         				switch (this.state.active) {
@@ -407,7 +409,7 @@ class Main extends React.Component {
           					case "Home": return <Home />;
 
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
-          					case "green": return "#00FF00";
+
 
           					case "blue":  return "#0000FF";
           					default:      return <div style={styles.body2}><HouseHoldCard
@@ -420,19 +422,6 @@ class Main extends React.Component {
 													data={data}/></div>;
         				}
       				})()}
-						
-
-					{/**
-					  * Body
-					  * This should become a PageComponent so that it can be switched
-					  * (so we dont need to refresh the page)
-					  */}
-
-
-
-					
-
-
 
 					{/**
 					  * Dialog boxes
@@ -441,7 +430,6 @@ class Main extends React.Component {
 					{/* Create HouseHold */}
 
 					<Dialog style={styles.dialog}
-
 						title="Create Household"
 						open={this.state.createHouseHoldOpen}
 						onRequestClose={this.handleCreateHouseHoldClose}
@@ -457,7 +445,6 @@ class Main extends React.Component {
 							<br/>
 							<TextField hintText="" floatingLabelText="House number"/>
 						</form>
-
 					</Dialog>
 
 					{/* Create Sensor */}
@@ -482,6 +469,7 @@ class Main extends React.Component {
 							<TextField hintText="" floatingLabelText="Tags"/>
 						</form>
 					</Dialog>
+					
 				</div>
 			</div>
 			</MuiThemeProvider>

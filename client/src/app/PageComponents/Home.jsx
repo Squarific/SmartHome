@@ -20,13 +20,23 @@ const bodyStyles = {
 		marginLeft: 0,
 		marginRight: 0,
 		marginTop: -5,
+		paddingBottom: 40,
+		minWidth: "100%",
+		overflow: "hidden",
+
+		},
+	footer: {
+		color: 'white',
+		background: green300,
+		marginLeft: 0,
+		marginRight: 0,
+		marginTop: -5,
 		marginBottom: -20,
 		minWidth: "100%",
-
 		},
 	text: {
 		
-		textAlign: "left",
+		textAlign: "center",
 		marginLeft: "auto",
 		marginRight: "auto",
 		paddingTop: 20,
@@ -50,14 +60,13 @@ const bodyStyles = {
 		marginLeft:0,
 		marginRight: "auto",
 		float: "left",
-		textAlign: "center",
+		textAlign: "left",
 		},
 	box2: {
 		maxWidth: 511,
 		marginRight: 0,
 		marginLeft: "auto",
-
-		textAlign: "center",
+		textAlign: "right",
 	},
 	
 		
@@ -93,8 +102,8 @@ const Home = React.createClass({
 				</div>
 				<div style={bodyStyles.second}>
 					<div style={bodyStyles.text}>
-						<div style={bodyStyles.box1}><b>Welcome to SmartHome</b></div>
-						<div style={bodyStyles.box2}>lsqdjhgjqh</div>
+						<div style={bodyStyles.box1}><b>Welcome to SmartHome</b><br/><br/><br/>What is SmartHome? <br/><br/> SmartHome is a simple web application to manage your household consumption.</div>
+						<div style={bodyStyles.box2}></div>
 					</div>
 
 				</div>
@@ -106,10 +115,10 @@ const Home = React.createClass({
 								
 								/>
 						</div>
-												<div style={bodyStyles.box2}><b>Graphs</b> We are using</div>
+						<div style={bodyStyles.box2}><b>Graphs</b> <br/><br/><br/>3 different types of Graphs to represent your household data. <br/><br/>Check for yourself in the example on the left.</div>
 					</div>
 				</div>
-				<div style={bodyStyles.second}>
+				<div style={bodyStyles.footer}>
 					<div style={bodyStyles.text2}>©2016 - SmartHome Team</div>
 				</div>
 

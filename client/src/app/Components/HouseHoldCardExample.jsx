@@ -56,7 +56,7 @@ const HouseHoldCardExample = React.createClass({
 
 		return (<Card >
 			<CardHeader
-				title="HouseHold"
+				title="HouseHold's name"
 				/>
 			<CardMedia>
 				<GraphCard data={data}
