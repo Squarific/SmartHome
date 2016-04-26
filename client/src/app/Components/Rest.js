@@ -4,8 +4,9 @@
 
 	Example: const restClient = new Rest("http://localhost:8000/");
 */
-function Rest (server) {
+function Rest (server, lang) {
 	this.server = server;
+	this.lang = lang;
 }
 
 /*
@@ -48,7 +49,7 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 				data = JSON.parse(request.responseText);
 			} catch (e) {
 				callback({
-					error: "JSON Parse error:" + e,
+					error: this.lang.JSONError + " " + e,
 				});
 				return;
 			}
@@ -57,16 +58,16 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 		} else if (request.readyState === 4) {
 			if (request.status === 0) {
 				callback({
-					error: "Could not connect to the server, either it is offline or you don't have internet.",
+					error: this.lang.noInternet,
 				});
 				return
 			}
 
 			callback({
-				error: "Problem while trying to reach the server. Server responded with status: " + request.status,
+				error: this.lang.requestError + " " + request.status,
 			});
 		}
-	});
+	}.bind(this));
 
 	request.open("GET", this.server + cleanedMethod.join("/") + "/?" + cleanedOptions.join("&"));
 	request.send();
@@ -110,7 +111,7 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 				data = JSON.parse(request.responseText);
 			} catch (e) {
 				callback({
-					error: "JSON Parse error:" + e,
+					error: this.lang.JSONError + " " + e,
 				});
 				return;
 			}
@@ -119,16 +120,16 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 		} else if (request.readyState === 4) {
 			if (request.status === 0) {
 				callback({
-					error: "Could not connect to the server, either it is offline or you don't have internet.",
+					error: this.lang.noInternet,
 				});
-				return
+				return;
 			}
 
 			callback({
-				error: "Problem while trying to reach the server. Server responded with status: " + request.status,
+				error: this.lang.requestError + " " + request.status,
 			});
 		}
-	});
+	}.bind(this));
 
 	request.open("POST", this.server + cleanedMethod.join("/"));
 	request.send(options);

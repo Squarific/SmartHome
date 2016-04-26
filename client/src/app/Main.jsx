@@ -19,6 +19,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
+import Snackbar from 'material-ui/lib/snackbar';
 
 // Own components
 import {RegisterForm, LoginForm} from './Components/Authentication'
@@ -27,6 +28,7 @@ import Divider from 'material-ui/lib/divider';
 import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
 import {Rest} from './Components/Rest';
+import Translations from './Components/Translations';
 
 // Page components
 import {HouseHoldList} from './PageComponents/HouseHoldList';
@@ -56,6 +58,7 @@ const styles = {
 		marginTop: 20,
 		marginBottom: 20,
 		maxWidth: 1024,
+		minHeight: "40em",
 	},
 	cancelButton: {
 		color: grey500,
@@ -78,9 +81,15 @@ const styles = {
 	dialog: {
 		textAlign: "center",
 	},
+	footer: {
+		background:"rgb(60, 60, 60)",
+		padding: "5em",
+		color: "rgba(255, 255, 255, 0.87)",
+		fontSize: "1.2em",
+	},
 };
 
-const rest = new Rest("http://localhost:8000/");
+const rest = new Rest("http://localhost:8000/", Translations.en);
 
 const muiTheme = getMuiTheme({
 	palette: {
@@ -130,6 +139,8 @@ class Main extends React.Component {
 		this.handleViewHouseHold = this.handleViewHouseHold.bind(this);
 		this.handleHome = this.handleHome.bind(this);
 		this.handleSignOut = this.handleSignOut.bind(this);
+		this.changeLang = this.changeLang.bind(this);
+		this.handleLanguageNotficationSnackbarRequestClose = this.handleLanguageNotficationSnackbarRequestClose.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
@@ -138,8 +149,18 @@ class Main extends React.Component {
 		  createSensorOpen: false,
 		  active: "Home",
 		  loggedIn: true,
-
+		  lang: "en",
+		  languageNotificationOpen: false,
 		};
+	}
+
+	handleLanguageNotficationSnackbarRequestClose () {
+		this.setState({languageNotificationOpen: false});
+	}
+
+	changeLang (event) {
+		this.setState({lang: event.target.id, languageNotificationOpen: true});
+		rest.lang = Translations[event.target.id];
 	}
 
 	/**
@@ -460,6 +481,17 @@ class Main extends React.Component {
 					</Dialog>
 					
 				</div>
+				<div style={styles.footer}>
+					<img id="en" className="flag" src="images/flags/en.png" onClick={this.changeLang}/>
+					<img id="nl" className="flag" src="images/flags/nl.png" onClick={this.changeLang}/>
+					Proudly presented to you by CertainlyNotEvilCorp
+				</div>
+				<Snackbar
+			      open={this.state.languageNotificationOpen}
+			      message={"Language changed to " + this.state.lang}
+			      autoHideDuration={3000}
+			      onRequestClose={this.handleLanguageNotficationSnackbarRequestClose}
+			    />
 			</div>
 			</MuiThemeProvider>
 		);
