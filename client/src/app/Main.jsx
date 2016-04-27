@@ -413,7 +413,7 @@ class Main extends React.Component {
 						targetOrigin={{horizontal: 'right', vertical: 'top'}}
 						onRequestClose={this.handleLoginRequestClose}>
 						<div style={styles.popover}>
-							<LoginForm rest={rest}/>
+							<LoginForm rest={rest} lang={Translations[this.state.lang]}/>
 						</div>
 					</Popover>		
 
@@ -424,7 +424,7 @@ class Main extends React.Component {
 						targetOrigin={{horizontal: 'right', vertical: 'top'}}
 						onRequestClose={this.handleRegisterRequestClose}>
 						<div style={styles.popover}>
-							<RegisterForm rest={rest}/>
+							<RegisterForm rest={rest} lang={Translations[this.state.lang]}/>
 						</div>
 					</Popover>			
 
@@ -446,13 +446,11 @@ class Main extends React.Component {
 
 					{(() => {
         				switch (this.state.active) {
-
           					case "Home": return <Home />;
-          					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
+          					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
           					case "Wall":   return <Wall userid={1} rest={rest}/>;
           					case "Notifications":   return <Notifications userid={1} rest={rest}/>;
           					default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
-
         				}
       				})()}
 
@@ -511,7 +509,7 @@ class Main extends React.Component {
 				</div>
 				<Snackbar
 			      open={this.state.languageNotificationOpen}
-			      message={"Language changed to " + this.state.lang}
+			      message={"Language changed to " + this.state.lang.toUpperCase()}
 			      autoHideDuration={3000}
 			      onRequestClose={this.handleLanguageNotficationSnackbarRequestClose}
 			    />

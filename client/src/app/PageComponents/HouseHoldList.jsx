@@ -38,6 +38,10 @@ const HouseHoldList = React.createClass({
 			return (<HouseHoldCard id={household.id} rest={this.props.rest} title={household.attributes.name} key={index} />);
 		}.bind(this));
 
+		if (this.state.homes.length === 0) {
+			households = (<div>You don't have any households!</div>);
+		}
+
 		return (<div>
 			{households}
 		</div>);
