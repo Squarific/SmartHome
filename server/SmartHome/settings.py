@@ -149,6 +149,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 #    'localhost:8000',
 #]
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 SITE_ID = 1
 
 
