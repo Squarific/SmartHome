@@ -34,6 +34,8 @@ import Translations from './Components/Translations';
 // Page components
 import {HouseHoldList} from './PageComponents/HouseHoldList';
 import {Home} from './PageComponents/Home';
+import {Wall} from './PageComponents/Wall';
+import {Notifications} from './PageComponents/Notifications';
 
 //-------------------------------------------------------------
 
@@ -146,6 +148,8 @@ class Main extends React.Component {
 		this.handleCreateSensorRequest = this.handleCreateSensorRequest.bind(this);
 		this.handleCreateSensorClose = this.handleCreateSensorClose.bind(this);
 		this.handleViewHouseHold = this.handleViewHouseHold.bind(this);
+		this.handleViewWall = this.handleViewWall.bind(this);
+		this.handleViewNotifications = this.handleViewNotifications.bind(this);
 		this.handleHome = this.handleHome.bind(this);
 		this.handleSignOut = this.handleSignOut.bind(this);
 		this.changeLang = this.changeLang.bind(this);
@@ -265,6 +269,20 @@ class Main extends React.Component {
 		});
 	}
 
+	handleViewWall() {
+		this.setState({
+			navbarOpen: false,	
+			active: "Wall",
+		});
+	}
+
+	handleViewNotifications() {
+		this.setState({
+			navbarOpen: false,	
+			active: "Notifications",
+		});
+	}
+
 	handleHome() {
 		this.setState({
 			navbarOpen: false,
@@ -332,6 +350,9 @@ class Main extends React.Component {
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
 						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleViewWall}>Wall</MenuItem>
+						<MenuItem onTouchTap={this.handleViewNotifications}>Notifications</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem>Account Options</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
@@ -426,19 +447,12 @@ class Main extends React.Component {
 					{(() => {
         				switch (this.state.active) {
 
-          					case "Second":   return "TRoL";
           					case "Home": return <Home />;
-
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
+          					case "Wall":   return <Wall userid={1} rest={rest}/>;
+          					case "Notifications":   return <Notifications userid={1} rest={rest}/>;
+          					default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
 
-          					default:      return <div style={styles.body2}><HouseHoldCard
-
-													title="Naam card (bv Huis van Bart: Vaatwasmachine)"
-													subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
-													prev="vorige week"
-													next="volgende week"
-
-													data={data}/></div>;
         				}
       				})()}
 
@@ -488,7 +502,7 @@ class Main extends React.Component {
 							<TextField hintText="" floatingLabelText="Tags"/>
 						</form>
 					</Dialog>
-					
+
 				</div>
 				<div style={styles.footer}>
 					<img id="en" className="flag" src="images/flags/en.png" onClick={this.changeLang}/>
