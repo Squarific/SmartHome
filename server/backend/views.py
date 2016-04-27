@@ -3,11 +3,14 @@ from backend.serializers import *
 from django.utils import timezone, dateparse
 
 from django.contrib.auth.models import User
-from django.db.models import F
+from django.db.models import F, Q
+from django.http import Http404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, status
+
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
@@ -29,10 +32,10 @@ def ParseConfig(data):
             tag = Tag.objects.get(name = s)
             sensor = Sensor(home=home, name=s, power_unit='Wh', date_created=timezone.now())
             sensor.save()
-            
+
             relation = SensorsTags(sensor=sensor, tag=tag, date_created=timezone.now())
             relation.save()
-    
+
 
 def ParseData(csvreader):
     sensor_map = {}
@@ -56,11 +59,52 @@ class TwitterLogin(LoginView):
     serializer_class = TwitterLoginSerializer
     adapter_class = TwitterOAuthAdapter
 
+#######################
+# User API
+#######################
+class UserList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(APIView):
+    permission_classes = (IsAuthenticated,)
+    #queryset = User.objects.all()
+    #serializer_class = UserSerializer
+
+    def get_object(self, pk):
+        if (pk == 'me'):
+            return self.request.user
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        user = self.get_object(pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+class FriendsList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.all().filter(Q(sent_requests__status = 1, sent_requests__receiver = self.request.user) | Q(received_requests__status = 1, received_requests__sender=self.request.user))
+        #return self.request.user.sent_requests.filter(status = 1)
+
+class PostsList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
 class HomeList(generics.ListCreateAPIView):
     """
     List all homes, or create a new home.
     """
+    permission_classes = (IsAuthenticated,)
     queryset = Home.objects.all()
     serializer_class = HomeSerializer
 
@@ -68,6 +112,7 @@ class HomeListByUser(APIView):
     """
     List homes for a given user id.
     """
+    permission_classes = (IsAuthenticated,)
     def get(self, request, pk, format=None):
         homes = Home.objects.filter(owner=pk)
         serializer = HomeSerializer(homes, many=True)
@@ -77,6 +122,7 @@ class HomeDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a home instance.
     """
+    permission_classes = (IsAuthenticated,)
     queryset = Home.objects.all()
     serializer_class = HomeSerializer
 
@@ -85,6 +131,7 @@ class SensorList(generics.ListCreateAPIView):
     """
     List all sensors, or create a new sensor.
     """
+    permission_classes = (IsAuthenticated,)
     queryset = Sensor.objects.all()
     serializer_class = SensorSerializer
 
@@ -93,6 +140,7 @@ class SensorDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a sensor instance.
     """
+    permission_classes = (IsAuthenticated,)
     queryset = Sensor.objects.all()
     serializer_class = SensorSerializer
 
@@ -101,19 +149,23 @@ class TagList(generics.ListCreateAPIView):
     """
     List all tags, or create a new tag.
     """
+    permission_classes = (IsAuthenticated,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
-class SensorDetail(generics.RetrieveUpdateDestroyAPIView):
+class TagDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a tag instance.
     """
+    permission_classes = (IsAuthenticated,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 class DataList(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, user_id, format=None):
         user = User.objects.get(pk=user_id)
         home_data = []
@@ -123,16 +175,18 @@ class DataList(APIView):
                 now = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
                 recent_data = RecentData.objects.filter(sensor=sensor, timestamp__gte=(now - timedelta(days=2)))
                 daily_data = DailyData.objects.filter(sensor=sensor, timestamp__lt=(now - timedelta(days=1)))
-                
+
                 for dataset in [daily_data, recent_data]:
                     sensor_data['data'].append( [{'timestamp':data.timestamp, 'sensor_id':sensor.id, 'usage':data.usage, 'n_measurements':data.n_measurements, 'interval':data.get_resolution()} for data in dataset] )
 
             home_data.append( sensor_data )
-        
+
         return Response(home_data)
 
 
 class UserDataList(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, user_id, format=None):
         now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         from_date = self.get_from_date(now)
@@ -142,6 +196,8 @@ class UserDataList(APIView):
 
 
 class RecentUserDataList(UserDataList):
+    permission_classes = (IsAuthenticated,)
+
     def get_class(self):
         return RecentData
 
@@ -150,6 +206,8 @@ class RecentUserDataList(UserDataList):
 
 
 class DailyUserDataList(UserDataList):
+    permission_classes = (IsAuthenticated,)
+
     def get_class(self):
         return DailyData
 
@@ -158,6 +216,8 @@ class DailyUserDataList(UserDataList):
 
 
 class MonthlyUserDataList(UserDataList):
+    permission_classes = (IsAuthenticated,)
+
     def get_class(self):
         return MonthlyData
 
@@ -166,6 +226,8 @@ class MonthlyUserDataList(UserDataList):
 
 
 class YearlyUserDataList(UserDataList):
+    permission_classes = (IsAuthenticated,)
+
     def get_class(self):
         return YearlyData
 
@@ -174,6 +236,8 @@ class YearlyUserDataList(UserDataList):
 
 
 class HomeDataList(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, home_id, format=None):
         from_date = datetime.now() - relativedelta(years=1)
         recent_data = RecentData.objects.filter(sensor__home_id=home_id, timestamp__gte=from_date).annotate(sensor_name=F('sensor__name')).values('sensor_id', 'sensor_name', 'timestamp').annotate(usage=Sum('usage')).order_by('sensor_name', 'timestamp')
