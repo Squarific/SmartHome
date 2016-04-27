@@ -4,8 +4,9 @@
 
 	Example: const restClient = new Rest("http://localhost:8000/");
 */
-function Rest (server) {
+function Rest (server, lang) {
 	this.server = server;
+	this.lang = lang;
 }
 
 /*
@@ -34,7 +35,7 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 	});
 
 	const cleanedOptions = [];
-	for (key in options) {
+	for (let key in options) {
 		cleanedOptions.push(encodeURIComponent(key) + "=" + encodeURIComponent(options[key]));
 	}
 
@@ -48,7 +49,7 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 				data = JSON.parse(request.responseText);
 			} catch (e) {
 				callback({
-					error: "JSON Parse error:" + e,
+					error: this.lang.JSONError + " " + e,
 				});
 				return;
 			}
@@ -57,19 +58,81 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 		} else if (request.readyState === 4) {
 			if (request.status === 0) {
 				callback({
-					error: "Could not connect to the server, either it is offline or you don't have internet.",
+					error: this.lang.noInternet,
 				});
 				return
 			}
 
 			callback({
-				error: "Problem while trying to reach the server. Server responded with status: " + request.status,
+				error: this.lang.requestError + " " + request.status,
 			});
 		}
-	});
+	}.bind(this));
 
 	request.open("GET", this.server + cleanedMethod.join("/") + "/?" + cleanedOptions.join("&"));
 	request.send();
+};
+
+/*
+	This function makes a POST request to server
+
+	The methodArray will be appended at the end of the server
+	Every entry will be encoded using encodeUriComponent
+
+	Options are the POST options, they will be send as JSON
+
+	Callback will be called with the response
+	It is given an object, the object will have an error property set
+	if something went wrong during the request.
+
+	This function throws an error if the methodarray is not supplied.
+*/
+Rest.prototype.post = function post (methodArray, options, callback) {
+	if (!methodArray || typeof methodArray.length !== "number")
+		throw "Request expects a method list as second parameter";
+
+	const cleanedMethod = [];
+	methodArray.forEach(function (el) {
+		cleanedMethod.push(encodeURIComponent(el));
+	});
+
+	const cleanedOptions = [];
+	for (let key in options) {
+		cleanedOptions.push(encodeURIComponent(key) + "=" + encodeURIComponent(options[key]));
+	}
+
+	const request = new XMLHttpRequest();
+
+	request.addEventListener("readystatechange", function (event) {
+		if (request.readyState === 4 && request.status === 200) {
+			let data;
+
+			try {
+				data = JSON.parse(request.responseText);
+			} catch (e) {
+				callback({
+					error: this.lang.JSONError + " " + e,
+				});
+				return;
+			}
+
+			callback(data);
+		} else if (request.readyState === 4) {
+			if (request.status === 0) {
+				callback({
+					error: this.lang.noInternet,
+				});
+				return;
+			}
+
+			callback({
+				error: this.lang.requestError + " " + request.status,
+			});
+		}
+	}.bind(this));
+
+	request.open("POST", this.server + cleanedMethod.join("/"));
+	request.send(options);
 };
 
 module.exports = {

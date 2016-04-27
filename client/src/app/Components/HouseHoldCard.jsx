@@ -72,16 +72,16 @@ const HouseHoldCard = React.createClass({
 		if (this.state.error) return (<div>{this.state.error}</div>);
 		if (this.state.loading) return (<Card style={style}>
 			<CardHeader
-				title={this.props.title || "Loading..."}
-				subtitle={this.state.subtitle || "Loading..."}/>
+				title={this.props.title || this.props.lang.loading}
+				subtitle={this.state.subtitle || this.props.lang.loading}/>
 			<CardMedia>
 				<div><CircularProgress /></div>
 			</CardMedia>
 			<CardText>
 			</CardText>
 			<CardActions>
-				<FlatButton label={this.props.prev || "Vorige"} />
-				<FlatButton label={this.props.next || "Volgende"} />
+				<FlatButton label={this.props.prev || this.props.lang.previous} />
+				<FlatButton label={this.props.next || this.props.lang.next} />
 			</CardActions>
 			</Card>);
 
@@ -101,8 +101,8 @@ const HouseHoldCard = React.createClass({
 
 		return (<Card style={style}>
 			<CardHeader
-				title={this.props.title || "Household"}
-				subtitle={this.state.subtitle || "Loading..."}/>
+				title={this.props.title || this.props.lang.household}
+				subtitle={this.state.subtitle || this.props.lang.loading}/>
 			<CardMedia>
 				<GraphCard data={data}
 						graphType="Bar"
@@ -111,8 +111,8 @@ const HouseHoldCard = React.createClass({
 			<CardText>
 			</CardText>
 			<CardActions>
-				<FlatButton label={this.props.prev || "Vorige"} />
-				<FlatButton label={this.props.next || "Volgende"} />
+				<FlatButton label={this.props.prev || this.props.lang.previous} />
+				<FlatButton label={this.props.next || this.props.lang.next} />
 			</CardActions>
 			</Card>
 		);
