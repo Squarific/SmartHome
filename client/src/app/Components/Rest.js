@@ -42,7 +42,7 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 	const request = new XMLHttpRequest();
 
 	request.addEventListener("readystatechange", function (event) {
-		if (request.readyState === 4 && request.status === 200) {
+		if (request.readyState === 4 && request.status >= 200 && request.status < 300) {
 			let data;
 
 			try {
@@ -104,7 +104,7 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 	const request = new XMLHttpRequest();
 
 	request.addEventListener("readystatechange", function (event) {
-		if (request.readyState === 4 && request.status === 200) {
+		if (request.readyState === 4 && request.status >= 200 && request.status < 300) {
 			let data;
 
 			try {
@@ -131,8 +131,9 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 		}
 	}.bind(this));
 
-	request.open("POST", this.server + cleanedMethod.join("/"));
-	request.send(options);
+	request.open("POST", this.server + cleanedMethod.join("/") + "/");
+	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	request.send(cleanedOptions.join("&"));
 };
 
 module.exports = {

@@ -36,21 +36,39 @@ const RegisterForm = React.createClass({
 		event.preventDefault();
 
 		this.props.rest.post(["api", "auth", "registration"], {
-			username: this.state.Username,
-			password1: this.state.Password1,
-			password2: this.state.Password2,
-			email: this.state.Email,
-		}, function (data) {
-			console.log(data);
-			if (data.error) {
-				this.setState({error: data.error});
-			} else {
-				this.setState({success: true});
-			}
-		}.bind(this));
+			username: this.state.username,
+			password1: this.state.pass1,
+			password2: this.state.pass2,
+			email: this.state.email,
+		}, this.handleActivate);
 
 		this.setState({error: "Registering..."});
 		return false;
+	},
+	handleActivate: function (data) {
+		if (data.error) {
+			this.setState({error: data.error});
+		} else {
+			console.log(data);
+			this.props.rest.post(["api", "auth", "registration", "verify-email"], {
+				key: data.key, //TODO USE RIGHT PROPERTY
+			}, this.handleLogin);
+
+			this.setState({error: "Activating..."});
+		}
+	},
+	handleLogin: function (data) {
+		if (data.error) {
+			this.setState({error: data.error});
+		} else {
+			this.props.rest.post(["api", "auth", "login"], {
+				// FILL IN LOGIN VALUES
+			}, this.handleLoggedIn);
+			this.setState({error: "Registered. Logging in..."});
+		}
+	},
+	handleLoggedIn: function () {
+		// Call callback
 	},
 	render: function () {
 		if (this.state.success) {
