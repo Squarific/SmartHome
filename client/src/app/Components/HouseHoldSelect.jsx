@@ -27,7 +27,7 @@ const HouseHoldSelect = React.createClass({
 		}
 
 		return (
-			<SelectField style={styles.householdselect} value={this.state.value} onChange={this.handleChange} floatingLabelText="Household">
+			<SelectField style={styles.householdselect} value={this.state.value} onChange={this.handleChange} floatingLabelText={this.props.lang.household}>
 				{MenuItems}
 			</SelectField>
 		)

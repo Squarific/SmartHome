@@ -8,9 +8,6 @@ import FlatButton from 'material-ui/lib/flat-button';
 	######################################
 */
 
-/*
-	Register component
-*/
 
 const style = {
 	submitButton: {
@@ -21,6 +18,14 @@ const style = {
 		display: "block",
 	},
 }
+
+/*
+	Register component
+	Props: {
+		rest: new Rest(),
+		onLogin: function () {}
+	}
+*/
 
 const RegisterForm = React.createClass({
 	getInitialState: function () {
@@ -36,21 +41,50 @@ const RegisterForm = React.createClass({
 		event.preventDefault();
 
 		this.props.rest.post(["api", "auth", "registration"], {
-			username: this.state.Username,
-			password1: this.state.Password1,
-			password2: this.state.Password2,
-			email: this.state.Email,
-		}, function (data) {
-			console.log(data);
-			if (data.error) {
-				this.setState({error: data.error});
-			} else {
-				this.setState({success: true});
-			}
-		}.bind(this));
+			username: this.state.username,
+			password1: this.state.pass1,
+			password2: this.state.pass2,
+			email: this.state.email,
+		}, this.handleActivate);
 
 		this.setState({error: "Registering..."});
 		return false;
+	},
+	handleActivate: function (data) {
+		if (data.error) {
+			// If there was an error but no response something went wrong
+			if (!data.response || !data.response.errors) {
+				this.setState({error: data.error});
+			} else {
+			// If the server send us an error in the response, display that instead
+				let errors = "";
+				for (let k = 0; k < data.response.errors.length; k++)
+					errors += " " + data.response.errors[k].detail;
+
+				this.setState({error: errors})
+			}
+		} else {
+			this.props.rest.post(["api", "auth", "registration", "verify-email"], {
+				key: data.data.attributes.key,
+			}, this.handleLogin);
+
+			this.setState({error: "Activating..."});
+		}
+	},
+	handleLogin: function (data) {
+		if (data.error) {
+			this.setState({error: data.error});
+		} else {
+			this.props.rest.post(["api", "auth", "login"], {
+				username: this.state.username,
+				password: this.state.pass1,
+			}, this.handleLoggedIn);
+			this.setState({error: "Registered and activated. Logging in..."});
+		}
+	},
+	handleLoggedIn: function () {
+		if (typeof this.props.onLogin === "function")
+			this.props.onLogin();
 	},
 	render: function () {
 		if (this.state.success) {
@@ -80,7 +114,7 @@ const RegisterForm = React.createClass({
 				<FlatButton type="submit"
 				            style={style.submitButton}
 				            onTouchStart={this.handleRegister}
-				            onclick={this.handleRegister}
+				            onClick={this.handleRegister}
 				            label={this.props.lang.submit} />
 			</form>
 		);
@@ -89,34 +123,51 @@ const RegisterForm = React.createClass({
 
 /*
 	Login component
+	Props: {
+		rest: new Rest(),
+		onLogin: function () {}
+	}
 */
 
 const LoginForm = React.createClass({
 	getInitialState: function () {
 		return {};
 	},
+	handleInputChange: function (event) {
+		let newState = {};
+		newState[event.target.id] = event.target.value;
+		this.setState(newState);
+	},
 	handleLogin: function () {
 		// Don't refresh the page
 		event.preventDefault();
 		
-		this.props.rest.get(["rest-auth", "login"], {
-			username,
-			password,
+		this.props.rest.post(["api", "auth", "login"], {
+			username: this.state.username,
+			password: this.state.password,
 		}, function (data) {
 			if (data.error) {
-				this.setState({error: data.error});
+				// If there was an error but no response something went wrong
+				if (!data.response || !data.response.errors) {
+					this.setState({error: data.error});
+				} else {
+				// If the server send us an error in the response, display that instead
+					let errors = "";
+					for (let k = 0; k < data.response.errors.length; k++)
+						errors += " " + data.response.errors[k].detail;
+
+					this.setState({error: errors})
+				}
 			} else {
-				this.setState({success: true});
+				console.log(data, this.props)
+				if (typeof this.props.onLogin === "function")
+					this.props.onLogin();
 			}
-		});
+		}.bind(this));
 
 		return false;
 	},
 	render: function () {
-		if (this.state.success) {
-			return (<div>You are successfully logged in.</div>);
-		}
-
 		let error;
 		if (this.state.error) {
 			error = (
@@ -129,13 +180,13 @@ const LoginForm = React.createClass({
 		return (
 			<form onSubmit={this.handleLogin} className="login">
 				{error}
-				<TextField onChange={this.handleInputChange} hintText="" floatingLabelText={this.props.lang.username}/>
+				<TextField id="username" onChange={this.handleInputChange} hintText="" floatingLabelText={this.props.lang.username}/>
 				<br/>
-				<TextField onChange={this.handleInputChange} type="password" hintText="" floatingLabelText={this.props.lang.password}/>
+				<TextField id="password" onChange={this.handleInputChange} type="password" hintText="" floatingLabelText={this.props.lang.password}/>
 				<br/>
 				<FlatButton style={style.submitButton}
 				            onTouchStart={this.handleLogin}
-				            onclick={this.handleLogin}
+				            onClick={this.handleLogin}
 				            label={this.props.lang.login} />
 			</form>
 		);
