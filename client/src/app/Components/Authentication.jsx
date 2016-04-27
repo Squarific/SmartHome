@@ -35,7 +35,7 @@ const RegisterForm = React.createClass({
 		// Don't refresh the page
 		event.preventDefault();
 
-		this.props.rest.post(["rest-auth", "registration"], {
+		this.props.rest.post(["api", "auth", "registration"], {
 			username: this.state.Username,
 			password1: this.state.Password1,
 			password2: this.state.Password2,
