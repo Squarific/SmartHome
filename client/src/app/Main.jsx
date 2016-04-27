@@ -383,7 +383,7 @@ class Main extends React.Component {
 						targetOrigin={{horizontal: 'right', vertical: 'top'}}
 						onRequestClose={this.handleLoginRequestClose}>
 						<div style={styles.popover}>
-							<LoginForm rest={rest}/>
+							<LoginForm rest={rest} lang={Translations[this.state.lang]}/>
 						</div>
 					</Popover>		
 
@@ -394,7 +394,7 @@ class Main extends React.Component {
 						targetOrigin={{horizontal: 'right', vertical: 'top'}}
 						onRequestClose={this.handleRegisterRequestClose}>
 						<div style={styles.popover}>
-							<RegisterForm rest={rest}/>
+							<RegisterForm rest={rest} lang={Translations[this.state.lang]}/>
 						</div>
 					</Popover>			
 
@@ -420,7 +420,7 @@ class Main extends React.Component {
           					case "Second":   return "TRoL";
           					case "Home": return "shit on the homepage";
 
-          					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
+          					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
 
           					default:      return <HouseHoldCard
 
@@ -488,7 +488,7 @@ class Main extends React.Component {
 				</div>
 				<Snackbar
 			      open={this.state.languageNotificationOpen}
-			      message={"Language changed to " + this.state.lang}
+			      message={"Language changed to " + this.state.lang.toUpperCase()}
 			      autoHideDuration={3000}
 			      onRequestClose={this.handleLanguageNotficationSnackbarRequestClose}
 			    />
