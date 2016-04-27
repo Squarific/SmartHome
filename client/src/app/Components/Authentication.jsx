@@ -64,22 +64,11 @@ const RegisterForm = React.createClass({
 				this.setState({error: errors})
 			}
 		} else {
-			this.props.rest.post(["api", "auth", "registration", "verify-email"], {
-				key: data.data.attributes.key,
-			}, this.handleLogin);
-
-			this.setState({error: "Activating..."});
-		}
-	},
-	handleLogin: function (data) {
-		if (data.error) {
-			this.setState({error: data.error});
-		} else {
 			this.props.rest.post(["api", "auth", "login"], {
 				username: this.state.username,
 				password: this.state.pass1,
 			}, this.handleLoggedIn);
-			this.setState({error: "Registered and activated. Logging in..."});
+			this.setState({error: "Registered. Logging in..."});
 		}
 	},
 	handleLoggedIn: function () {
