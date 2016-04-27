@@ -114,7 +114,7 @@ const RegisterForm = React.createClass({
 				<FlatButton type="submit"
 				            style={style.submitButton}
 				            onTouchStart={this.handleRegister}
-				            onclick={this.handleRegister}
+				            onClick={this.handleRegister}
 				            label={this.props.lang.submit} />
 			</form>
 		);
@@ -142,13 +142,24 @@ const LoginForm = React.createClass({
 		// Don't refresh the page
 		event.preventDefault();
 		
-		this.props.rest.get(["api", "auth", "login"], {
+		this.props.rest.post(["api", "auth", "login"], {
 			username: this.state.username,
 			password: this.state.password,
 		}, function (data) {
 			if (data.error) {
-				this.setState({error: data.error});
+				// If there was an error but no response something went wrong
+				if (!data.response || !data.response.errors) {
+					this.setState({error: data.error});
+				} else {
+				// If the server send us an error in the response, display that instead
+					let errors = "";
+					for (let k = 0; k < data.response.errors.length; k++)
+						errors += " " + data.response.errors[k].detail;
+
+					this.setState({error: errors})
+				}
 			} else {
+				console.log(data, this.props)
 				if (typeof this.props.onLogin === "function")
 					this.props.onLogin();
 			}
@@ -175,7 +186,7 @@ const LoginForm = React.createClass({
 				<br/>
 				<FlatButton style={style.submitButton}
 				            onTouchStart={this.handleLogin}
-				            onclick={this.handleLogin}
+				            onClick={this.handleLogin}
 				            label={this.props.lang.login} />
 			</form>
 		);

@@ -289,6 +289,8 @@ class Main extends React.Component {
 		this.setState({
 			loggedIn: true,
 			active: "HouseHoldList",
+			loginOpen: false,
+			registerOpen: false,
 		});
 	}
 
