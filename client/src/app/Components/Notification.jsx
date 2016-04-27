@@ -19,6 +19,7 @@ const styles = {
 		display: "inline-block",
 		verticalAlign: "middle",
 		maxWidth: "25%",
+		minwidth: "25%",
 	},
 	right: {
 		verticalAlign: "middle",
@@ -48,7 +49,7 @@ const Notification = React.createClass({
 		let actions;
 		if (this.props.type === "FRIEND REQUEST") {
 			actions = <FlatButton style={styles.right2}
-				label="ACCEPT"
+				label={this.props.lang.accept}
 				primary={true}/>;
 		} else if (this.props.type === "ALERT") {
 			actions = '';
@@ -65,17 +66,26 @@ const Notification = React.createClass({
 			message = "ERROR: " + this.props.type + " is not a valid notification type.";
 		}
 
+		let typeTranslated;
+		if (this.props.type === "FRIEND REQUEST") {
+			typeTranslated = this.props.lang.friendRequest;
+		} else if (this.props.type === "ALERT") {
+			typeTranslated = this.props.lang.alert;
+		} else {
+			typeTranslated = "Error"
+		}
+
 		return (
 			<Card style={styles.notification}>
 			<CardHeader style={styles.inline}
-				title={this.props.type}
+				title={typeTranslated}
 				subtitle={"21/04/2016 - 14:37"}/>
 			<CardText  style={styles.inline}>
 				{message}
 			</CardText>
 			{actions}
 			<FlatButton style={styles.right}
-				label="CLEAR"
+				label={this.props.lang.clear}
 				secondary={true}/>
 			</Card>
 		)

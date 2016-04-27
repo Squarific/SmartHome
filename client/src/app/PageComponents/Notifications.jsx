@@ -28,16 +28,16 @@ const Notifications = React.createClass({
 		return (
 			<Card>
 			<CardHeader
-				title="Notifications"
+				title={this.props.lang.notifications}
 				subtitle="Filip Smets"/>
 			<CardActions>
-				<FlatButton label="Clear all"
+				<FlatButton label={this.props.lang.clearAll}
 					primary={true}/>
 			</CardActions>
 
 			{/* Notifications here */}
-			<Notification notificationid={1} rest={this.props.rest} type="FRIEND REQUEST"/>
-			<Notification notificationid={2} rest={this.props.rest} type="ALERT"/>
+			<Notification notificationid={1} rest={this.props.rest} lang={this.props.lang} type="FRIEND REQUEST"/>
+			<Notification notificationid={2} rest={this.props.rest} lang={this.props.lang} type="ALERT"/>
 			<br/>
 			</Card>
 		)

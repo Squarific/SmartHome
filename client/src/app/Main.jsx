@@ -446,8 +446,8 @@ class Main extends React.Component {
         				switch (this.state.active) {
           					case "Home": return <Home />;
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
-          					case "Wall":   return <Wall userid={1} rest={rest}/>;
-          					case "Notifications":   return <Notifications userid={1} rest={rest}/>;
+          					case "Wall":   return <Wall userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
+          					case "Notifications":   return <Notifications userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
           					default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
         				}
       				})()}
@@ -507,7 +507,7 @@ class Main extends React.Component {
 				</div>
 				<Snackbar
 			      open={this.state.languageNotificationOpen}
-			      message={"Language changed to " + this.state.lang.toUpperCase()}
+			      message={Translations[this.state.lang].languageChanged + this.state.lang.toUpperCase()}
 			      autoHideDuration={3000}
 			      onRequestClose={this.handleLanguageNotficationSnackbarRequestClose}
 			    />

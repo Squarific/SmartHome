@@ -25,7 +25,7 @@ const WallPost = React.createClass({
 		return (
 			<Card style={styles.wallpost}>
 			<CardHeader
-				title={"Post from David"}
+				title={this.props.lang.postFrom + "David"}
 				subtitle={"21/04/2016 - 13:57"}/>
 			<CardText>
 				Hey boys, alles goed met jullie verbruik?

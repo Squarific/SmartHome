@@ -25,12 +25,22 @@ const nl = {
 	powerUnit: "Eenheid",
 	cancel: "Annuleren",
 	create: "Aanmaken",
-	footerMessage: "Gebracht door CertainlyNotEvilCorp",
+	footerMessage: "Gemaakt door CertainlyNotEvilCorp",
 	home: "Home",
 	viewHouseholds: "Huishoudens bekijken",
 	wall: "Wall",
 	notifications: "Notificaties",
 	signOut: "Afmelden",
+	languageChanged: "Taal veranderd naar ",
+	post: "Versturen",
+	postToWall: "Maak een post",
+	message: "Bericht",
+	postFrom: "Bericht van ",
+	clearAll: "Alles markeren als gelezen",
+	clear: "Gelezen",
+	accept: "Accepteer",
+	friendRequest: "Vriendschapsverzoek",
+	alert: "Melding",
 }
 
 const en = {
@@ -66,6 +76,16 @@ const en = {
 	wall: "Wall",
 	notifications: "Notifications",
 	signOut: "Sign Out",
+	languageChanged: "Language changed to ",
+	post: "Post",
+	postToWall: "Post a message",
+	message: "Message",
+	postFrom: "Post from ",
+	clearAll: "Clear all",
+	clear: "Clear",
+	accept: "Accept",
+	friendRequest: "Friend Request",
+	alert: "Alert",
 }
 
 module.exports = {
