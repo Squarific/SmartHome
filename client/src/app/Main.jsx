@@ -19,6 +19,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
+import Snackbar from 'material-ui/lib/snackbar';
 
 // Own components
 import {RegisterForm, LoginForm} from './Components/Authentication'
@@ -27,16 +28,22 @@ import Divider from 'material-ui/lib/divider';
 import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
 import {Rest} from './Components/Rest';
+import Translations from './Components/Translations';
+
 
 // Page components
 import {HouseHoldList} from './PageComponents/HouseHoldList';
-
+import {Home} from './PageComponents/Home';
+import {Wall} from './PageComponents/Wall';
+import {Notifications} from './PageComponents/Notifications';
 
 //-------------------------------------------------------------
 
 const styles = {
 	container: {
 		textAlign: 'center',
+		maxWidth: "100%",
+		minWidth: "100%",
 	},
 	header: {
 	},
@@ -55,7 +62,14 @@ const styles = {
 		marginRight: "auto",
 		marginTop: 20,
 		marginBottom: 20,
+		maxWidth:"100%",
+		minWidth: "100",
+	},
+	body2: {
 		maxWidth: 1024,
+		marginLeft: "auto",
+		marginRight: "auto",
+		minHeight: "40em",
 	},
 	cancelButton: {
 		color: grey500,
@@ -78,9 +92,15 @@ const styles = {
 	dialog: {
 		textAlign: "center",
 	},
+	footer: {
+		background:"rgb(60, 60, 60)",
+		padding: "5em",
+		color: "rgba(255, 255, 255, 0.87)",
+		fontSize: "1.2em",
+	},
 };
 
-const rest = new Rest("http://localhost:8000/");
+const rest = new Rest("http://localhost:8000/", Translations.en);
 
 const muiTheme = getMuiTheme({
 	palette: {
@@ -128,8 +148,12 @@ class Main extends React.Component {
 		this.handleCreateSensorRequest = this.handleCreateSensorRequest.bind(this);
 		this.handleCreateSensorClose = this.handleCreateSensorClose.bind(this);
 		this.handleViewHouseHold = this.handleViewHouseHold.bind(this);
+		this.handleViewWall = this.handleViewWall.bind(this);
+		this.handleViewNotifications = this.handleViewNotifications.bind(this);
 		this.handleHome = this.handleHome.bind(this);
 		this.handleSignOut = this.handleSignOut.bind(this);
+		this.changeLang = this.changeLang.bind(this);
+		this.handleLanguageNotficationSnackbarRequestClose = this.handleLanguageNotficationSnackbarRequestClose.bind(this);
 
 		this.state = {
 		  navbarOpen: false,
@@ -138,8 +162,18 @@ class Main extends React.Component {
 		  createSensorOpen: false,
 		  active: "Home",
 		  loggedIn: true,
-
+		  lang: "en",
+		  languageNotificationOpen: false,
 		};
+	}
+
+	handleLanguageNotficationSnackbarRequestClose () {
+		this.setState({languageNotificationOpen: false});
+	}
+
+	changeLang (event) {
+		this.setState({lang: event.target.id, languageNotificationOpen: true});
+		rest.lang = Translations[event.target.id];
 	}
 
 	/**
@@ -235,6 +269,20 @@ class Main extends React.Component {
 		});
 	}
 
+	handleViewWall() {
+		this.setState({
+			navbarOpen: false,	
+			active: "Wall",
+		});
+	}
+
+	handleViewNotifications() {
+		this.setState({
+			navbarOpen: false,	
+			active: "Notifications",
+		});
+	}
+
 	handleHome() {
 		this.setState({
 			navbarOpen: false,
@@ -302,6 +350,9 @@ class Main extends React.Component {
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
 						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
+						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleViewWall}>Wall</MenuItem>
+						<MenuItem onTouchTap={this.handleViewNotifications}>Notifications</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem>Account Options</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
@@ -396,19 +447,12 @@ class Main extends React.Component {
 					{(() => {
         				switch (this.state.active) {
 
-          					case "Second":   return "TRoL";
-          					case "Home": return "shit on the homepage";
-
+          					case "Home": return <Home />;
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest}/>;
+          					case "Wall":   return <Wall userid={1} rest={rest}/>;
+          					case "Notifications":   return <Notifications userid={1} rest={rest}/>;
+          					default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
 
-          					default:      return <HouseHoldCard
-
-													title="Naam card (bv Huis van Bart: Vaatwasmachine)"
-													subtitle="Subtitle card (bv: verbruik week 21/03/2016)"
-													prev="vorige week"
-													next="volgende week"
-
-													data={data}/>;
         				}
       				})()}
 
@@ -458,8 +502,19 @@ class Main extends React.Component {
 							<TextField hintText="" floatingLabelText="Tags"/>
 						</form>
 					</Dialog>
-					
+
 				</div>
+				<div style={styles.footer}>
+					<img id="en" className="flag" src="images/flags/en.png" onClick={this.changeLang}/>
+					<img id="nl" className="flag" src="images/flags/nl.png" onClick={this.changeLang}/>
+					Proudly presented to you by CertainlyNotEvilCorp
+				</div>
+				<Snackbar
+			      open={this.state.languageNotificationOpen}
+			      message={"Language changed to " + this.state.lang}
+			      autoHideDuration={3000}
+			      onRequestClose={this.handleLanguageNotficationSnackbarRequestClose}
+			    />
 			</div>
 			</MuiThemeProvider>
 		);
