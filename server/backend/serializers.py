@@ -36,7 +36,7 @@ class FriendRequestSerializer(serializers.ModelSerializer):
         fields = ('sender', 'receiver', 'status', 'read', 'date_sent')
 
 class PostSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+    user = serializers.PrimaryKeyRelatedField(many=False, queryset = User.objects.all())
 
     class Meta:
         model = Post

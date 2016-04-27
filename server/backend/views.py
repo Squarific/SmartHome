@@ -67,7 +67,6 @@ class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-
 class UserDetail(APIView):
     permission_classes = (IsAuthenticated,)
     #queryset = User.objects.all()
@@ -91,14 +90,23 @@ class FriendsList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def get_queryset(self):
-        return User.objects.all().filter(Q(sent_requests__status = 1, sent_requests__receiver = self.request.user) | Q(received_requests__status = 1, received_requests__sender=self.request.user))
+    #def get_queryset(self):
+    #    return User.objects.all().filter(Q(sent_requests__status = 1, sent_requests__receiver = self.request.user) | Q(received_requests__status = 1, received_requests__sender=self.request.user))
         #return self.request.user.sent_requests.filter(status = 1)
 
-class PostsList(generics.ListAPIView):
+    def list(self, request, user_id):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        if (user_id == 'me'):
+            user_id = request.user.id
+        queryset = User.objects.all().filter(Q(sent_requests__status = 1, sent_requests__receiver_id = user_id) | Q(received_requests__status = 1, received_requests__sender_id=user_id))
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+class PostsList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    lookup_field = 'user_id'
 
 class HomeList(generics.ListCreateAPIView):
     """
@@ -113,8 +121,10 @@ class HomeListByUser(APIView):
     List homes for a given user id.
     """
     permission_classes = (IsAuthenticated,)
-    def get(self, request, pk, format=None):
-        homes = Home.objects.filter(owner=pk)
+    def get(self, request, user_id, format=None):
+        if (user_id == 'me'):
+            user_id = request.user.id
+        homes = Home.objects.filter(owner=user_id)
         serializer = HomeSerializer(homes, many=True)
         return Response(serializer.data)
 
