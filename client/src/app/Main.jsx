@@ -36,6 +36,7 @@ import {HouseHoldList} from './PageComponents/HouseHoldList';
 import {Home} from './PageComponents/Home';
 import {Wall} from './PageComponents/Wall';
 import {Notifications} from './PageComponents/Notifications';
+import {AdminInterface} from './PageComponents/AdminInterface';
 
 //-------------------------------------------------------------
 
@@ -150,6 +151,7 @@ class Main extends React.Component {
 		this.handleViewHouseHold = this.handleViewHouseHold.bind(this);
 		this.handleViewWall = this.handleViewWall.bind(this);
 		this.handleViewNotifications = this.handleViewNotifications.bind(this);
+		this.handleViewAdminInterface = this.handleViewAdminInterface.bind(this);
 		this.handleHome = this.handleHome.bind(this);
 		this.handleSignOut = this.handleSignOut.bind(this);
 		this.changeLang = this.changeLang.bind(this);
@@ -283,6 +285,13 @@ class Main extends React.Component {
 		});
 	}
 
+	handleViewAdminInterface() {
+		this.setState({
+			navbarOpen: false,	
+			active: "AdminInterface",
+		});
+	}
+
 	handleHome() {
 		this.setState({
 			navbarOpen: false,
@@ -354,6 +363,7 @@ class Main extends React.Component {
 						<MenuItem onTouchTap={this.handleViewWall}>{Translations[this.state.lang].wall}</MenuItem>
 						<MenuItem onTouchTap={this.handleViewNotifications}>{Translations[this.state.lang].notifications}</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleViewAdminInterface}>{Translations[this.state.lang].adminInterface}</MenuItem>
 						<Divider />
 						<MenuItem onTouchTap={this.handleSignOut}>{Translations[this.state.lang].signOut}</MenuItem>
 						
@@ -448,6 +458,7 @@ class Main extends React.Component {
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
           					case "Wall":   return <Wall userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
           					case "Notifications":   return <Notifications userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
+          					case "AdminInterface":   return <AdminInterface rest={rest} lang={Translations[this.state.lang]}/>;
           					default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
         				}
       				})()}

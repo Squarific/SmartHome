@@ -41,6 +41,9 @@ const nl = {
 	accept: "Accepteer",
 	friendRequest: "Vriendschapsverzoek",
 	alert: "Melding",
+	adminInterface: "Admin Interface",
+	getData: "Verzamel data!",
+	zipCode: "Postcode",
 }
 
 const en = {
@@ -86,6 +89,9 @@ const en = {
 	accept: "Accept",
 	friendRequest: "Friend Request",
 	alert: "Alert",
+	adminInterface: "Admin Interface",
+	getData: "Get data!",
+	zipCode: "Zip code",
 }
 
 module.exports = {
