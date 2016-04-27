@@ -63,8 +63,20 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 				return
 			}
 
+			let data;
+			try {
+				data = JSON.parse(request.responseText);
+			} catch (e) {
+				callback({
+					error: this.lang.JSONError + " " + e,
+				});
+				return;
+			}
+
 			callback({
 				error: this.lang.requestError + " " + request.status,
+				status: request.status,
+				response: data,
 			});
 		}
 	}.bind(this));
@@ -125,8 +137,20 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 				return;
 			}
 
+			let data;
+			try {
+				data = JSON.parse(request.responseText);
+			} catch (e) {
+				callback({
+					error: this.lang.JSONError + " " + e,
+				});
+				return;
+			}
+
 			callback({
 				error: this.lang.requestError + " " + request.status,
+				status: request.status,
+				response: data,
 			});
 		}
 	}.bind(this));

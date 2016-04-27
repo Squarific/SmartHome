@@ -8,9 +8,6 @@ import FlatButton from 'material-ui/lib/flat-button';
 	######################################
 */
 
-/*
-	Register component
-*/
 
 const style = {
 	submitButton: {
@@ -21,6 +18,14 @@ const style = {
 		display: "block",
 	},
 }
+
+/*
+	Register component
+	Props: {
+		rest: new Rest(),
+		onLogin: function () {}
+	}
+*/
 
 const RegisterForm = React.createClass({
 	getInitialState: function () {
@@ -47,11 +52,20 @@ const RegisterForm = React.createClass({
 	},
 	handleActivate: function (data) {
 		if (data.error) {
-			this.setState({error: data.error});
+			// If there was an error but no response something went wrong
+			if (!data.response || !data.response.errors) {
+				this.setState({error: data.error});
+			} else {
+			// If the server send us an error in the response, display that instead
+				let errors = "";
+				for (let k = 0; k < data.response.errors.length; k++)
+					errors += " " + data.response.errors[k].detail;
+
+				this.setState({error: errors})
+			}
 		} else {
-			console.log(data);
 			this.props.rest.post(["api", "auth", "registration", "verify-email"], {
-				key: data.key, //TODO USE RIGHT PROPERTY
+				key: data.data.attributes.key,
 			}, this.handleLogin);
 
 			this.setState({error: "Activating..."});
@@ -62,13 +76,15 @@ const RegisterForm = React.createClass({
 			this.setState({error: data.error});
 		} else {
 			this.props.rest.post(["api", "auth", "login"], {
-				// FILL IN LOGIN VALUES
+				username: this.state.username,
+				password: this.state.pass1,
 			}, this.handleLoggedIn);
-			this.setState({error: "Registered. Logging in..."});
+			this.setState({error: "Registered and activated. Logging in..."});
 		}
 	},
 	handleLoggedIn: function () {
-		// Call callback
+		if (typeof this.props.onLogin === "function")
+			this.props.onLogin();
 	},
 	render: function () {
 		if (this.state.success) {
@@ -107,34 +123,40 @@ const RegisterForm = React.createClass({
 
 /*
 	Login component
+	Props: {
+		rest: new Rest(),
+		onLogin: function () {}
+	}
 */
 
 const LoginForm = React.createClass({
 	getInitialState: function () {
 		return {};
 	},
+	handleInputChange: function (event) {
+		let newState = {};
+		newState[event.target.id] = event.target.value;
+		this.setState(newState);
+	},
 	handleLogin: function () {
 		// Don't refresh the page
 		event.preventDefault();
 		
-		this.props.rest.get(["rest-auth", "login"], {
-			username,
-			password,
+		this.props.rest.get(["api", "auth", "login"], {
+			username: this.state.username,
+			password: this.state.password,
 		}, function (data) {
 			if (data.error) {
 				this.setState({error: data.error});
 			} else {
-				this.setState({success: true});
+				if (typeof this.props.onLogin === "function")
+					this.props.onLogin();
 			}
-		});
+		}.bind(this));
 
 		return false;
 	},
 	render: function () {
-		if (this.state.success) {
-			return (<div>You are successfully logged in.</div>);
-		}
-
 		let error;
 		if (this.state.error) {
 			error = (
@@ -147,9 +169,9 @@ const LoginForm = React.createClass({
 		return (
 			<form onSubmit={this.handleLogin} className="login">
 				{error}
-				<TextField onChange={this.handleInputChange} hintText="" floatingLabelText={this.props.lang.username}/>
+				<TextField id="username" onChange={this.handleInputChange} hintText="" floatingLabelText={this.props.lang.username}/>
 				<br/>
-				<TextField onChange={this.handleInputChange} type="password" hintText="" floatingLabelText={this.props.lang.password}/>
+				<TextField id="password" onChange={this.handleInputChange} type="password" hintText="" floatingLabelText={this.props.lang.password}/>
 				<br/>
 				<FlatButton style={style.submitButton}
 				            onTouchStart={this.handleLogin}
