@@ -47,12 +47,12 @@ const Wall = React.createClass({
 	render: function() {
 		const wallPostActions = [
 			<FlatButton style={styles.cancelButton}
-				label="Cancel"
+				label={this.props.lang.cancel}
 				secondary={true}
 				onTouchTap={this.handleWallPostClose}/>,
 
 			<FlatButton style={styles.postButton}
-				label="Post"
+				label={this.props.lang.post}
 				primary={true}
 				keyboardFocused={true}
 				onTouchTap={this.handleWallPostClose}/>,
@@ -65,25 +65,25 @@ const Wall = React.createClass({
 					title="Filip Smets"
 					subtitle="Ranst"/>
 				<CardActions>
-					<FlatButton label="Post to Filip's wall"
+					<FlatButton label={this.props.lang.postToWall}
 						primary={true}
 						onTouchTap={this.handleWallPostOpen}/>
 				</CardActions>
 
 				{/* Wall Posts here */}
-				<WallPost postid={1} rest={this.props.rest}/>
-				<WallPost postid={2} rest={this.props.rest}/>
+				<WallPost postid={1} rest={this.props.rest} lang={this.props.lang}/>
+				<WallPost postid={2} rest={this.props.rest} lang={this.props.lang}/>
 				<br/>
 				</Card>
 
 				<Dialog style={styles.wall}
-					title="Post to Filip's Wall"
+					title={this.props.lang.postToWall}
 					open={this.state.wallPostOpen}
 					onRequestClose={this.handleWallPostClose}
 					actions={wallPostActions}>
 
 					<form className="wallPost" style={styles.form}>
-						<TextField hintText="" floatingLabelText="Message"
+						<TextField hintText="" floatingLabelText={this.props.lang.message}
 								multiLine={true}
 								rows={5}
 								rowsMax={5}/>

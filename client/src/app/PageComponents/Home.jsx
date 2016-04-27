@@ -20,7 +20,6 @@ const bodyStyles = {
 		marginLeft: 0,
 		marginRight: 0,
 		marginTop: -5,
-		marginBottom: -20,
 		minWidth: "100%",
 
 		},
@@ -86,14 +85,13 @@ const Home = React.createClass({
 		return (
 			
 			<div style={Style}>
-				
 				<div style={bodyStyles.first}>
 					<div style={bodyStyles.text}><img src='http://www.loxone.com/tl_files/loxone/Content_images/illustrations/other/energy-3d-house.png' /></div>
 				</div>
 				<div style={bodyStyles.second}>
 					<div style={bodyStyles.text}>
 						<div style={bodyStyles.box1}><b>Welcome to SmartHome</b></div>
-						<div style={bodyStyles.box2}>lsqdjhgjqh</div>
+						<div style={bodyStyles.box2}>What is SmartHome? <br/><br/> SmartHome is a simple web application to view, manage and improve your households energy consumption.<br/>Easily check your usage with these useful graphs.<br/>You can edit or add new household and sensors with just a few clicks.</div>
 					</div>
 
 				</div>
@@ -101,9 +99,11 @@ const Home = React.createClass({
 					<div style={bodyStyles.text}>
 
 						<div style={bodyStyles.box1}>
-								<HouseHoldCardExample/>
+								<HouseHoldCardExample
+								
+								/>
 						</div>
-						<div style={bodyStyles.box2}><b>Graphs</b> We are using</div>
+						<div style={bodyStyles.box2}><b>Graphs</b> <br/><br/><br/>3 different types of Graphs to represent your household data. <br/><br/>Check for yourself in the example on the left.</div>
 					</div>
 				</div>
 			</div>

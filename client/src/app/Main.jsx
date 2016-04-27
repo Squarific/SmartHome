@@ -36,6 +36,7 @@ import {HouseHoldList} from './PageComponents/HouseHoldList';
 import {Home} from './PageComponents/Home';
 import {Wall} from './PageComponents/Wall';
 import {Notifications} from './PageComponents/Notifications';
+import {AdminInterface} from './PageComponents/AdminInterface';
 
 //-------------------------------------------------------------
 
@@ -150,6 +151,7 @@ class Main extends React.Component {
 		this.handleViewHouseHold = this.handleViewHouseHold.bind(this);
 		this.handleViewWall = this.handleViewWall.bind(this);
 		this.handleViewNotifications = this.handleViewNotifications.bind(this);
+		this.handleViewAdminInterface = this.handleViewAdminInterface.bind(this);
 		this.handleHome = this.handleHome.bind(this);
 		this.handleSignOut = this.handleSignOut.bind(this);
 		this.changeLang = this.changeLang.bind(this);
@@ -283,10 +285,17 @@ class Main extends React.Component {
 		});
 	}
 
+	handleViewAdminInterface() {
+		this.setState({
+			navbarOpen: false,	
+			active: "AdminInterface",
+		});
+	}
+
 	handleHome() {
 		this.setState({
 			navbarOpen: false,
-			active: "default",
+			active: "Home",
 		});
 	}
 
@@ -306,12 +315,12 @@ class Main extends React.Component {
 
 		const houseHoldActions = [
 			<FlatButton style={styles.cancelButton}
-				label="Cancel"
+				label={Translations[this.state.lang].cancel}
 				secondary={true}
 				onTouchTap={this.handleCreateHouseHoldClose}/>,
 
 			<FlatButton style={styles.submitButton}
-				label="Create"
+				label={Translations[this.state.lang].create}
 				primary={true}
 				keyboardFocused={true}
 				onTouchTap={this.handleCreateHouseHoldClose}/>,
@@ -323,12 +332,12 @@ class Main extends React.Component {
 
 		const sensorActions = [
 			<FlatButton style={styles.cancelButton}
-				label="Cancel"
+				label={Translations[this.state.lang].cancel}
 				secondary={true}
 				onTouchTap={this.handleCreateSensorClose}/>,
 
 			<FlatButton style={styles.submitButton}
-				label="Create"
+				label={Translations[this.state.lang].create}
 				primary={true}
 				keyboardFocused={true}
 				onTouchTap={this.handleCreateSensorClose}/>,
@@ -344,20 +353,19 @@ class Main extends React.Component {
 			userMenu = <LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
 						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
 						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem onTouchTap={this.handleHome}><b>Home</b></MenuItem>
+						<MenuItem onTouchTap={this.handleHome}><b>{Translations[this.state.lang].home}</b></MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem onTouchTap={this.handleViewHouseHold}>View Households</MenuItem>
+						<MenuItem onTouchTap={this.handleViewHouseHold}>{Translations[this.state.lang].viewHouseholds}</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>Create Household</MenuItem>
-						<MenuItem onTouchTap={this.handleCreateSensorRequest}>Create Sensor</MenuItem>
+						<MenuItem onTouchTap={this.handleCreateHouseHoldRequest}>{Translations[this.state.lang].createHousehold}</MenuItem>
+						<MenuItem onTouchTap={this.handleCreateSensorRequest}>{Translations[this.state.lang].createSensor}</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem onTouchTap={this.handleViewWall}>Wall</MenuItem>
-						<MenuItem onTouchTap={this.handleViewNotifications}>Notifications</MenuItem>
+						<MenuItem onTouchTap={this.handleViewWall}>{Translations[this.state.lang].wall}</MenuItem>
+						<MenuItem onTouchTap={this.handleViewNotifications}>{Translations[this.state.lang].notifications}</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
-						<MenuItem>Account Options</MenuItem>
-						<hr style={styles.horizontalLine} color="white"/>
+						<MenuItem onTouchTap={this.handleViewAdminInterface}>{Translations[this.state.lang].adminInterface}</MenuItem>
 						<Divider />
-						<MenuItem onTouchTap={this.handleSignOut}>Sign Out</MenuItem>
+						<MenuItem onTouchTap={this.handleSignOut}>{Translations[this.state.lang].signOut}</MenuItem>
 						
 					</LeftNav>;
 		}
@@ -448,8 +456,9 @@ class Main extends React.Component {
         				switch (this.state.active) {
           					case "Home": return <Home />;
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
-          					case "Wall":   return <Wall userid={1} rest={rest}/>;
-          					case "Notifications":   return <Notifications userid={1} rest={rest}/>;
+          					case "Wall":   return <Wall userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
+          					case "Notifications":   return <Notifications userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
+          					case "AdminInterface":   return <AdminInterface rest={rest} lang={Translations[this.state.lang]}/>;
           					default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
         				}
       				})()}
@@ -461,43 +470,43 @@ class Main extends React.Component {
 					{/* Create HouseHold */}
 
 					<Dialog style={styles.dialog}
-						title="Create Household"
+						title={Translations[this.state.lang].createHousehold}
 						open={this.state.createHouseHoldOpen}
 						onRequestClose={this.handleCreateHouseHoldClose}
 						actions={houseHoldActions}>
 
 
 						<form className="createHouseHold" style={styles.form}>
-							<TextField hintText="" floatingLabelText="Household name"/>
+							<TextField hintText="" floatingLabelText={Translations[this.state.lang].householdName}/>
 							<br/>
-							<TextField hintText="" floatingLabelText="City"/>
+							<TextField hintText="" floatingLabelText={Translations[this.state.lang].city}/>
 							<br/>
-							<TextField hintText="" floatingLabelText="Street"/>
+							<TextField hintText="" floatingLabelText={Translations[this.state.lang].street}/>
 							<br/>
-							<TextField hintText="" floatingLabelText="House number"/>
+							<TextField hintText="" floatingLabelText={Translations[this.state.lang].houseNumber}/>
 						</form>
 					</Dialog>
 
 					{/* Create Sensor */}
 					<Dialog style={styles.dialog}
-						title="Create Sensor"
+						title={Translations[this.state.lang].createSensor}
 						open={this.state.createSensorOpen}
 						onRequestClose={this.handleCreateSensorClose}
 						actions={sensorActions}>
 
 						<form className="createSensor" style={styles.form}>
-							<TextField hintText="" floatingLabelText="Sensor name"/>
+							<TextField hintText="" floatingLabelText={Translations[this.state.lang].sensorName}/>
 							<br/>
-							<HouseHoldSelect/>
+							<HouseHoldSelect lang={Translations[this.state.lang]}/>
 							<br/>
-							<TextField floatingLabelText="Description"
+							<TextField floatingLabelText={Translations[this.state.lang].sensorDescription}
 								multiLine={true}
 								rows={3}
 								rowsMax={3}/>
 							<br/>
-							<PowerUnitSelect/>
+							<PowerUnitSelect lang={Translations[this.state.lang]}/>
 							<br/>
-							<TextField hintText="" floatingLabelText="Tags"/>
+							<TextField hintText="" floatingLabelText={Translations[this.state.lang].sensorTags}/>
 						</form>
 					</Dialog>
 
@@ -505,11 +514,11 @@ class Main extends React.Component {
 				<div style={styles.footer}>
 					<img id="en" className="flag" src="images/flags/en.png" onClick={this.changeLang}/>
 					<img id="nl" className="flag" src="images/flags/nl.png" onClick={this.changeLang}/>
-					Proudly presented to you by CertainlyNotEvilCorp
+					{Translations[this.state.lang].footerMessage}
 				</div>
 				<Snackbar
 			      open={this.state.languageNotificationOpen}
-			      message={"Language changed to " + this.state.lang.toUpperCase()}
+			      message={Translations[this.state.lang].languageChanged + this.state.lang.toUpperCase()}
 			      autoHideDuration={3000}
 			      onRequestClose={this.handleLanguageNotficationSnackbarRequestClose}
 			    />

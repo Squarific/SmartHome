@@ -12,11 +12,13 @@ import {green500, grey500} from 'material-ui/lib/styles/colors';
 import {Notification} from '../Components/Notification';
 
 const styles = {
-	notifications: {
+	admininterface: {
+		color: green500,
+		padding: 32,
 	},
 }
 
-const Notifications = React.createClass({
+const AdminInterface = React.createClass({
 	getInitialState: function () {
 		const value = '';
 		return {value};
@@ -26,24 +28,18 @@ const Notifications = React.createClass({
 	},
 	render: function() {
 		return (
-			<Card>
-			<CardHeader
-				title={this.props.lang.notifications}
-				subtitle="Filip Smets"/>
-			<CardActions>
-				<FlatButton label={this.props.lang.clearAll}
-					primary={true}/>
-			</CardActions>
-
-			{/* Notifications here */}
-			<Notification notificationid={1} rest={this.props.rest} lang={this.props.lang} type="FRIEND REQUEST"/>
-			<Notification notificationid={2} rest={this.props.rest} lang={this.props.lang} type="ALERT"/>
-			<br/>
-			</Card>
+			<form className="AdminGetData" style={styles.form}>
+				<TextField hintText="" floatingLabelText={this.props.lang.city}/>
+				<br/>
+				<TextField hintText="" floatingLabelText={this.props.lang.street}/>
+				<br/>
+				<br/>
+				<FlatButton label={this.props.lang.getData} primary={true}/>
+			</form>
 		)
 	},
 });
 
 module.exports = {
-	Notifications: Notifications,
+	AdminInterface: AdminInterface,
 };
