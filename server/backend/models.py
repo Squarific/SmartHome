@@ -1,4 +1,4 @@
-	# This is an auto-generated Django model module.
+# This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
 #   * Make sure each model has one field with primary_key=True
@@ -68,7 +68,7 @@ class Tag(models.Model):
 
 
 class UsersHomes(models.Model):
-    user = models.ForeignKey(User, models.CASCADE)
+    user = models.ForeignKey('auth.User', models.CASCADE)
     home = models.ForeignKey(Home, models.CASCADE)
     permission_flags = models.IntegerField()
     date_created = models.DateTimeField()
@@ -222,9 +222,10 @@ class FriendRequest(models.Model):
         (1, 'Approved'),
         (2, 'Denied'),
     )
-    sender = models.ForeignKey(User, related_name='sent_requests')
-    receiver = models.ForeignKey(User, related_name='received_requests')
+    sender = models.ForeignKey('auth.User', related_name='sent_requests')
+    receiver = models.ForeignKey('auth.User', related_name='received_requests')
     status = models.IntegerField(choices=REQUEST_STATUS)
+    read = models.BooleanField(default=False)
     date_sent = models.DateTimeField()
 
     def __str__(self):
@@ -233,11 +234,12 @@ class FriendRequest(models.Model):
     class Meta:
         db_table = 'friend_requests'
 
-class Message(models.Model):
-    sender = models.ForeignKey(User, related_name='sent_messages')
-    receiver = models.ForeignKey(User, related_name='received_messages')
+
+class Post(models.Model):
+    user = models.ForeignKey('auth.User', related_name='posts')
     content = models.TextField()
     plot = models.TextField()
+    read = models.BooleanField()
     date_sent = models.DateTimeField()
 
     def __str__(self):
