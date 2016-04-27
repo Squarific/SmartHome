@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.twitter',
-    'corsheaders',
     'backend',
 ]
 
@@ -58,7 +57,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'backend.middleware.XsSharing',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
@@ -139,15 +138,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
 }
-
-CORS_ORIGIN_ALLOW_ALL = True
-
-#CORS_ORIGIN_WHITELIST = [
-#    '',
-#    '*',
-#    'localhost',
-#    'localhost:8000',
-#]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
