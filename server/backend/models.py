@@ -1,4 +1,4 @@
-	# This is an auto-generated Django model module.
+# This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
 #   * Make sure each model has one field with primary_key=True
@@ -68,21 +68,21 @@ class Tag(models.Model):
 
 
 class UsersHomes(models.Model):
-    user = models.ForeignKey(User, models.CASCADE)
+    user = models.ForeignKey('auth.User', models.CASCADE)
     home = models.ForeignKey(Home, models.CASCADE)
     permission_flags = models.IntegerField()
     date_created = models.DateTimeField()
 
     class Meta:
         db_table = 'users_homes'
-        
+
 
 class SensorData(models.Model):
     sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
     timestamp = models.DateTimeField()
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
-    
+
     class Meta:
         abstract = True
         ordering = ['timestamp']
@@ -99,7 +99,7 @@ class SensorData(models.Model):
             RollupClass = self.get_rollup_class()
 
             print(str(self.sensor_id) + ", " + str(rollup_time))
-            
+
             results = sensors.filter(timestamp__gte = rollup_time)
 
             usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
@@ -215,3 +215,35 @@ class RecentData(SensorData):
     class Meta:
         db_table = 'recent_data'
 
+
+class FriendRequest(models.Model):
+    REQUEST_STATUS = (
+        (0, 'Pending'),
+        (1, 'Approved'),
+        (2, 'Denied'),
+    )
+    sender = models.ForeignKey('auth.User', related_name='sent_requests')
+    receiver = models.ForeignKey('auth.User', related_name='received_requests')
+    status = models.IntegerField(choices=REQUEST_STATUS)
+    read = models.BooleanField(default=False)
+    date_sent = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'friend_requests'
+
+
+class Post(models.Model):
+    user = models.ForeignKey('auth.User', related_name='posts')
+    content = models.TextField()
+    plot = models.TextField()
+    read = models.BooleanField()
+    date_sent = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'messages'

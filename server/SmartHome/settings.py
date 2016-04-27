@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_filters',
     'rest_framework',
+    'crispy_forms',
     'rest_framework.authtoken',
     'rest_framework_json_api',
     'rest_auth',
@@ -146,6 +148,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 #    'localhost',
 #    'localhost:8000',
 #]
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SITE_ID = 1
 
