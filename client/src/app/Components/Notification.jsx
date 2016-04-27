@@ -58,7 +58,7 @@ const Notification = React.createClass({
 
 		let message;
 		if (this.props.type === "FRIEND REQUEST") {
-			message = "Nisse Strauven wilt je vriend worden.";
+			message = "Nisse Strauven wil je vriend worden.";
 		} else if (this.props.type === "ALERT") {
 			message = "David Danssaert heeft op je wall gepost.";
 		} else {
