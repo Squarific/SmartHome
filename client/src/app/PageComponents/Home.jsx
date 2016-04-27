@@ -56,7 +56,6 @@ const bodyStyles = {
 		maxWidth: 511,
 		marginRight: 0,
 		marginLeft: "auto",
-
 		textAlign: "center",
 	},
 	
@@ -102,17 +101,11 @@ const Home = React.createClass({
 					<div style={bodyStyles.text}>
 
 						<div style={bodyStyles.box1}>
-								<HouseHoldCardExample
-								
-								/>
+								<HouseHoldCardExample/>
 						</div>
-												<div style={bodyStyles.box2}><b>Graphs</b> We are using</div>
+						<div style={bodyStyles.box2}><b>Graphs</b> We are using</div>
 					</div>
 				</div>
-				<div style={bodyStyles.second}>
-					<div style={bodyStyles.text2}>©2016 - SmartHome Team</div>
-				</div>
-
 			</div>
 		);
 	},
