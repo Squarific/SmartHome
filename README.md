@@ -8,7 +8,7 @@ SmartHome made for the course Programming Project Databases at the University of
 
 ###Server
 
-    sudo pip install python-dateutil django djangorestframework==3.2.0 markdown django-filter djangorestframework-jsonapi==2.0.0-beta.2 django-rest-auth[with_social] django-cors-headers
+    sudo pip install python-dateutil django djangorestframework==3.2.0 markdown django-filter djangorestframework-jsonapi==2.0.0-beta.2 django-rest-auth[with_social] django-cors-headers django-filter django-crispy-forms
 
 ###Client
 
