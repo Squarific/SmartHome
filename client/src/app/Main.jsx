@@ -288,7 +288,7 @@ class Main extends React.Component {
 	handleLogin () {
 		this.setState({
 			loggedIn: true,
-			active: "HouseHoldList"
+			active: "HouseHoldList",
 		});
 	}
 
