@@ -99,7 +99,7 @@ const LoginForm = React.createClass({
 		// Don't refresh the page
 		event.preventDefault();
 		
-		this.props.rest.get(["rest-auth"], {
+		this.props.rest.get(["rest-auth", "login"], {
 			username,
 			password,
 		}, function (data) {
