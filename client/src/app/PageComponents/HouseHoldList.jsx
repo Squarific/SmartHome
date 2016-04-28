@@ -35,7 +35,7 @@ const HouseHoldList = React.createClass({
 
 		let households = this.state.homes.map(function (household, index) {
 			console.log(household);
-			return (<HouseHoldCard id={household.id} rest={this.props.rest} title={household.attributes.name} key={index} lang={this.props.lang.loading}/>);
+			return (<HouseHoldCard id={household.id} rest={this.props.rest} title={household.attributes.name} lang={this.props.lang} key={index} />);
 		}.bind(this));
 
 		if (this.state.homes.length === 0) {

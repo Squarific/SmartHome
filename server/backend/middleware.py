@@ -22,7 +22,7 @@ class XsSharing(object):
         Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE
     """
     def process_request(self, request):
-
+        setattr(request, '_dont_enforce_csrf_checks', True)
         if 'HTTP_ACCESS_CONTROL_REQUEST_METHOD' in request.META:
             response = http.HttpResponse()
             response['Access-Control-Allow-Origin']  = XS_SHARING_ALLOWED_ORIGINS
@@ -34,6 +34,7 @@ class XsSharing(object):
         return None
 
     def process_response(self, request, response):
+        setattr(response, '_dont_enforce_csrf_checks', True)
         # Avoid unnecessary work
         if response.has_header('Access-Control-Allow-Origin'):
             return response
