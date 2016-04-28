@@ -69,20 +69,31 @@ const CreateHousehold = React.createClass({
 		// }.bind(this));
 	},
 	handleSubmit: function () {
-		this.props.rest.put(["api", "homes"], {
+		this.props.rest.post(["api", "homes"], {
 			name: this.state.name,
 			country: this.state.country,
 			city: this.state.city,
 			zipcode: this.state.zipcode,
 			street: this.state.street,
-			housenumber: this.state.housenumber,
+			house_number: this.state.housenumber,
+			owner: "me",
 		}, function (data) {
 			if (data.error) {
-				this.setState({error: data.error});
+				// If there was an error but no response something went wrong
+				if (!data.response || !data.response.errors) {
+					this.setState({error: data.error});
+				} else {
+				// If the server send us an error in the response, display that instead
+					let errors = "";
+					for (let k = 0; k < data.response.errors.length; k++)
+						errors += " " + data.response.errors[k].detail;
+
+					this.setState({error: errors})
+				}
 			} else {
 				this.props.handleCreateHouseHoldClose();
 			}
-		});
+		}.bind(this));
 	},
 	render: function () {
 
@@ -112,15 +123,15 @@ const CreateHousehold = React.createClass({
 					<br/>
 					<TextField id="name" hintText="" floatingLabelText={this.props.lang.householdName}/>
 					<br/>
-					<TextField hintText="country" floatingLabelText={this.props.lang.country}/>
+					<TextField id="country" hintText="country" floatingLabelText={this.props.lang.country}/>
 					<br/>
-					<TextField hintText="city" floatingLabelText={this.props.lang.city}/>
+					<TextField id="city" hintText="city" floatingLabelText={this.props.lang.city}/>
 					<br/>
-					<TextField hintText="zipcode" floatingLabelText={this.props.lang.zipCode}/>
+					<TextField id="zipcode" hintText="zipcode" floatingLabelText={this.props.lang.zipCode}/>
 					<br/>
-					<TextField hintText="street" floatingLabelText={this.props.lang.street}/>
+					<TextField id="street" hintText="street" floatingLabelText={this.props.lang.street}/>
 					<br/>
-					<TextField hintText="housenumber" floatingLabelText={this.props.lang.houseNumber}/>
+					<TextField id="housenumber" hintText="housenumber" floatingLabelText={this.props.lang.houseNumber}/>
 				</form>
 			</Dialog>
 		);
