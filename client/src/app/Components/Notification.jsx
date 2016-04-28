@@ -39,11 +39,28 @@ const styles = {
 
 const Notification = React.createClass({
 	getInitialState: function () {
-		const value = '';
-		return {value};
+		return {
+			sender: "Loading...",
+			loading: true,
+		}
 	},
 	handleChange: function (event, index, value) {
 		this.setState({value});
+	},
+	componentDidMount: function () {
+		if (!this.props.rest) throw "Notification Error: No rest client provided!";
+
+		this.props.rest.get(["api", "users", this.props.request.relationships.sender.data.id], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				sender: data.data,
+				loading: false,
+			});
+		}.bind(this));
 	},
 	render: function() {
 		let actions;
@@ -59,7 +76,11 @@ const Notification = React.createClass({
 
 		let message;
 		if (this.props.type === "FRIEND REQUEST") {
-			message = "Nisse Strauven wil je vriend worden.";
+			if (this.state.loading) {
+				message = "Loading...";
+			} else {
+				message = this.state.sender.attributes.first_name + " wil je vriend worden.";
+			}
 		} else if (this.props.type === "ALERT") {
 			message = "David Danssaert heeft op je wall gepost.";
 		} else {
@@ -79,7 +100,7 @@ const Notification = React.createClass({
 			<Card style={styles.notification}>
 			<CardHeader style={styles.inline}
 				title={typeTranslated}
-				subtitle={"21/04/2016 - 14:37"}/>
+				subtitle={this.props.request.attributes.date_sent.replace("T", " - ")}/>
 			<CardText  style={styles.inline}>
 				{message}
 			</CardText>
