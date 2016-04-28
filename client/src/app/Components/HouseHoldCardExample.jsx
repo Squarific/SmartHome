@@ -56,7 +56,11 @@ const HouseHoldCardExample = React.createClass({
 
 		return (<Card >
 			<CardHeader
-				title="HouseHold's name"
+
+
+
+				title={this.props.lang.exampleGraph}
+
 				/>
 			<CardMedia>
 				<GraphCard data={data}

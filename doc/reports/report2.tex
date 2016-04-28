@@ -17,42 +17,43 @@
 }
 
 %Gummi|065|=)
-\title{\textbf{Rapport 1}}
-\author{Filip Smets\\
-		Nisse Strauven\\
-		Jens Bijtebier\\
+\title{\textbf{Programming Project Databases - Rapport 2}\\
+		Groep 4}
+\author{Jens Bijtebier\\
+		David Danssaert\\
 		Thanh Danh Le\\
-		David Danssaert}
+		Filip Smets\\
+		Nisse Strauven}
 \date{\today}
 \begin{document}
 
 \maketitle
 
-\tableofcontents
+%\tableofcontents
 
 \section{Status}
+Alle verplichte toepassingen zijn geimplementeerd. De login en registratie, de administator
+interface en ook de basis van het sociale aspect zijn afgewerkt.\\
+
+Het volgende waar we aan zullen werken is het verder toevoegen van features voor het sociale
+aspect en ook meer customisatie opties voor de households, en meer weergave toepassingen.
+
 \section{Design}
   \subsection{Keuzes}
-  \subsubsection{Dependencies}
-  \paragraph{Clientside}
-  \begin{itemize}
-  \item node.js
-  \item npm
-  \item ember-cli (via npm)
-  \item bower (via npm)
-  \item ember-material-design? (via ember, not yet included)
-  \end{itemize}
+	We hebben tot nu toe vooral gewerkt aan de verplichte toepassingen omdat we die al eerst willen
+	afhebben voor we starten aan de extra features. Maar we zullen meer aan deze beginnen
+	werken nu dat al het noodzakelijke gebeurd is.\\
 
-  \paragraph{Serverside}
-  \begin{itemize}
-  \item python 3
-  \item django (via pip)
-  \item djangorestframework (via pip)
-  \item markdown (via pip)
-  \item django-filter (via pip)
-  \end{itemize}
+	We hebben gekozen voor een interface dat zeer gemakkelijk is om mee te werken zodat de
+	gebruiken zo min mogelijk problemen zal ondervinden. Simpele knoppen en duidelijke text en
+	grafieken maakt het voor de gebruiker efficient en snel om mee te werken.\\
+	
+	We hebben het sociale aspect nog vrij minimaal gehouden, maar hebben nog veel ruimte open
+	gelaten om extra features toe te voegen die ervoor zullen zorgen dat communiceren met anderen
+	veel vlotter kan verlopen.
+
   \subsection{Database Schema}
-  Zie \textbf{figuur \ref{fig:erd}}.
+  %Zie \textbf{figuur \ref{fig:erd}}.
   \begin{figure}[H]
   \centering
     \includegraphics[width=\textwidth]{../erd/SmartHome_ERD.png}
@@ -61,7 +62,7 @@
   \end{figure}
   
   \subsection{UML Schema}
-  Zie \textbf{figuur \ref{fig:uml}}.
+  %Zie \textbf{figuur \ref{fig:uml}}.
   \begin{figure}[H]
   \centering
     \includegraphics[width=\textwidth]{img/SmartHome_deployment_diagram.png}
@@ -70,8 +71,19 @@
   \end{figure}
 \section{Product}
   \subsection{Basisvereisten}
+  Al de basisvereisten zijn geimplementeerd.\\
+  De login en registratie zijn afgewerkt en ook de administator interface werkt. Met deze interface
+  kan men gegevens op grote schaal opvragen en bekijken om een beter zicht te krijgen op het
+  algemeen verbruik van de gebruikers. Het sociale aspect is ook toegevoegd, dit zorgt ervoor dat
+  het mogelijk is om groepen en vrienden toe te voegen en om berichten te plaatsen.
   \subsection{Extra functionaliteit}
+  Er is nog geen extra functionaliteit klaar.
 \section{Planning}
+Het eerste waar we aan zullen werken is het toevoegen van kleine extra features aan de
+basisvereisten om het gebruik te vergemakkelijken. Zo zullen we bijvoorbeeld het sociale aspect
+verder uitwerken met toepassingen zoals persoonlijke berichten.\\
+We zullen natuurlijk ook extra toepassingen toevoegen waar we aan denken als we bezig zijn
+met het uiterken van deze eerste features.
 \section{Appendix}
   \subsection{SQL Queries}
   \subsubsection{Households}
@@ -154,30 +166,6 @@ GROUP BY recent_data.sensor_id
 
 \subsection{SQL Database Structure}
 \begin{lstlisting}[style=SQL]
--- phpMyAdmin SQL Dump
--- version 4.4.13.1deb1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Gegenereerd op: 25 apr 2016 om 21:29
--- Serverversie: 5.6.28-0ubuntu0.15.10.1
--- PHP-versie: 5.6.11-1ubuntu3.1
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `smarthome`
---
-
--- --------------------------------------------------------
-
 --
 -- Tabelstructuur voor tabel `account_emailaddress`
 --
@@ -898,9 +886,5 @@ ALTER TABLE `users_homes`
 --
 ALTER TABLE `yearly_data`
   ADD CONSTRAINT `yearly_data_sensor_id_349bf5e9_fk_sensors_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 \end{lstlisting}
 \end{document}

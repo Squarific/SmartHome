@@ -5,3 +5,5 @@ from backend.models import *
 admin.site.register(Home)
 admin.site.register(Sensor)
 admin.site.register(Tag)
+admin.site.register(FriendRequest)
+admin.site.register(Post)

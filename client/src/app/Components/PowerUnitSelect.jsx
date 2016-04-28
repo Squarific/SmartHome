@@ -27,7 +27,7 @@ const PowerUnitSelect = React.createClass({
 		}
 
 		return (
-			<SelectField style={styles.powerunitselect} value={this.state.value} onChange={this.handleChange} floatingLabelText="Power Unit">
+			<SelectField style={styles.powerunitselect} value={this.state.value} onChange={this.handleChange} floatingLabelText={this.props.lang.powerUnit}>
 				{MenuItems}
 			</SelectField>
 		)

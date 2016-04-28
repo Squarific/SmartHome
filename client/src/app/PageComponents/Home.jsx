@@ -12,40 +12,28 @@ const bodyStyles = {
 		marginBottom: 0,
 		minWidth: "100%",
 		overflow: "hidden",
-		},
-
+	},
 	second: {
 		color: 'white',
 		background: green300,
 		marginLeft: 0,
 		marginRight: 0,
 		marginTop: -5,
-		paddingBottom: 40,
-		minWidth: "100%",
-		overflow: "hidden",
 
-		},
-	footer: {
-		color: 'white',
-		background: green300,
-		marginLeft: 0,
-		marginRight: 0,
-		marginTop: -5,
-		marginBottom: -20,
 		minWidth: "100%",
-		},
+	},
+
 	text: {
 		
 		textAlign: "center",
 		marginLeft: "auto",
 		marginRight: "auto",
-		paddingTop: 20,
-
+		paddingTop: 32,
+		paddingBottom: 32,
 		maxWidth: 1024,
 		minHeight: 100,
 		fontSize: 16,
-
-		},
+	},
 	text2: {
 		textAlign: "center",
 		marginLeft: "auto",
@@ -53,20 +41,19 @@ const bodyStyles = {
 		maxWidth: 1024,
 		paddingTop: 50,
 		paddingBottom: 10,
-
-		},
+	},
 	box1: {
 		maxWidth: 511,
 		marginLeft:0,
 		marginRight: "auto",
 		float: "left",
-		textAlign: "left",
-		},
+
+		textAlign: "center",
+	},
 	box2: {
-		maxWidth: 511,
-		marginRight: 0,
-		marginLeft: "auto",
-		textAlign: "right",
+		textAlign: "center",
+		whiteSpace: "pre",
+
 	},
 	
 		
@@ -96,30 +83,33 @@ const Home = React.createClass({
 		return (
 			
 			<div style={Style}>
-				
 				<div style={bodyStyles.first}>
 					<div style={bodyStyles.text}><img src='http://www.loxone.com/tl_files/loxone/Content_images/illustrations/other/energy-3d-house.png' /></div>
 				</div>
 				<div style={bodyStyles.second}>
 					<div style={bodyStyles.text}>
-						<div style={bodyStyles.box1}><b>Welcome to SmartHome</b><br/><br/><br/>What is SmartHome? <br/><br/> SmartHome is a simple web application to manage your household consumption.</div>
-						<div style={bodyStyles.box2}></div>
+
+						<div style={bodyStyles.box2}>
+							{this.props.lang.introMessage}
+							<br/><br/>
+							<b>{this.props.lang.welcomeMessage}</b>
+						</div>
+
 					</div>
 
 				</div>
 				<div style={bodyStyles.first}>
 					<div style={bodyStyles.text}>
-
 						<div style={bodyStyles.box1}>
-								<HouseHoldCardExample
-								
-								/>
+								<HouseHoldCardExample lang={this.props.lang}/>
 						</div>
-						<div style={bodyStyles.box2}><b>Graphs</b> <br/><br/><br/>3 different types of Graphs to represent your household data. <br/><br/>Check for yourself in the example on the left.</div>
+						<div style={bodyStyles.box2}>
+							<b>{this.props.lang.graphs}</b>
+							<br/><br/>
+							{this.props.lang.graphsMessage}
+						</div>
+
 					</div>
-				</div>
-				<div style={bodyStyles.footer}>
-					<div style={bodyStyles.text2}>©2016 - SmartHome Team</div>
 				</div>
 
 			</div>

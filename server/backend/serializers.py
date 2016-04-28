@@ -1,13 +1,22 @@
 from rest_framework import serializers
 from backend.models import *
 
+class UserSerializer(serializers.ModelSerializer):
+    owned_homes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    homes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'last_login', 'username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'date_joined', 'owned_homes', 'homes')
+
+
 class HomeSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
     users = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Home
-        fields = ('name', 'owner', 'users', 'sensor_set')
+        fields = ('name', 'owner', 'users', 'sensor_set', 'name', 'country', 'city', 'zipcode', 'street', 'house_number', 'date_added')
 
 
 class SensorSerializer(serializers.ModelSerializer):
@@ -18,6 +27,21 @@ class SensorSerializer(serializers.ModelSerializer):
         model = Sensor
         fields = ('name', 'home', 'description', 'tags', 'power_unit')
 
+class FriendRequestSerializer(serializers.ModelSerializer):
+    sender = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+    receiver = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+
+    class Meta:
+        model = FriendRequest
+        fields = ('sender', 'receiver', 'status', 'read', 'date_sent')
+
+class PostSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(many=False, queryset = User.objects.all())
+
+    class Meta:
+        model = Post
+        fields = ('user', 'content', 'plot', 'read', 'date_sent')
+
 class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -25,7 +49,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('name', 'description')
 
 class DataSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = SensorData
         fields = ('sensor', 'timestamp', 'usage', 'n_measurements')
