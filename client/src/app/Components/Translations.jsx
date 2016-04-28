@@ -1,3 +1,5 @@
+import React from 'react';
+
 const nl = {
 	noInternet: "Verbinding met de server is niet mogelijk. Controleer je internetverbinding.",
 	requestError: "Er was een probleem met de server. De server antwoordde met status:",
@@ -44,6 +46,11 @@ const nl = {
 	adminInterface: "Admin Interface",
 	getData: "Verzamel data!",
 	zipCode: "Postcode",
+	introMessage: "SmartHome.\n\nEen unieke applicatie waarmee je je energieverbruik kan bekijken,\nsamen oplossingen vinden voor een zuiniger verbruik,\nen vergelijken met anderen via ons sociaal netwerk.\n\nOp deze manier werken we allemaal samen aan een beter milieu,\nen dat allemaal van bij jou thuis, achter de computer.",
+	welcomeMessage: "Welkom bij SmartHome.",
+	exampleGraph: "Voorbeeldgrafiek",
+	graphs: "Grafieken",
+	graphsMessage: "Gebruikmakend van 3 verschillende types grafieken,\nzorgt SmartHome ervoor dat je informatie altijd duidelijk en toegankelijk is.\n\n Hiernaast zie je een voorbeeld van de grafieken die gebruikt worden.\n\nWanneer u ingelogd bent, kan u kiezen welke data van welke sensor u wilt zien.\nHet verbruik van je elektrische douche van de afgelopen week?\nHet vebruik van je televisie deze maand, of misschien wel alles?\n\nGeen zorgen. SmartHome doet het allemaal.",
 }
 
 const en = {
@@ -92,6 +99,11 @@ const en = {
 	adminInterface: "Admin Interface",
 	getData: "Get data!",
 	zipCode: "Zip code",
+	introMessage: "SmartHome.\n\nA unique application to monitor your energy consumption,\nfind solutions to improve together,\nand compare with others on our social network\n\nWe can all work together to save the planet,\nwith only a few clicks.",
+	welcomeMessage: "Welcome to SmartHome.",
+	exampleGraph: "Example",
+	graphs: "Graphs",
+	graphsMessage: "Using 3 different types of graphs,\nSmartHome makes sure your information is always clear and accessible.\n\nTo the left you can see an interactive example of the graphs we use.\n\nWhen logged in, you can also specify which data, from which sensor you want to see.\nLast week's electric shower consumption?\nThis month's television consumption, or perhaps just everything?\n\nDon't worry. SmartHome does it all.",
 }
 
 module.exports = {

@@ -12,8 +12,7 @@ const bodyStyles = {
 		marginBottom: 0,
 		minWidth: "100%",
 		overflow: "hidden",
-		},
-
+	},
 	second: {
 		color: 'white',
 		background: green300,
@@ -21,20 +20,18 @@ const bodyStyles = {
 		marginRight: 0,
 		marginTop: -5,
 		minWidth: "100%",
-
-		},
+	},
 	text: {
 		
 		textAlign: "left",
 		marginLeft: "auto",
 		marginRight: "auto",
-		paddingTop: 20,
-
+		paddingTop: 32,
+		paddingBottom: 32,
 		maxWidth: 1024,
 		minHeight: 100,
 		fontSize: 16,
-
-		},
+	},
 	text2: {
 		textAlign: "center",
 		marginLeft: "auto",
@@ -42,20 +39,17 @@ const bodyStyles = {
 		maxWidth: 1024,
 		paddingTop: 50,
 		paddingBottom: 10,
-
-		},
+	},
 	box1: {
 		maxWidth: 511,
 		marginLeft:0,
 		marginRight: "auto",
 		float: "left",
 		textAlign: "center",
-		},
+	},
 	box2: {
-		maxWidth: 511,
-		marginRight: 0,
-		marginLeft: "auto",
 		textAlign: "center",
+		whiteSpace: "pre",
 	},
 	
 		
@@ -90,20 +84,24 @@ const Home = React.createClass({
 				</div>
 				<div style={bodyStyles.second}>
 					<div style={bodyStyles.text}>
-						<div style={bodyStyles.box1}><b>Welcome to SmartHome</b></div>
-						<div style={bodyStyles.box2}>What is SmartHome? <br/><br/> SmartHome is a simple web application to view, manage and improve your households energy consumption.<br/>Easily check your usage with these useful graphs.<br/>You can edit or add new household and sensors with just a few clicks.</div>
+						<div style={bodyStyles.box2}>
+							{this.props.lang.introMessage}
+							<br/><br/>
+							<b>{this.props.lang.welcomeMessage}</b>
+						</div>
 					</div>
 
 				</div>
 				<div style={bodyStyles.first}>
 					<div style={bodyStyles.text}>
-
 						<div style={bodyStyles.box1}>
-								<HouseHoldCardExample
-								
-								/>
+								<HouseHoldCardExample lang={this.props.lang}/>
 						</div>
-						<div style={bodyStyles.box2}><b>Graphs</b> <br/><br/><br/>3 different types of Graphs to represent your household data. <br/><br/>Check for yourself in the example on the left.</div>
+						<div style={bodyStyles.box2}>
+							<b>{this.props.lang.graphs}</b>
+							<br/><br/>
+							{this.props.lang.graphsMessage}
+						</div>
 					</div>
 				</div>
 			</div>
