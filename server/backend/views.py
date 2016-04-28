@@ -232,7 +232,41 @@ class TagDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
+class DataView(APIView):
+    permission_classes = (IsAuthenticated,)
 
+    def get(self, request, period, user_id=None, home_id=None, sensor_id=None, format=None):
+        if (user_id == 'me'):
+            user_id = request.user.id
+
+        now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        from_date = now - timedelta(days=1)
+        data_class = RecentData
+        if period == 'today':
+            data_class = RecentData
+            from_date = now - timedelta(days=1)
+        elif period == 'last_month':
+            data_class = DailyData
+            from_date = now - relativedelta(months=1)
+        elif period == 'last_year':
+            data_class = MonthlyData
+            from_date = now - relativedelta(years=1)
+        elif period == 'past_years':
+            data_class = YearlyData
+            from_date = datetime.min
+
+        queryset = data_class.objects.all().filter(timestamp__gte=from_date)
+        if user_id != None:
+            queryset = queryset.filter(sensor__home__owner_id=user_id).annotate(home_id=F('sensor__home_id'), key=F('sensor__home__name')).values('home_id', 'key', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
+        if home_id != None:
+            queryset = queryset.filter(sensor__home_id=home_id).annotate(sensor_id=F('sensor_id'), key=F('sensor__name')).values('sensor_id', 'key', 'timestamp').annotate(usage=Sum('usage')).order_by('sensor_id', 'timestamp')
+        if sensor_id != None:
+            queryset = queryset.filter(sensor_id=sensor_id).annotate(key=F('sensor__name')).values('key', 'timestamp', 'usage').order_by('timestamp')
+
+        print(queryset.values())
+
+        content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(queryset, lambda x: x['key'])]
+        return Response(content)
 
 class DataList(APIView):
     permission_classes = (IsAuthenticated,)
