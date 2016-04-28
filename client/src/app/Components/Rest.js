@@ -82,6 +82,7 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 	}.bind(this));
 
 	request.open("GET", this.server + cleanedMethod.join("/") + "/?" + cleanedOptions.join("&"));
+	request.withCredentials = true;
 	request.send();
 };
 
@@ -157,6 +158,7 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 
 	request.open("POST", this.server + cleanedMethod.join("/") + "/");
 	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	request.withCredentials = true;
 	request.send(cleanedOptions.join("&"));
 };
 

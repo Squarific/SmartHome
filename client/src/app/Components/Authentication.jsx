@@ -71,7 +71,7 @@ const RegisterForm = React.createClass({
 			this.setState({error: "Registered. Logging in..."});
 		}
 	},
-	handleLoggedIn: function () {
+	handleLoggedIn: function (data) {
 		if (typeof this.props.onLogin === "function")
 			this.props.onLogin();
 	},
@@ -148,7 +148,7 @@ const LoginForm = React.createClass({
 					this.setState({error: errors})
 				}
 			} else {
-				console.log(data, this.props)
+				console.log(data);
 				if (typeof this.props.onLogin === "function")
 					this.props.onLogin();
 			}

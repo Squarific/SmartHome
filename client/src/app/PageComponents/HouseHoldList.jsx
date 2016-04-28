@@ -17,7 +17,7 @@ const HouseHoldList = React.createClass({
 	componentDidMount: function () {
 		if (!this.props.rest) throw "HouseHoldList Error: No rest client provided!";
 
-		this.props.rest.get(["api", "homes", "user", this.props.userid], {}, function (data) {
+		this.props.rest.get(["api", "users", "me", "homes"], {}, function (data) {
 			if (data.error) {
 				this.setState({error: data.error});
 				return;
