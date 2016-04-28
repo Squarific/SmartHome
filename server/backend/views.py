@@ -162,7 +162,7 @@ class HomeList(generics.ListCreateAPIView):
     queryset = Home.objects.all()
     serializer_class = HomeSerializer
 
-    def list(self, request, user_id):
+    def list(self, request, user_id=None):
         # Note the use of `get_queryset()` instead of `self.queryset`
         if (user_id == 'me'):
             user_id = request.user.id
@@ -231,6 +231,7 @@ class TagDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
 
 
 class DataList(APIView):
