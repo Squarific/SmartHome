@@ -2,8 +2,8 @@ from rest_framework import serializers
 from backend.models import *
 
 class UserSerializer(serializers.ModelSerializer):
-    owned_homes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    homes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    owned_homes = serializers.PrimaryKeyRelatedField(many=True, queryset = Home.objects.all())
+    homes = serializers.PrimaryKeyRelatedField(many=True, queryset = Home.objects.all())
 
     class Meta:
         model = User
@@ -11,8 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class HomeSerializer(serializers.ModelSerializer):
-    owner = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
-    users = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    owner = serializers.PrimaryKeyRelatedField(many=False, queryset = User.objects.all())
+    users = serializers.PrimaryKeyRelatedField(many=True, queryset = User.objects.all())
 
     class Meta:
         model = Home
@@ -20,16 +20,16 @@ class HomeSerializer(serializers.ModelSerializer):
 
 
 class SensorSerializer(serializers.ModelSerializer):
-    home = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
-    tags = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    home = serializers.PrimaryKeyRelatedField(many=False, queryset = Home.objects.all())
+    tags = serializers.PrimaryKeyRelatedField(many=True, queryset = Tag.objects.all())
 
     class Meta:
         model = Sensor
         fields = ('name', 'home', 'description', 'tags', 'power_unit')
 
 class FriendRequestSerializer(serializers.ModelSerializer):
-    sender = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
-    receiver = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+    sender = serializers.PrimaryKeyRelatedField(many=False, queryset = User.objects.all())
+    receiver = serializers.PrimaryKeyRelatedField(many=False, queryset = User.objects.all())
 
     class Meta:
         model = FriendRequest
@@ -53,5 +53,4 @@ class DataSerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorData
         fields = ('sensor', 'timestamp', 'usage', 'n_measurements')
-
 

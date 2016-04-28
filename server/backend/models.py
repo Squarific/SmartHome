@@ -237,8 +237,8 @@ class FriendRequest(models.Model):
 
 class Post(models.Model):
     user = models.ForeignKey('auth.User', related_name='posts')
-    content = models.TextField()
-    plot = models.TextField()
+    content = models.TextField(blank=True)
+    plot = models.TextField(blank=True)
     read = models.BooleanField(default=False)
     date_sent = models.DateTimeField()
 
