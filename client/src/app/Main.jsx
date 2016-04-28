@@ -278,11 +278,33 @@ class Main extends React.Component {
 	}
 
 	handleSignOut() {
-		this.setState({
-			navbarOpen: false,
-			active: "Home",
-			loggedIn: false,
-		});
+		// Don't refresh the page
+		event.preventDefault();
+		
+		rest.post(["api", "auth", "logout"], {}, function (data) {
+			if (data.error) {
+				// If there was an error but no response something went wrong
+				if (!data.response || !data.response.errors) {
+					console.log(data.error);
+				} else {
+				// If the server send us an error in the response, display that instead
+					let errors = "";
+					for (let k = 0; k < data.response.errors.length; k++)
+						errors += " " + data.response.errors[k].detail;
+
+					console.log(errors);
+				}
+			} else {
+				console.log("Sucessfully logged out.");
+				this.setState({
+					navbarOpen: false,
+					active: "Home",
+					loggedIn: false,
+				});
+			}
+		}.bind(this));
+
+		return false;
 	}
 
 	handleLogin () {
