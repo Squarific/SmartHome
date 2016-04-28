@@ -162,6 +162,68 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 	request.send(cleanedOptions.join("&"));
 };
 
+Rest.prototype.put = function put (methodArray, options, callback) {
+	if (!methodArray || typeof methodArray.length !== "number")
+		throw "Request expects a method list as second parameter";
+
+	const cleanedMethod = [];
+	methodArray.forEach(function (el) {
+		cleanedMethod.push(encodeURIComponent(el));
+	});
+
+	const cleanedOptions = [];
+	for (let key in options) {
+		cleanedOptions.push(encodeURIComponent(key) + "=" + encodeURIComponent(options[key]));
+	}
+
+	const request = new XMLHttpRequest();
+
+	request.addEventListener("readystatechange", function (event) {
+		if (request.readyState === 4 && request.status >= 200 && request.status < 300) {
+			let data;
+
+			try {
+				data = JSON.parse(request.responseText);
+			} catch (e) {
+				callback({
+					error: this.lang.JSONError + " " + e,
+				});
+				return;
+			}
+
+			callback(data);
+		} else if (request.readyState === 4) {
+			if (request.status === 0) {
+				callback({
+					error: this.lang.noInternet,
+				});
+				return;
+			}
+
+			let data;
+			try {
+				data = JSON.parse(request.responseText);
+			} catch (e) {
+				callback({
+					error: this.lang.JSONError + " " + e,
+				});
+				return;
+			}
+
+			callback({
+				error: this.lang.requestError + " " + request.status,
+				status: request.status,
+				response: data,
+			});
+		}
+	}.bind(this));
+
+	request.open("PUT", this.server + cleanedMethod.join("/") + "/");
+	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	request.withCredentials = true;
+	request.send(cleanedOptions.join("&"));
+};
+
 module.exports = {
 	Rest,
 };

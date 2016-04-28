@@ -18,26 +18,69 @@ const styles = {
 
 const Notifications = React.createClass({
 	getInitialState: function () {
-		const value = '';
-		return {value};
+		return {
+			loading: true,
+			friendRequests: [],
+			myName: "Loading...",
+		};
 	},
 	handleChange: function (event, index, value) {
 		this.setState({value});
 	},
+	componentDidMount: function () {
+		if (!this.props.rest) throw "Notification Error: No rest client provided!";
+
+		this.props.rest.get(["api", "users", "me", "friend_requests", "received"], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				friendRequests: data.data,
+				loading: false,
+			});
+		}.bind(this));
+
+		this.props.rest.get(["api", "users", "me"], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				myName: data.data.attributes.first_name + " " + data.data.attributes.last_name,
+			});
+		}.bind(this));
+	},
 	render: function() {
+		let notifications;
+		notifications = [];
+
+		if (!this.state.loading) {
+			for (let i = 0; i < this.state.friendRequests.length; i++) {
+				if (!this.state.friendRequests[i].attributes.read)
+					notifications.push(<Notification key={i} rest={this.props.rest} lang={this.props.lang} type="FRIEND REQUEST" request={this.state.friendRequests[i]}/>);
+			}
+		}
+
+		if (notifications.length === 0) {
+			notifications = <div>No notifications!</div>;
+		}
+
 		return (
 			<Card>
 			<CardHeader
 				title={this.props.lang.notifications}
-				subtitle="Filip Smets"/>
+				subtitle={this.state.myName}/>
 			<CardActions>
 				<FlatButton label={this.props.lang.clearAll}
 					primary={true}/>
 			</CardActions>
 
 			{/* Notifications here */}
-			<Notification notificationid={1} rest={this.props.rest} lang={this.props.lang} type="FRIEND REQUEST"/>
-			<Notification notificationid={2} rest={this.props.rest} lang={this.props.lang} type="ALERT"/>
+			{notifications}
+
 			<br/>
 			</Card>
 		)
