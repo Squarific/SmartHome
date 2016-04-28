@@ -10,27 +10,52 @@ import CardText from 'material-ui/lib/card/card-text';
 const styles = {
 	wallpost: {
 		margin: "16px 16px 0px 16px",
+		whiteSpace: "pre",
 	},
 }
 
 const WallPost = React.createClass({
 	getInitialState: function () {
-		const value = '';
-		return {value};
+		return {
+			sender: "Loading...",
+			loading: true,
+		}
 	},
 	handleChange: function (event, index, value) {
 		this.setState({value});
 	},
+	componentDidMount: function () {
+		if (!this.props.rest) throw "Notification Error: No rest client provided!";
+
+		this.props.rest.get(["api", "users", this.props.post.relationships.user.data.id], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				sender: data.data,
+				loading: false,
+			});
+		}.bind(this));
+	},
 	render: function() {
+		console.log(this.state.sender)
+
+		let postTitle;
+		if (!this.state.loading) {
+			postTitle = this.props.lang.postFrom + this.state.sender.attributes.first_name;
+		} else {
+			postTitle = "Loading...";
+		}
+
 		return (
 			<Card style={styles.wallpost}>
 			<CardHeader
-				title={this.props.lang.postFrom + "David"}
-				subtitle={"21/04/2016 - 13:57"}/>
+				title={postTitle}
+				subtitle={this.props.post.attributes.date_sent.replace("T", " - ")}/>
 			<CardText>
-				Hey boys, alles goed met jullie verbruik?
-				Ik heb vandaag 2 uur lang mijn wasmachine gebruikt.
-				#NiceMeme
+				{this.props.post.attributes.content}
 			</CardText>
 			</Card>
 		)

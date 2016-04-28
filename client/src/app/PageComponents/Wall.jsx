@@ -25,7 +25,12 @@ const styles = {
 
 const Wall = React.createClass({
 	getInitialState: function () {
-		return {wallPostOpen: false};
+		return {
+			wallPostOpen: false,
+			posts: [],
+			loading: true,
+			postMessage: "",
+		};
 	},
 
 	handleChange: function (event, index, value) {
@@ -44,6 +49,60 @@ const Wall = React.createClass({
 		});
 	},
 
+	handleTextFieldChange: function (e) {
+		this.setState({
+            postMessage: e.target.value,
+        });
+	},
+
+	postMessage: function () {
+		if (this.state.postMessage !== "") {
+			this.props.rest.post(["api", "posts"], {
+	            content: this.state.postMessage,
+	            plot: "",
+	            read: false,
+	            user: this.state.myId,
+			}, function (data) {
+				if (data.error) {
+					console.log(data.error);
+					return;
+				}
+			}.bind(this));
+
+			this.setState({
+				wallPostOpen: false,
+			});
+		}
+	},
+
+	componentDidMount: function () {
+		if (!this.props.rest) throw "Wall Error: No rest client provided!";
+
+		this.props.rest.get(["api", "users", "me", "friends", "posts"], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				posts: data.data,
+				loading: false,
+			});
+		}.bind(this));
+
+		this.props.rest.get(["api", "users", "me"], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				myName: data.data.attributes.first_name + " " + data.data.attributes.last_name,
+				myId: data.data.id,
+			});
+		}.bind(this));
+	},
+
 	render: function() {
 		const wallPostActions = [
 			<FlatButton style={styles.cancelButton}
@@ -55,15 +114,29 @@ const Wall = React.createClass({
 				label={this.props.lang.post}
 				primary={true}
 				keyboardFocused={true}
-				onTouchTap={this.handleWallPostClose}/>,
+				onTouchTap={this.postMessage}/>,
 		];
+
+		let posts;
+		posts = [];
+
+		if (!this.state.loading) {
+			for (let i = 0; i < this.state.posts.length; i++) {
+				if (!this.state.posts[i].attributes.read)
+					posts.push(<WallPost key={i} rest={this.props.rest} lang={this.props.lang} post={this.state.posts[i]}/>);
+			}
+		}
+
+		if (posts.length === 0) {
+			posts = <div>No posts!</div>;
+		}
 
 		return (
 			<div style={styles.wall}>
 				<Card>
 				<CardHeader
-					title="Filip Smets"
-					subtitle="Ranst"/>
+					title={this.state.myName}
+					subtitle={this.props.lang.friendsPosts}/>
 				<CardActions>
 					<FlatButton label={this.props.lang.postToWall}
 						primary={true}
@@ -71,8 +144,8 @@ const Wall = React.createClass({
 				</CardActions>
 
 				{/* Wall Posts here */}
-				<WallPost postid={1} rest={this.props.rest} lang={this.props.lang}/>
-				<WallPost postid={2} rest={this.props.rest} lang={this.props.lang}/>
+				{posts}
+
 				<br/>
 				</Card>
 
@@ -86,7 +159,9 @@ const Wall = React.createClass({
 						<TextField hintText="" floatingLabelText={this.props.lang.message}
 								multiLine={true}
 								rows={5}
-								rowsMax={5}/>
+								rowsMax={5}
+								value={this.state.postMessage}
+								onChange={this.handleTextFieldChange}/>
 					</form>
 				</Dialog>
 			</div>

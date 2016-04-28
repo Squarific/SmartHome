@@ -162,6 +162,10 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 	request.send(cleanedOptions.join("&"));
 };
 
+/*
+	filip pls
+*/
+
 Rest.prototype.put = function put (methodArray, options, callback) {
 	if (!methodArray || typeof methodArray.length !== "number")
 		throw "Request expects a method list as second parameter";
