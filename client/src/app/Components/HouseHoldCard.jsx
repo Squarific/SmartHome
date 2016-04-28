@@ -35,7 +35,7 @@ const HouseHoldCard = React.createClass({
 		return {loading: true};
 	},
 	componentDidMount: function () {
-		this.props.rest.get(["api", "data", "home", this.props.id], {}, function (data) {
+		this.props.rest.get(["api", "homes", this.props.id, "data", "today"], {}, function (data) {
 			if (data.error) {
 				this.setState({error: data.error});
 				return;
