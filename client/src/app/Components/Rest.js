@@ -42,7 +42,7 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 	const request = new XMLHttpRequest();
 
 	request.addEventListener("readystatechange", function (event) {
-		if (request.readyState === 4 && request.status === 200) {
+		if (request.readyState === 4 && request.status >= 200 && request.status < 300) {
 			let data;
 
 			try {
@@ -63,13 +63,26 @@ Rest.prototype.get = function get (methodArray, options, callback) {
 				return
 			}
 
+			let data;
+			try {
+				data = JSON.parse(request.responseText);
+			} catch (e) {
+				callback({
+					error: this.lang.JSONError + " " + e,
+				});
+				return;
+			}
+
 			callback({
 				error: this.lang.requestError + " " + request.status,
+				status: request.status,
+				response: data,
 			});
 		}
 	}.bind(this));
 
 	request.open("GET", this.server + cleanedMethod.join("/") + "/?" + cleanedOptions.join("&"));
+	request.withCredentials = true;
 	request.send();
 };
 
@@ -104,7 +117,7 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 	const request = new XMLHttpRequest();
 
 	request.addEventListener("readystatechange", function (event) {
-		if (request.readyState === 4 && request.status === 200) {
+		if (request.readyState === 4 && request.status >= 200 && request.status < 300) {
 			let data;
 
 			try {
@@ -125,14 +138,28 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 				return;
 			}
 
+			let data;
+			try {
+				data = JSON.parse(request.responseText);
+			} catch (e) {
+				callback({
+					error: this.lang.JSONError + " " + e,
+				});
+				return;
+			}
+
 			callback({
 				error: this.lang.requestError + " " + request.status,
+				status: request.status,
+				response: data,
 			});
 		}
 	}.bind(this));
 
-	request.open("POST", this.server + cleanedMethod.join("/"));
-	request.send(options);
+	request.open("POST", this.server + cleanedMethod.join("/") + "/");
+	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	request.withCredentials = true;
+	request.send(cleanedOptions.join("&"));
 };
 
 module.exports = {

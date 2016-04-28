@@ -67,7 +67,6 @@ class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-
 class UserDetail(APIView):
     permission_classes = (IsAuthenticated,)
     #queryset = User.objects.all()
@@ -86,36 +85,93 @@ class UserDetail(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
-class FriendsList(generics.ListAPIView):
+class FriendRequestList(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = FriendRequest.objects.all()
+    serializer_class = FriendRequestSerializer
+
+    def list(self, request, user_id=None, sent=True, received=True):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        queryset = FriendRequest.objects.all()
+        if (user_id == 'me'):
+            user_id = request.user.id
+        if (user_id != None):
+            if sent:
+                queryset = queryset.filter(sender_id = user_id)
+            if received:
+                queryset = queryset.filter(receiver_id = user_id)
+        serializer = FriendRequestSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+class FriendRequestDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = FriendRequest.objects.all()
+    serializer_class = FriendRequestSerializer
+
+class FriendList(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def get_queryset(self):
-        return User.objects.all().filter(Q(sent_requests__status = 1, sent_requests__receiver = self.request.user) | Q(received_requests__status = 1, received_requests__sender=self.request.user))
-        #return self.request.user.sent_requests.filter(status = 1)
+    def list(self, request, user_id):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        if (user_id == 'me'):
+            user_id = request.user.id
+        queryset = User.objects.all().filter(Q(sent_requests__status = 1, sent_requests__receiver_id = user_id) | Q(received_requests__status = 1, received_requests__sender_id=user_id))
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
 
-class PostsList(generics.ListAPIView):
+class FriendPostList(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    def list(self, request, user_id):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        if (user_id == 'me'):
+            user_id = request.user.id
+
+        queryset = Post.objects.all().filter(Q(user__sent_requests__status = 1, user__sent_requests__receiver_id = user_id) | Q(user__received_requests__status = 1, user__received_requests__sender_id=user_id))
+        serializer = PostSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+class PostList(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    def list(self, request, user_id=None):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        if (user_id == 'me'):
+            user_id = request.user.id
+
+        queryset = Post.objects.all()
+        if (user_id != None):
+            queryset = queryset.filter(user_id=user_id)
+
+        serializer = PostSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
 class HomeList(generics.ListCreateAPIView):
-    """
-    List all homes, or create a new home.
-    """
     permission_classes = (IsAuthenticated,)
     queryset = Home.objects.all()
     serializer_class = HomeSerializer
 
-class HomeListByUser(APIView):
-    """
-    List homes for a given user id.
-    """
-    permission_classes = (IsAuthenticated,)
-    def get(self, request, pk, format=None):
-        homes = Home.objects.filter(owner=pk)
-        serializer = HomeSerializer(homes, many=True)
+    def list(self, request, user_id):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        if (user_id == 'me'):
+            user_id = request.user.id
+
+        queryset = Home.objects.all()
+        if (user_id != None):
+            queryset = queryset.filter(owner_id=user_id)
+
+        serializer = HomeSerializer(queryset, many=True)
         return Response(serializer.data)
 
 class HomeDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -134,6 +190,20 @@ class SensorList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Sensor.objects.all()
     serializer_class = SensorSerializer
+
+    def list(self, request, user_id=None, home_id=None):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        if (user_id == 'me'):
+            user_id = request.user.id
+
+        queryset = Sensor.objects.all()
+        if (user_id != None):
+            queryset = queryset.filter(home__owner_id=user_id)
+        elif (home_id != None):
+            queryset = queryset.filter(home_id=home_id)
+
+        serializer = SensorSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class SensorDetail(generics.RetrieveUpdateDestroyAPIView):

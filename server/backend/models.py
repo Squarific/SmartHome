@@ -239,7 +239,7 @@ class Post(models.Model):
     user = models.ForeignKey('auth.User', related_name='posts')
     content = models.TextField()
     plot = models.TextField()
-    read = models.BooleanField()
+    read = models.BooleanField(default=False)
     date_sent = models.DateTimeField()
 
     def __str__(self):
