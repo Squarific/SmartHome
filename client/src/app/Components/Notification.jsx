@@ -47,6 +47,21 @@ const Notification = React.createClass({
 	handleChange: function (event, index, value) {
 		this.setState({value});
 	},
+	clearNotification: function () {
+		console.log(this.props.request)
+
+		this.props.rest.put(["api", "friend_requests", this.props.request.id], {
+			read: true,
+			sender: this.props.request.relationships.sender.data.id,
+			receiver: this.props.request.relationships.receiver.data.id,
+			status: 1,
+		}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+		}.bind(this));
+	},
 	componentDidMount: function () {
 		if (!this.props.rest) throw "Notification Error: No rest client provided!";
 
@@ -67,7 +82,8 @@ const Notification = React.createClass({
 		if (this.props.type === "FRIEND REQUEST") {
 			actions = <FlatButton style={styles.right2}
 				label={this.props.lang.accept}
-				primary={true}/>;
+				primary={true}
+				onTouchTap={this.clearNotification}/>;
 		} else if (this.props.type === "ALERT") {
 			actions = '';
 		} else {
@@ -79,7 +95,7 @@ const Notification = React.createClass({
 			if (this.state.loading) {
 				message = "Loading...";
 			} else {
-				message = this.state.sender.attributes.first_name + " wil je vriend worden.";
+				message = this.state.sender.attributes.first_name + this.props.lang.wantsToBeFriends;
 			}
 		} else if (this.props.type === "ALERT") {
 			message = "David Danssaert heeft op je wall gepost.";
