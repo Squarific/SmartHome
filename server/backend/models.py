@@ -226,7 +226,7 @@ class FriendRequest(models.Model):
     receiver = models.ForeignKey('auth.User', related_name='received_requests')
     status = models.IntegerField(choices=REQUEST_STATUS)
     read = models.BooleanField(default=False)
-    date_sent = models.DateTimeField()
+    date_sent = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return str(self.pk)
@@ -240,7 +240,7 @@ class Post(models.Model):
     content = models.TextField(blank=True)
     plot = models.TextField(blank=True)
     read = models.BooleanField(default=False)
-    date_sent = models.DateTimeField()
+    date_sent = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return str(self.pk)
