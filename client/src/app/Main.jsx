@@ -24,6 +24,7 @@ import Snackbar from 'material-ui/lib/snackbar';
 // Own components
 import {RegisterForm, LoginForm} from './Components/Authentication'
 import {GraphCard} from './Components/Graphing';
+import CreateHousehold from './Components/CreateHousehold';
 import Divider from 'material-ui/lib/divider';
 import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
@@ -219,6 +220,7 @@ class Main extends React.Component {
 	}
 
 	handleCreateHouseHoldClose() {
+		console.log("close");
 		this.setState({
 			createHouseHoldOpen: false,
 		});
@@ -478,23 +480,10 @@ class Main extends React.Component {
 
 					{/* Create HouseHold */}
 
-					<Dialog style={styles.dialog}
-						title={Translations[this.state.lang].createHousehold}
-						open={this.state.createHouseHoldOpen}
-						onRequestClose={this.handleCreateHouseHoldClose}
-						actions={houseHoldActions}>
-
-
-						<form className="createHouseHold" style={styles.form}>
-							<TextField hintText="" floatingLabelText={Translations[this.state.lang].householdName}/>
-							<br/>
-							<TextField hintText="" floatingLabelText={Translations[this.state.lang].city}/>
-							<br/>
-							<TextField hintText="" floatingLabelText={Translations[this.state.lang].street}/>
-							<br/>
-							<TextField hintText="" floatingLabelText={Translations[this.state.lang].houseNumber}/>
-						</form>
-					</Dialog>
+					<CreateHousehold rest={rest}
+						lang={Translations[this.state.lang]}
+						createHouseHoldOpen={this.state.createHouseHoldOpen}
+						handleCreateHouseHoldClose={this.handleCreateHouseHoldClose}/>
 
 					{/* Create Sensor */}
 					<Dialog style={styles.dialog}
