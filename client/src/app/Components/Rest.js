@@ -163,7 +163,18 @@ Rest.prototype.post = function post (methodArray, options, callback) {
 };
 
 /*
-	filip pls
+	This function makes a PUT request to server
+
+	The methodArray will be appended at the end of the server
+	Every entry will be encoded using encodeUriComponent
+
+	Options are the PUT options, they will be send as JSON
+
+	Callback will be called with the response
+	It is given an object, the object will have an error property set
+	if something went wrong during the request.
+
+	This function throws an error if the methodarray is not supplied.
 */
 
 Rest.prototype.put = function put (methodArray, options, callback) {
