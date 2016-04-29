@@ -71,6 +71,7 @@ const Wall = React.createClass({
 
 			this.setState({
 				wallPostOpen: false,
+				postMessage: "",
 			});
 		}
 	},
@@ -155,7 +156,7 @@ const Wall = React.createClass({
 					onRequestClose={this.handleWallPostClose}
 					actions={wallPostActions}>
 
-					<form className="wallPost" style={styles.form}>
+					<form className="wallPost">
 						<TextField hintText="" floatingLabelText={this.props.lang.message}
 								multiLine={true}
 								rows={5}

@@ -8,9 +8,11 @@ import FlatButton from 'material-ui/lib/flat-button';
 import CardText from 'material-ui/lib/card/card-text';
 import CircularProgress from 'material-ui/lib/circular-progress';
 import {GraphCard} from './Graphing';
+import {ShareGraphButton} from './ShareGraphButton';
 
 const style = {
 	margin: "2em",
+	maxWidth: "64em",
 };
 
 let dataStyle = {
@@ -30,9 +32,12 @@ let dataStyle = {
 		next: "",
 	}
 */
+
 const HouseHoldCard = React.createClass({
 	getInitialState: function () {
-		return {loading: true};
+		return {
+			loading: true,
+		};
 	},
 	componentDidMount: function () {
 		this.props.rest.get(["api", "homes", this.props.id, "data", "today"], {}, function (data) {
@@ -80,8 +85,7 @@ const HouseHoldCard = React.createClass({
 			<CardText>
 			</CardText>
 			<CardActions>
-				<FlatButton label={this.props.prev || this.props.lang.previous} />
-				<FlatButton label={this.props.next || this.props.lang.next} />
+				<FlatButton label={this.props.lang.loading} />
 			</CardActions>
 			</Card>);
 
@@ -111,8 +115,7 @@ const HouseHoldCard = React.createClass({
 			<CardText>
 			</CardText>
 			<CardActions>
-				<FlatButton label={this.props.prev || this.props.lang.previous} />
-				<FlatButton label={this.props.next || this.props.lang.next} />
+				<ShareGraphButton data={data} lang={this.props.lang} rest={this.props.rest}/>
 			</CardActions>
 			</Card>
 		);

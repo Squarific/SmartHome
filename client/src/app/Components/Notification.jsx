@@ -116,7 +116,7 @@ const Notification = React.createClass({
 			<Card style={styles.notification}>
 			<CardHeader style={styles.inline}
 				title={typeTranslated}
-				subtitle={this.props.request.attributes.date_sent.replace("T", " - ")}/>
+				subtitle={Date(this.props.post.attributes.date_sent).toLocaleString()}/>
 			<CardText  style={styles.inline}>
 				{message}
 			</CardText>

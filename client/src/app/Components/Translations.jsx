@@ -54,6 +54,7 @@ const nl = {
 	graphsMessage: "Gebruikmakend van 3 verschillende types grafieken,\nzorgt SmartHome ervoor dat je informatie altijd duidelijk en toegankelijk is.\n\n Hiernaast zie je een voorbeeld van de grafieken die gebruikt worden.\n\nWanneer u ingelogd bent, kan u kiezen welke data van welke sensor u wilt zien.\nHet verbruik van je elektrische douche van de afgelopen week?\nHet vebruik van je televisie deze maand, of misschien wel alles?\n\nGeen zorgen. SmartHome doet het allemaal.",
 	friendsPosts: "Posts van je vrienden",
 	wantsToBeFriends: " wil je vriend worden",
+	shareGraph: "Deel Grafiek",
 }
 
 const en = {
@@ -110,6 +111,7 @@ const en = {
 	graphsMessage: "Using 3 different types of graphs,\nSmartHome makes sure your information is always clear and accessible.\n\nTo the left you can see an interactive example of the graphs we use.\n\nWhen logged in, you can also specify which data, from which sensor you want to see.\nLast week's electric shower consumption?\nThis month's television consumption, or perhaps just everything?\n\nDon't worry. SmartHome does it all.",
 	friendsPosts: "Your friends' posts",
 	wantsToBeFriends: " wants to be friends",
+	shareGraph: "Share Graph",
 }
 
 module.exports = {
