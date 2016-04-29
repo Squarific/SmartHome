@@ -100,9 +100,10 @@ const HouseHoldCard = React.createClass({
 		let targetElement;
 
 		for (let k = 0; k < this.state.data.data.length; k++) {
-			if (this.state.data.data[k].key === this.state.selected)
+			if (this.state.data.data[k].key === this.state.selected) {
 				targetElement = this.state.data.data[k];
-			break;
+				break;
+			}			
 		}
 
 		for (let key = targetElement.values.length - 24;
@@ -130,6 +131,7 @@ const HouseHoldCard = React.createClass({
 				title={this.props.title || this.props.lang.household}
 				subtitle={this.state.subtitle || this.props.lang.loading}/>
 			<CardMedia>
+				{selectField}
 				<GraphCard data={data}
 						graphType="Bar"
 						graphTypes={["Line", "Bar", "Radar"]}/>
