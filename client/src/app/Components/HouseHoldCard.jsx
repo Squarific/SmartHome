@@ -4,6 +4,8 @@ import CardActions from 'material-ui/lib/card/card-actions';
 import CardHeader from 'material-ui/lib/card/card-header';
 import CardMedia from 'material-ui/lib/card/card-media';
 import CardTitle from 'material-ui/lib/card/card-title';
+import SelectField from 'material-ui/lib/select-field';
+import MenuItem from 'material-ui/lib/menus/menu-item';
 import FlatButton from 'material-ui/lib/flat-button';
 import CardText from 'material-ui/lib/card/card-text';
 import CircularProgress from 'material-ui/lib/circular-progress';
@@ -50,23 +52,16 @@ const HouseHoldCard = React.createClass({
 			}
 
 			const randomElement = data.data[Math.floor(data.data.length * Math.random())];
-			let labels = [];
-			let values = [];
-			console.log(randomElement);
-
-			for (let key = randomElement.values.length - 168;
-			     key < randomElement.values.length; key += 6) {
-				labels.push(randomElement.values[key].timestamp);
-				values.push(randomElement.values[key].usage);
-			}
 
 			this.setState({
 				loading: false,
-				subtitle: randomElement.key,
-				labels,
-				values,
+				selected: randomElement.key,
+				data,
 			});
 		}.bind(this));
+	},
+	handleChange: function (event, index, value) {
+		this.setState({selected: value});
 	},
 	render: function () {
 		if (this.state.error) return (<div>{this.state.error}</div>);
@@ -80,21 +75,52 @@ const HouseHoldCard = React.createClass({
 			<CardText>
 			</CardText>
 			<CardActions>
-				<FlatButton label={this.props.prev || this.props.lang.previous} />
-				<FlatButton label={this.props.next || this.props.lang.next} />
 			</CardActions>
 			</Card>);
 
+		// Create menuoptions if we have multiple graphtypes
+		const MenuItems = [];
+		for (let k = 0; k < this.state.data.data.length; k++) {
+			MenuItems.push((
+				<MenuItem value={this.state.data.data[k].key} primaryText={this.state.data.data[k].key} key={k}/>
+			));
+		}
+
+		// Create selectField
+		let selectField;
+		if (MenuItems.length !== 0)
+			selectField = (
+				<SelectField value={this.state.selected} onChange={this.handleChange}>
+					{MenuItems}
+				</SelectField>
+			);
+
+		let labels = [];
+		let values = [];
+		let targetElement;
+
+		for (let k = 0; k < this.state.data.data.length; k++) {
+			if (this.state.data.data[k].key === this.state.selected)
+				targetElement = this.state.data.data[k];
+			break;
+		}
+
+		for (let key = targetElement.values.length - 24;
+		     key < targetElement.values.length; key++) {
+			labels.push(targetElement.values[key].timestamp);
+			values.push(targetElement.values[key].usage);
+		}
+
 		let data = {
-			labels: this.state.labels,
+			labels: labels,
 			datasets: [
 				{
-					data: this.state.values,
+					data: values,
 				},
 			],
 		};
 
-
+		// Put the datastyle into the actual data
 		for (let key in dataStyle) {
 			data.datasets[0][key] = dataStyle[key];
 		}
@@ -111,8 +137,6 @@ const HouseHoldCard = React.createClass({
 			<CardText>
 			</CardText>
 			<CardActions>
-				<FlatButton label={this.props.prev || this.props.lang.previous} />
-				<FlatButton label={this.props.next || this.props.lang.next} />
 			</CardActions>
 			</Card>
 		);
