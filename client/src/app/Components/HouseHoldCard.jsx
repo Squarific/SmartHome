@@ -13,8 +13,8 @@ import {GraphCard} from './Graphing';
 import {ShareGraphButton} from './ShareGraphButton';
 
 const style = {
-	margin: "2em",
 	maxWidth: "64em",
+	margin: "2em auto 2em auto",
 };
 
 let dataStyle = {
@@ -227,7 +227,7 @@ const HouseHoldCard = React.createClass({
 			<CardText>
 			</CardText>
 			<CardActions>
-				<ShareGraphButton data={data} lang={this.props.lang} rest={this.props.rest}/>
+				<ShareGraphButton data={this.getData()} lang={this.props.lang} rest={this.props.rest}/>
 			</CardActions>
 			</Card>
 		);
