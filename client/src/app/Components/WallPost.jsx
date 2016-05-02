@@ -6,11 +6,13 @@ import CardMedia from 'material-ui/lib/card/card-media';
 import CardTitle from 'material-ui/lib/card/card-title';
 import FlatButton from 'material-ui/lib/flat-button';
 import CardText from 'material-ui/lib/card/card-text';
+import {GraphCard} from './Graphing';
 
 const styles = {
 	wallpost: {
-		margin: "16px 16px 0px 16px",
+		margin: "16px auto 0px auto",
 		whiteSpace: "pre",
+		maxWidth: "64em",
 	},
 }
 
@@ -49,14 +51,24 @@ const WallPost = React.createClass({
 			postTitle = "Loading...";
 		}
 
+		let graph;
+		if (this.props.post.attributes.plot !== "") {
+			graph = <GraphCard data={JSON.parse(this.props.post.attributes.plot)}
+				graphType="Bar"
+				graphTypes={["Line", "Bar", "Radar"]}/>
+		} else {
+			graph = "";
+		}
+
 		return (
 			<Card style={styles.wallpost}>
 			<CardHeader
 				title={postTitle}
-				subtitle={this.props.post.attributes.date_sent.replace("T", " - ")}/>
+				subtitle={Date(this.props.post.attributes.date_sent).toLocaleString()}/>
 			<CardText>
 				{this.props.post.attributes.content}
 			</CardText>
+				{graph}
 			</Card>
 		)
 	},

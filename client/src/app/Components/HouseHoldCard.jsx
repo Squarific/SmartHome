@@ -10,9 +10,11 @@ import FlatButton from 'material-ui/lib/flat-button';
 import CardText from 'material-ui/lib/card/card-text';
 import CircularProgress from 'material-ui/lib/circular-progress';
 import {GraphCard} from './Graphing';
+import {ShareGraphButton} from './ShareGraphButton';
 
 const style = {
 	margin: "2em",
+	maxWidth: "64em",
 };
 
 let dataStyle = {
@@ -32,6 +34,7 @@ let dataStyle = {
 		next: "",
 	}
 */
+
 const HouseHoldCard = React.createClass({
 	getInitialState: function () {
 		return {loading: true, period: "today"};
@@ -224,6 +227,7 @@ const HouseHoldCard = React.createClass({
 			<CardText>
 			</CardText>
 			<CardActions>
+				<ShareGraphButton data={data} lang={this.props.lang} rest={this.props.rest}/>
 			</CardActions>
 			</Card>
 		);
