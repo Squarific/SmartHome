@@ -227,7 +227,7 @@ const HouseHoldCard = React.createClass({
 			<CardText>
 			</CardText>
 			<CardActions>
-				<ShareGraphButton data={data} lang={this.props.lang} rest={this.props.rest}/>
+				<ShareGraphButton data={this.getData()} lang={this.props.lang} rest={this.props.rest}/>
 			</CardActions>
 			</Card>
 		);
