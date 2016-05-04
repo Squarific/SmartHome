@@ -13,8 +13,8 @@ import {GraphCard} from './Graphing';
 import {ShareGraphButton} from './ShareGraphButton';
 
 const style = {
-	margin: "2em",
 	maxWidth: "64em",
+	margin: "2em auto 2em auto",
 };
 
 let dataStyle = {

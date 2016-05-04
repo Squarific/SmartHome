@@ -121,17 +121,17 @@ const CreateHousehold = React.createClass({
 				<form className="createHouseHold" style={styles.form}>
 					{this.state.error || ""}
 					<br/>
-					<TextField id="name" hintText="" floatingLabelText={this.props.lang.householdName}/>
+					<TextField id="name" floatingLabelText={this.props.lang.householdName}/>
 					<br/>
-					<TextField id="country" hintText="country" floatingLabelText={this.props.lang.country}/>
+					<TextField id="country" floatingLabelText={this.props.lang.country}/>
 					<br/>
-					<TextField id="city" hintText="city" floatingLabelText={this.props.lang.city}/>
+					<TextField id="city" floatingLabelText={this.props.lang.city}/>
 					<br/>
-					<TextField id="zipcode" hintText="zipcode" floatingLabelText={this.props.lang.zipCode}/>
+					<TextField id="zipcode" floatingLabelText={this.props.lang.zipCode}/>
 					<br/>
-					<TextField id="street" hintText="street" floatingLabelText={this.props.lang.street}/>
+					<TextField id="street" floatingLabelText={this.props.lang.street}/>
 					<br/>
-					<TextField id="housenumber" hintText="housenumber" floatingLabelText={this.props.lang.houseNumber}/>
+					<TextField id="housenumber" floatingLabelText={this.props.lang.houseNumber}/>
 				</form>
 			</Dialog>
 		);
