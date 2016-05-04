@@ -381,8 +381,12 @@ class Main extends React.Component {
 						<MenuItem onTouchTap={this.handleCreateSensorRequest}>{Translations[this.state.lang].createSensor}</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleViewWall}>{Translations[this.state.lang].wall}</MenuItem>
+<<<<<<< HEAD
 						<MenuItem onTouchTap={this.handleViewNotifications}>{Translations[this.state.lang].notifications}</MenuItem>
 						<MenuItem onTouchTap={this.handleViewFriends}>{Translations[this.state.lang].friends}</MenuItem>
+=======
+						<MenuItem onTouchTap={this.handleViewNotificaions}>{Translations[this.state.lang].notifications}</MenuItem>
+>>>>>>> master
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleViewAdminInterface}>{Translations[this.state.lang].adminInterface}</MenuItem>
 						<Divider />
@@ -422,7 +426,6 @@ class Main extends React.Component {
 		else if (this.state.loggedIn) {
 			logInBar = <AppBar
 			title="SmartHome"
-
 			onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
 		}
 
@@ -431,7 +434,7 @@ class Main extends React.Component {
 			<div style={styles.container}>
 				<div style={styles.header}>
 					{/* AppBar */}
-					
+
 					{logInBar}
 					
 					{/* Login Popover */}

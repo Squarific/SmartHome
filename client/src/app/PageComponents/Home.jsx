@@ -10,8 +10,6 @@ const bodyStyles = {
 		marginRight: 0,
 		marginTop: 0,
 		marginBottom: 0,
-		minWidth: "100%",
-		overflow: "hidden",
 	},
 	second: {
 		color: 'white',
@@ -51,21 +49,30 @@ const bodyStyles = {
 		textAlign: "center",
 		whiteSpace: "pre",
 	},
-	
-		
+	table: {
+		width: "100%",
+		textAlign: "center",
+	},
+	tableData: {
+		width: "50%",
+		padding: "1em",
+	},
+	tableDataText: {
+		maxWidth: "50em",
+		margin: "auto",
+	},
 };
 
 const Style = {
-		
-		marginLeft: 0,
-		marginRight: 0,
-		marginTop: 0,
-		marginBottom: 0,
-		minWidth: "100%",
-		maxWidth: "100%",
- 		WebkitTransition: 'all', 
-  		msTransition: 'all',
-	};
+	marginLeft: 0,
+	marginRight: 0,
+	marginTop: 0,
+	marginBottom: 0,
+	minWidth: "100%",
+	maxWidth: "100%",
+	WebkitTransition: 'all', 
+	msTransition: 'all',
+};
 
 
 
@@ -93,16 +100,22 @@ const Home = React.createClass({
 
 				</div>
 				<div style={bodyStyles.first}>
-					<div style={bodyStyles.text}>
-						<div style={bodyStyles.box1}>
-								<HouseHoldCardExample lang={this.props.lang}/>
-						</div>
-						<div style={bodyStyles.box2}>
-							<b>{this.props.lang.graphs}</b>
-							<br/><br/>
-							{this.props.lang.graphsMessage}
-						</div>
-					</div>
+					<table style={bodyStyles.table}>
+						<tbody>
+							<tr>
+								<td style={bodyStyles.tableData}>
+									<HouseHoldCardExample lang={this.props.lang}/>
+								</td>
+								<td style={bodyStyles.tabelData}>
+									<div style={bodyStyles.tableDataText}>
+										<b>{this.props.lang.graphs}</b>
+										<br/><br/>
+										{this.props.lang.graphsMessage}
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		);
