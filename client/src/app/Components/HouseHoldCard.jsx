@@ -129,7 +129,7 @@ const HouseHoldCard = React.createClass({
 		}.bind(this));
 	},
 	getPeriodSelectField: function () {
-		let periods = ["Last hour", "24 hours", "Last week", "Last month","Last 6 months", "Last year"];
+		const periods = ["Last hour", "24 hours", "Last week", "Last month","Last 6 months", "Last year"];
 
 		const MenuItems = [];
 		for (let k = 0; k < periods.length; k++) {
@@ -164,6 +164,24 @@ const HouseHoldCard = React.createClass({
 			</div>
 		);
 	},
+	// Give back a label appropriate for the given period
+	convertTimestampToLabel: function (timestamp, period) {
+		const labelTypes = {
+			hourAndMinute: ["Last hour", "24 hours"],
+			day: ["Last week", "Last month"],
+			month: ["Last 6 months", "Last year"],
+		};
+
+		let date = new Date(timestamp);
+
+		if (labelTypes.hourAndMinute.indexOf(period) !== -1) {
+			return date.toLocaleTimeString();
+		} else if (labelTypes.day.indexOf(period) !== -1) {
+			return date.toLocaleDateString();
+		}
+
+		return date.toLocaleDateString();
+	},
 	getData: function () {
 		let labels = [];
 		let values = [];
@@ -176,9 +194,11 @@ const HouseHoldCard = React.createClass({
 			}			
 		}
 
+		console.log(this.state.data);
+
 		for (let key = targetElement.values.length - 48;
 		     key < targetElement.values.length; key++) {
-			labels.push(targetElement.values[key].timestamp);
+			labels.push(this.convertTimestampToLabel(targetElement.values[key].timestamp));
 			values.push(targetElement.values[key].usage);
 		}
 
