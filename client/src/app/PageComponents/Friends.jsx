@@ -1,114 +1,66 @@
 import React from 'react';
-import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
-import HouseHoldCardExample from '../Components/HouseHoldCardExample';
+import Card from 'material-ui/lib/card/card';
+import CardActions from 'material-ui/lib/card/card-actions';
+import CardHeader from 'material-ui/lib/card/card-header';
+import {green500, grey500} from 'material-ui/lib/styles/colors';
+import {FriendTable} from '../Components/FriendTable';
 
-const bodyStyles = {
-	first: {
-		color: grey500,
-		background: 'white',
-		marginLeft: 0,
-		marginRight: 0,
-		marginTop: 0,
-		marginBottom: 0,
-		minWidth: "100%",
-		overflow: "hidden",
+const styles = {
+	friends: {
+		color: green500,
+		padding: 32,
 	},
-	second: {
-		color: 'white',
-		background: green300,
-		marginLeft: 0,
-		marginRight: 0,
-		marginTop: -5,
-		minWidth: "100%",
+}
+
+const Friends = React.createClass({
+	getInitialState: function () {
+		const value = '';
+		return {value};
 	},
-	text: {
-		
-		textAlign: "left",
-		marginLeft: "auto",
-		marginRight: "auto",
-		paddingTop: 32,
-		paddingBottom: 32,
-		maxWidth: 1024,
-		minHeight: 100,
-		fontSize: 16,
+	handleChange: function (event, index, value) {
+		this.setState({value});
 	},
-	text2: {
-		textAlign: "center",
-		marginLeft: "auto",
-		marginRight: "auto",
-		maxWidth: 1024,
-		paddingTop: 50,
-		paddingBottom: 10,
+	componentDidMount: function () {
+		if (!this.props.rest) throw "Notification Error: No rest client provided!";
+
+		this.props.rest.get(["api", "users", "me", "friends"], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				friends: data.data,
+				loading: false,
+			});
+		}.bind(this));
+
+		this.props.rest.get(["api", "users", "me"], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				myName: data.data.attributes.first_name + " " + data.data.attributes.last_name,
+			});
+		}.bind(this));
 	},
-	box1: {
-		maxWidth: 511,
-		marginLeft:0,
-		marginRight: "auto",
-		float: "left",
-		textAlign: "center",
-	},
-	box2: {
-		textAlign: "center",
-		whiteSpace: "pre",
-	},
-	
-		
-};
-
-const Style = {
-		
-		marginLeft: 0,
-		marginRight: 0,
-		marginTop: 0,
-		marginBottom: 0,
-		minWidth: "100%",
-		maxWidth: "100%",
- 		WebkitTransition: 'all', 
-  		msTransition: 'all',
-	};
-
-
-
-const Home = React.createClass({
-
-	
-
- 	render: function() {
-	
-		
+	render: function() {
 		return (
-			
-			<div style={Style}>
-				<div style={bodyStyles.first}>
-					<div style={bodyStyles.text}><img src='http://www.loxone.com/tl_files/loxone/Content_images/illustrations/other/energy-3d-house.png' /></div>
-				</div>
-				<div style={bodyStyles.second}>
-					<div style={bodyStyles.text}>
-						<div style={bodyStyles.box2}>
-							{this.props.lang.introMessage}
-							<br/><br/>
-							<b>{this.props.lang.welcomeMessage}</b>
-						</div>
-					</div>
+			<Card>
+			<CardHeader
+				title="Friends"
+				subtitle={this.state.myName}/>
 
-				</div>
-				<div style={bodyStyles.first}>
-					<div style={bodyStyles.text}>
-						<div style={bodyStyles.box1}>
-								<HouseHoldCardExample lang={this.props.lang}/>
-						</div>
-						<div style={bodyStyles.box2}>
-							<b>{this.props.lang.graphs}</b>
-							<br/><br/>
-							{this.props.lang.graphsMessage}
-						</div>
-					</div>
-				</div>
-			</div>
-		);
+			{FriendTable}
+
+			<br/>
+			</Card>
+		)
 	},
 });
 
 module.exports = {
-	Home,
+	Friends: Friends,
 };
