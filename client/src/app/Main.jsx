@@ -30,7 +30,7 @@ import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
 import {Rest} from './Components/Rest';
 import Translations from './Components/Translations';
-
+import {SearchFriends} from './Components/SearchFriends';
 
 // Page components
 import {HouseHoldList} from './PageComponents/HouseHoldList';
@@ -99,6 +99,9 @@ const styles = {
 		padding: "5em",
 		color: "rgba(255, 255, 255, 0.87)",
 		fontSize: "1.2em",
+	},
+	search: {
+		marginTop: -10,
 	},
 };
 
@@ -412,7 +415,7 @@ class Main extends React.Component {
 		else if (this.state.loggedIn) {
 			logInBar = <AppBar
 			title="SmartHome"
-
+			iconElementRight={<div style={styles.search}><SearchFriends rest={rest}/></div>}
 			onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
 		}
 
