@@ -415,10 +415,7 @@ class Main extends React.Component {
 		else if (this.state.loggedIn) {
 			logInBar = <AppBar
 			title="SmartHome"
-<<<<<<< HEAD
 			iconElementRight={<div style={styles.search}><SearchFriends rest={rest}/></div>}
-=======
->>>>>>> b7d572552b6360dfefb96b79eeddc12fccfd38b8
 			onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
 		}
 
