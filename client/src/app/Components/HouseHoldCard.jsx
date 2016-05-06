@@ -13,8 +13,8 @@ import {GraphCard} from './Graphing';
 import {ShareGraphButton} from './ShareGraphButton';
 
 const style = {
-	margin: "2em",
 	maxWidth: "64em",
+	margin: "2em auto 2em auto",
 };
 
 let dataStyle = {
@@ -37,7 +37,7 @@ let dataStyle = {
 
 const HouseHoldCard = React.createClass({
 	getInitialState: function () {
-		return {loading: true, period: "today"};
+		return {loading: true, period: "today", selectedPeriod: "24 hours"};
 	},
 	componentDidMount: function () {
 		this.props.rest.get(["api", "homes", this.props.id, "data", this.state.period], {}, function (data) {
@@ -53,8 +53,6 @@ const HouseHoldCard = React.createClass({
 				});
 				return;
 			}
-
-			console.log(data);
 
 			const randomElement = data.data[Math.floor(data.data.length * Math.random())];
 
@@ -93,14 +91,20 @@ const HouseHoldCard = React.createClass({
 
 		// Check if we already have that data
 		// If so we can just rerender
-		if (this.state.data[period]) return;
+		if (this.state.data[period]) {
+			this.setState({
+				period,
+				selectedPeriod: value,
+			});
+			return;
+		}
 
 		// Otherwise we have to show the loading model
-		this.state.loading = true;
 		this.setState({
 			loading: true,
 			period,
-		})
+			selectedPeriod: value,
+		});
 
 		this.props.rest.get(["api", "homes", this.props.id, "data", period], {}, function (data) {
 			if (data.error) {
@@ -129,7 +133,7 @@ const HouseHoldCard = React.createClass({
 		}.bind(this));
 	},
 	getPeriodSelectField: function () {
-		let periods = ["Last hour", "24 hours", "Last week", "Last month","Last 6 months", "Last year"];
+		const periods = ["Last hour", "24 hours", "Last week", "Last month","Last 6 months", "Last year"];
 
 		const MenuItems = [];
 		for (let k = 0; k < periods.length; k++) {
@@ -140,7 +144,7 @@ const HouseHoldCard = React.createClass({
 
 		return (
 			<div style={{display: "inline-block", width:256, minWidth: "initial"}}>
-				<SelectField value={this.state.period} onChange={this.handleTimelineChange}>
+				<SelectField value={this.state.selectedPeriod} onChange={this.handleTimelineChange}>
 					{MenuItems}
 				</SelectField>
 			</div>
@@ -164,6 +168,24 @@ const HouseHoldCard = React.createClass({
 			</div>
 		);
 	},
+	// Give back a label appropriate for the given period
+	convertTimestampToLabel: function (timestamp, period) {
+		const labelTypes = {
+			hourAndMinute: ["Last hour", "24 hours"],
+			day: ["Last week", "Last month"],
+			month: ["Last 6 months", "Last year"],
+		};
+
+		let date = new Date(timestamp);
+
+		if (labelTypes.hourAndMinute.indexOf(period) !== -1) {
+			return date.toLocaleTimeString();
+		} else if (labelTypes.day.indexOf(period) !== -1) {
+			return date.toLocaleDateString();
+		}
+
+		return date.toLocaleDateString();
+	},
 	getData: function () {
 		let labels = [];
 		let values = [];
@@ -176,10 +198,55 @@ const HouseHoldCard = React.createClass({
 			}			
 		}
 
-		for (let key = targetElement.values.length - 48;
-		     key < targetElement.values.length; key++) {
-			labels.push(targetElement.values[key].timestamp);
-			values.push(targetElement.values[key].usage);
+		let periods = {
+			"Last hour": {
+				amount: 60,
+				aggregate_per: 1,
+			}, 
+			"24 hours": {
+				amount: 24,
+				aggregate_per: 60,
+			},
+			"Last week": {
+				amount: 7,
+				aggregate_per: 1,
+			},
+			"Last month": {
+				amount: 31,
+				aggregate_per: 1,
+			},
+			"Last 6 months": {
+				amount: 6,
+				aggregate_per: 1,
+			},
+			"Last year": {
+				amount: 12,
+				aggregate_per: 1,
+			},
+		};
+
+		const length = Math.min(targetElement.values.length, periods[this.state.selectedPeriod].amount);
+		const per = periods[this.state.selectedPeriod].aggregate_per;
+
+		// Select how many values we want
+		for (let key = 0; key < length; key++) {
+
+			// Aggregate the values
+			let sum = 0;
+			for (let i = 0; i < per; i++) {
+				// Not enough data?
+				if (targetElement.values.length - (key * per) - i - 1 < 0)
+					continue;
+
+				sum += targetElement.values[targetElement.values.length - (key * per) - i - 1].usage;
+			}
+
+			// Not enough values for this aggregate, time to stop
+			if (targetElement.values.length - (key * per) - 1 < 0)
+				break
+
+			labels.push(this.convertTimestampToLabel(targetElement.values[targetElement.values.length - (key * per) - 1].timestamp, this.state.selectedPeriod));
+			values.push(sum);
 		}
 
 		let data = {
@@ -219,6 +286,7 @@ const HouseHoldCard = React.createClass({
 				subtitle={this.state.selected || this.props.lang.loading}/>
 			<CardMedia>
 				{this.getSensorSelectField()}
+				<br/>
 				{this.getPeriodSelectField()}
 				<GraphCard data={this.getData()}
 						graphType="Bar"

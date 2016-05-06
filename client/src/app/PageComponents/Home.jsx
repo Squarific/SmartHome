@@ -2,6 +2,9 @@ import React from 'react';
 import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
 import HouseHoldCardExample from '../Components/HouseHoldCardExample';
 
+
+
+
 const bodyStyles = {
 	first: {
 		color: grey500,
@@ -10,8 +13,6 @@ const bodyStyles = {
 		marginRight: 0,
 		marginTop: 0,
 		marginBottom: 0,
-		minWidth: "100%",
-		overflow: "hidden",
 	},
 	second: {
 		color: 'white',
@@ -51,21 +52,30 @@ const bodyStyles = {
 		textAlign: "center",
 		whiteSpace: "pre",
 	},
-	
-		
+	table: {
+		width: "100%",
+		textAlign: "center",
+	},
+	tableData: {
+		width: "50%",
+		padding: "1em",
+	},
+	tableDataText: {
+		maxWidth: "50em",
+		margin: "auto",
+	},
 };
 
 const Style = {
-		
-		marginLeft: 0,
-		marginRight: 0,
-		marginTop: 0,
-		marginBottom: 0,
-		minWidth: "100%",
-		maxWidth: "100%",
- 		WebkitTransition: 'all', 
-  		msTransition: 'all',
-	};
+	marginLeft: 0,
+	marginRight: 0,
+	marginTop: 0,
+	marginBottom: 0,
+	minWidth: "100%",
+	maxWidth: "100%",
+	WebkitTransition: 'all', 
+	msTransition: 'all',
+};
 
 
 
@@ -74,10 +84,9 @@ const Home = React.createClass({
 	
 
  	render: function() {
-	
 		
 		return (
-			
+
 			<div style={Style}>
 				<div style={bodyStyles.first}>
 					<div style={bodyStyles.text}><img src='http://www.loxone.com/tl_files/loxone/Content_images/illustrations/other/energy-3d-house.png' /></div>
@@ -88,21 +97,30 @@ const Home = React.createClass({
 							{this.props.lang.introMessage}
 							<br/><br/>
 							<b>{this.props.lang.welcomeMessage}</b>
+
 						</div>
 					</div>
 
 				</div>
 				<div style={bodyStyles.first}>
-					<div style={bodyStyles.text}>
-						<div style={bodyStyles.box1}>
-								<HouseHoldCardExample lang={this.props.lang}/>
-						</div>
-						<div style={bodyStyles.box2}>
-							<b>{this.props.lang.graphs}</b>
-							<br/><br/>
-							{this.props.lang.graphsMessage}
-						</div>
-					</div>
+
+					<table style={bodyStyles.table}>
+						<tbody>
+							<tr>
+								<td style={bodyStyles.tableData}>
+									<HouseHoldCardExample lang={this.props.lang}/>
+								</td>
+								<td style={bodyStyles.tabelData}>
+									<div style={bodyStyles.tableDataText}>
+										<b>{this.props.lang.graphs}</b>
+										<br/><br/>
+										{this.props.lang.graphsMessage}
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
 				</div>
 			</div>
 		);
