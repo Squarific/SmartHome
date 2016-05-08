@@ -31,9 +31,8 @@ const Profile = React.createClass({
 	getInitialState: function () {
 		return {
 			myFriends: [],
-			profileOwner: this.props.result,
 			deletePopUp: false,
-			Me: this.props.me,
+			sent: [],
 		};
 	},
 	componentDidMount: function () {
@@ -48,20 +47,27 @@ const Profile = React.createClass({
 			});
 		}.bind(this));
 	},
-	/*handleAdd: function () {
-		this.props.rest.get(["api", "users", this.state.profileOwner.id, "friend_requests", "received"], {
-			status: 'Pending',
-			read: false,
+	handleAdd: function () {
+		this.props.rest.get(["api", "friend_requests"], {
+			
 		}, function(data) {
 			if (data.error) {
 				console.log(data.error);
 				return;
 			}
-	}.bind(this));
-		this.setState({
-			deletePopUp: false,
-		});
-	},*/
+		}.bind(this));
+		/*this.props.rest.post(["api", "users", this.props.result.id, "friend_requests", "received"], {
+			status: 'Pending',
+			read: false,
+			sender: this.props.me,
+			receiver: this.props.result,
+		}, function(data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+		}.bind(this));*/
+	},
 	handleDeletePopUp: function () {
 		this.setState({
 			deletePopUp: true,
@@ -72,25 +78,12 @@ const Profile = React.createClass({
 			deletePopUp: false,
 		});
 	},
-	handleDelete: function () {
-		this.props.rest.get(["api", "users", "me", "friends"], {}, function(data) {
-			if (data.error) {
-				console.log(data.error);
-				return;
-			}
-			data.data.splice(data.data.indexOf(this.state.profileOwner), 1);
-		}.bind(this));
-		this.props.rest.get(["api", "users", this.state.profileOwner.id, "friends"], {}, function(data) {
-			if (data.error) {
-				console.log(data.error);
-				return;
-			}
-			data.data.splice(data.data.indexOf(this.state.Me), 1);
-		}.bind(this));
-	},
+	/*handleDelete: function () {
+		
+	},*/
 	render: function () {
 		let profileActions;
-		if (this.state.myFriends.length > 0 && this.state.myFriends.indexOf(this.state.profileOwner) > -1) {
+		if (this.state.myFriends.length > 0 && this.state.myFriends.indexOf(this.props.result) > -1) {
 				profileActions = [<FlatButton 
 								style={Styles.Button}
 								label={'Friends'}
@@ -104,6 +97,8 @@ const Profile = React.createClass({
 							];
 				return;
 			}
+
+		
 		else {
 			
 			profileActions = <FlatButton style={Styles.addButton}
@@ -125,7 +120,7 @@ const Profile = React.createClass({
 			<div>
 				<Card style={Styles.profile}>
 				<CardHeader
-					title={this.state.profileOwner.attributes.username}
+					title={this.props.result.attributes.username}
 				/>
 				<CardActions>
 					{profileActions}
