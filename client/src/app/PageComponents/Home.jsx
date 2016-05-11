@@ -1,5 +1,5 @@
 import React from 'react';
-import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
+import {green700, green600, green500, green300, green100, grey500} from 'material-ui/styles/colors';
 import HouseHoldCardExample from '../Components/HouseHoldCardExample';
 
 
