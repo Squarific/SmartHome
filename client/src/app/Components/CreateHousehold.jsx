@@ -1,8 +1,8 @@
 import React from 'react';
-import Dialog from 'material-ui/lib/dialog';
-import FlatButton from 'material-ui/lib/flat-button';
-import {green500, grey500} from 'material-ui/lib/styles/colors';
-import TextField from 'material-ui/lib/text-field';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import {green500, grey500} from 'material-ui/styles/colors';
+import TextField from 'material-ui/TextField';
 
 const styles = {
 	form: {

@@ -5,27 +5,26 @@
 
 import React from 'react';
 
-// Material includes
-import RaisedButton from 'material-ui/lib/raised-button';
-import Dialog from 'material-ui/lib/dialog';
-import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
-import FlatButton from 'material-ui/lib/flat-button';
-import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
-import AppBar from 'material-ui/lib/app-bar';
+import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import {green700, green600, green500, green300, green100, grey500} from 'material-ui/styles/colors';
+import FlatButton from 'material-ui/FlatButton';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
 import HouseHoldCard from './Components/HouseHoldCard';
-import LeftNav from 'material-ui/lib/left-nav';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import Popover from 'material-ui/lib/popover/popover';
-import TextField from 'material-ui/lib/text-field';
-import SelectField from 'material-ui/lib/select-field';
-import Snackbar from 'material-ui/lib/snackbar';
+import LeftNav from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
+import Popover from 'material-ui/Popover';
+import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import Snackbar from 'material-ui/Snackbar';
 
 // Own components
 import {RegisterForm, LoginForm} from './Components/Authentication'
 import {GraphCard} from './Components/Graphing';
 import CreateHousehold from './Components/CreateHousehold';
-import Divider from 'material-ui/lib/divider';
+import Divider from 'material-ui/Divider';
 import {HouseHoldSelect} from './Components/HouseHoldSelect';
 import {PowerUnitSelect} from './Components/PowerUnitSelect';
 import {Rest} from './Components/Rest';
