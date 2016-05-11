@@ -16,12 +16,16 @@ const styles = {
 		color: green500,
 		padding: 32,
 	},
+	title: {
+		fontWeight: 100,
+	}
 }
 
 const AdminInterface = React.createClass({
 	getInitialState: function () {
-		const value = '';
-		return {value};
+		return {
+			loading: true,
+		};
 	},
 	handleChange: function (event, index, value) {
 		this.setState({value});
@@ -37,16 +41,25 @@ const AdminInterface = React.createClass({
 
 			this.setState({
 				user: data.data.attributes,
+				loading: false,
 			});
 		}.bind(this));
 	},
-    render: function() {
-        console.log(this.state.user);
-        if (!this.state.user.is_staff)
-            return (<div>You need to be an administrator to use this function!</div>);
+	render: function() {
+		if (!this.state.loading) {
+			console.log(this.state.user);
+		}
 
-		return (
-			<form className="AdminGetData" style={styles.form}>
+		let adminInterface;
+
+		if (this.state.loading) {
+			adminInterface = <div>Loading...</div>;
+		} else if (!this.state.user.is_staff) {
+			adminInterface = <div>You need to be an administrator to use this function!</div>
+		} else {
+			adminInterface = <form className="AdminGetData" style={styles.form}>
+				<TextField hintText="" floatingLabelText={this.props.lang.country}/>
+				<br/>
 				<TextField hintText="" floatingLabelText={this.props.lang.city}/>
 				<br/>
 				<TextField hintText="" floatingLabelText={this.props.lang.street}/>
@@ -54,6 +67,13 @@ const AdminInterface = React.createClass({
 				<br/>
 				<FlatButton label={this.props.lang.getData} primary={true}/>
 			</form>
+		}
+
+		return (
+			<div>
+				<h2 style={styles.title}>Admin Interface</h2>
+				{adminInterface}
+			</div>
 		)
 	},
 });
