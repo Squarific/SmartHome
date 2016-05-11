@@ -48,6 +48,8 @@ const Notifications = React.createClass({
 				return;
 			}
 
+			console.log(data);
+
 			this.setState({
 				myName: data.data.attributes.first_name + " " + data.data.attributes.last_name,
 			});

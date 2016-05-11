@@ -64,7 +64,7 @@ const styles = {
 		marginTop: 20,
 		marginBottom: 20,
 		maxWidth:"100%",
-		minWidth: "100",
+		minWidth: "100%",
 	},
 	body2: {
 		maxWidth: 1024,
@@ -376,7 +376,7 @@ class Main extends React.Component {
 						<MenuItem onTouchTap={this.handleCreateSensorRequest}>{Translations[this.state.lang].createSensor}</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleViewWall}>{Translations[this.state.lang].wall}</MenuItem>
-						<MenuItem onTouchTap={this.handleViewNotificaions}>{Translations[this.state.lang].notifications}</MenuItem>
+						<MenuItem onTouchTap={this.handleViewNotifications}>{Translations[this.state.lang].notifications}</MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleViewAdminInterface}>{Translations[this.state.lang].adminInterface}</MenuItem>
 						<Divider />

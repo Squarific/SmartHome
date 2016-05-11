@@ -18,7 +18,7 @@ const styles = {
 	},
 	title: {
 		fontWeight: 100,
-	}
+	},
 }
 
 const AdminInterface = React.createClass({
