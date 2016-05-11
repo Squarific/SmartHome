@@ -101,7 +101,7 @@ const styles = {
 		fontSize: "1.2em",
 	},
 	search: {
-		marginTop: -10,
+		marinTop: -10,
 	},
 };
 
@@ -415,7 +415,7 @@ class Main extends React.Component {
 		else if (this.state.loggedIn) {
 			logInBar = <AppBar
 			title="SmartHome"
-			iconElementRight={<div style={styles.search}><SearchFriends rest={rest}/></div>}
+			iconElementRight={<SearchFriends style={styles.search} rest={rest}/>}
 			onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
 		}
 

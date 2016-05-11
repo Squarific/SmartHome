@@ -6,8 +6,20 @@ import {green700, green600, green500, green300, green100, grey500} from 'materia
 import {Profile} from './Profile';
 
 const Styles = {
+	search: {
+		color: "white",
+	},
 	dialog: {
 		textAlign: "center",
+	},
+	floatingLabelStyle: {
+		color: "white",
+	},
+	floatingLabelFocusStyle: {
+		color: "white",
+	},
+	underlineStyle: {
+		borderColor: "white",
 	},
 };
 
@@ -91,13 +103,16 @@ const SearchFriends = React.createClass({
 		return (
 			<div>
 				<AutoComplete
+					inputStyle={Styles.search}
 		  			floatingLabelText="Search Friends"
 		  			filter={AutoComplete.fuzzyFilter}
 		  			dataSource={USERS}
 					onNewRequest={this.selectedItem}
 					searchText={this.state.searchInput}
 					maxSearchResults={5}
-
+					floatingLabelStyle={Styles.floatingLabelStyle}
+					floatingLabelFocusStyle={Styles.floatingLabelFocusStyle}
+					underlineFocusStyle={Styles.underlineStyle}
 				/>
 				
 				<Dialog
