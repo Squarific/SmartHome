@@ -1,13 +1,24 @@
 import React from 'react';
-import AutoComplete from 'material-ui/lib/auto-complete';
-import Dialog from 'material-ui/lib/dialog';
-import FlatButton from 'material-ui/lib/flat-button';
-import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
+import AutoComplete from 'material-ui/AutoComplete';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import {green700, green600, green500, green300, green100, grey500} from 'material-ui/styles/colors';
 import {Profile} from './Profile';
 
 const Styles = {
+	search: {
+		textAlign: "center",
+	},
 	dialog: {
 		textAlign: "center",
+	},
+	floatingLabelStyle: {
+		textAlign: "center",
+	},
+	floatingLabelFocusStyle: {
+		textAlign: "center",
+	},
+	underlineStyle: {
 	},
 };
 
@@ -86,18 +97,22 @@ const SearchFriends = React.createClass({
 			searched.push(<Profile key={i} rest={this.props.rest} result={searchedFriend[i]} me={this.state.searcher}/>);
 		}
 		if (searched.length === 0) {
-			searched = "no Friends found :("
+			searched = "No results found."
 		}
 		return (
 			<div>
 				<AutoComplete
+					style={Styles.search}
+					inputStyle={Styles.search}
 		  			floatingLabelText="Search Friends"
 		  			filter={AutoComplete.fuzzyFilter}
 		  			dataSource={USERS}
 					onNewRequest={this.selectedItem}
 					searchText={this.state.searchInput}
 					maxSearchResults={5}
-
+					floatingLabelStyle={Styles.floatingLabelStyle}
+					floatingLabelFocusStyle={Styles.floatingLabelFocusStyle}
+					underlineFocusStyle={Styles.underlineStyle}
 				/>
 				
 				<Dialog
