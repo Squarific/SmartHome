@@ -101,7 +101,7 @@ const styles = {
 		fontSize: "1.2em",
 	},
 	search: {
-		marginTop: -10,
+		margin: "1em",
 	},
 };
 
@@ -367,6 +367,8 @@ class Main extends React.Component {
 			userMenu = <LeftNav open={this.state.navbarOpen} style={styles.leftnav} docked={false}  onRequestChange={this.handleNavRequestClose} >
 						<AppBar title="Menu" onLeftIconButtonTouchTap={this.handleNavRequestClose}/>
 						<hr style={styles.horizontalLine} color="white"/>
+						<SearchFriends style={styles.search} rest={rest}/>
+						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleHome}><b>{Translations[this.state.lang].home}</b></MenuItem>
 						<hr style={styles.horizontalLine} color="white"/>
 						<MenuItem onTouchTap={this.handleViewHouseHold}>{Translations[this.state.lang].viewHouseholds}</MenuItem>
@@ -415,7 +417,6 @@ class Main extends React.Component {
 		else if (this.state.loggedIn) {
 			logInBar = <AppBar
 			title="SmartHome"
-			iconElementRight={<div style={styles.search}><SearchFriends rest={rest}/></div>}
 			onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
 		}
 
