@@ -1,0 +1,890 @@
+\documentclass[11pt]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{xcolor,listings}
+\usepackage{graphicx}
+\usepackage{float}
+
+\lstdefinestyle{SQL}{
+   language=SQL,
+   showspaces=false,
+   basicstyle=\ttfamily,
+   numbers=none,
+   numberstyle=\tiny,
+   commentstyle=\color{gray},
+   breaklines=true
+}
+
+%Gummi|065|=)
+\title{\textbf{Programming Project Databases - Rapport 2}\\
+		Groep 4}
+\author{Jens Bijtebier\\
+		David Danssaert\\
+		Thanh Danh Le\\
+		Filip Smets\\
+		Nisse Strauven}
+\date{\today}
+\begin{document}
+
+\maketitle
+
+%\tableofcontents
+
+\section{Status}
+Alle verplichte toepassingen zijn geimplementeerd. De login en registratie, de administator
+interface en ook de basis van het sociale aspect zijn afgewerkt.\\
+
+Het volgende waar we aan zullen werken is het verder toevoegen van features voor het sociale
+aspect en ook meer customisatie opties voor de households, en meer weergave toepassingen.
+
+\section{Design}
+  \subsection{Keuzes}
+	We hebben tot nu toe vooral gewerkt aan de verplichte toepassingen omdat we die al eerst willen
+	afhebben voor we starten aan de extra features. Maar we zullen meer aan deze beginnen
+	werken nu dat al het noodzakelijke gebeurd is.\\
+
+	We hebben gekozen voor een interface dat zeer gemakkelijk is om mee te werken zodat de
+	gebruiken zo min mogelijk problemen zal ondervinden. Simpele knoppen en duidelijke text en
+	grafieken maakt het voor de gebruiker efficient en snel om mee te werken.\\
+	
+	We hebben het sociale aspect nog vrij minimaal gehouden, maar hebben nog veel ruimte open
+	gelaten om extra features toe te voegen die ervoor zullen zorgen dat communiceren met anderen
+	veel vlotter kan verlopen.
+
+  \subsection{Database Schema}
+  %Zie \textbf{figuur \ref{fig:erd}}.
+  \begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{../erd/SmartHome_ERD.png}
+  \caption{Het `Entity Relation Diagram'.}
+  \label{fig:erd}
+  \end{figure}
+  
+  \subsection{UML Schema}
+  %Zie \textbf{figuur \ref{fig:uml}}.
+  \begin{figure}[H]
+  \centering
+    \includegraphics[width=\textwidth]{img/SmartHome_deployment_diagram.png}
+  \caption{Deployment diagram voor server (links) en client (rechts).}
+  \label{fig:uml}
+  \end{figure}
+\section{Product}
+  \subsection{Basisvereisten}
+  Al de basisvereisten zijn geimplementeerd.\\
+  De login en registratie zijn afgewerkt en ook de administator interface werkt. Met deze interface
+  kan men gegevens op grote schaal opvragen en bekijken om een beter zicht te krijgen op het
+  algemeen verbruik van de gebruikers. Het sociale aspect is ook toegevoegd, dit zorgt ervoor dat
+  het mogelijk is om groepen en vrienden toe te voegen en om berichten te plaatsen.
+  \subsection{Extra functionaliteit}
+  Er is nog geen extra functionaliteit klaar.
+\section{Planning}
+Het eerste waar we aan zullen werken is het toevoegen van kleine extra features aan de
+basisvereisten om het gebruik te vergemakkelijken. Zo zullen we bijvoorbeeld het sociale aspect
+verder uitwerken met toepassingen zoals persoonlijke berichten.\\
+We zullen natuurlijk ook extra toepassingen toevoegen waar we aan denken als we bezig zijn
+met het uiterken van deze eerste features.
+\section{Appendix}
+  \subsection{SQL Queries}
+  \subsubsection{Households}
+\begin{lstlisting}[style=SQL]
+/* list all households */
+SELECT homes.id, homes.owner_id, homes.name, homes.country, homes.city, homes.zipcode, homes.street, homes.house_number, homes.date_added
+FROM homes;
+
+/* retrieve household by home ID */
+SELECT homes.id, homes.owner_id, homes.name, homes.country, homes.city, homes.zipcode, homes.street, homes.house_number, homes.date_added
+FROM homes
+WHERE homes.id = $ID;
+
+/* retrieve household by user ID */
+SELECT homes.id, homes.owner_id, homes.name, homes.country, homes.city, homes.zipcode, homes.street, homes.house_number, homes.date_added
+FROM homes
+INNER JOIN users_homes
+ON (homes.id = users_homes.home_id)
+WHERE users_homes.user_id = $ID;
+\end{lstlisting}
+
+  \subsubsection{Sensors}
+\begin{lstlisting}[style=SQL]
+/* list all sensors */
+SELECT sensors.id, sensors.home_id, sensors.name, sensors.description, sensors.power_unit, sensors.date_created
+FROM sensors;
+
+/* retrieve sensor by id */
+SELECT sensors.id, sensors.home_id, sensors.name, sensors.description, sensors.power_unit, sensors.date_created
+FROM sensors
+WHERE sensors.id = $ID;
+
+/* retreive sensors by tag id */
+SELECT sensors.id, sensors.home_id, sensors.name, sensors.description, sensors.power_unit, sensors.date_created
+FROM sensors
+INNER JOIN sensors_tags
+ON (sensors.id = sensors_tags.sensor_id)
+WHERE sensors_tags.tag_id = $ID;
+\end{lstlisting}
+
+  \subsubsection{Sensor Tags}
+\begin{lstlisting}[style=SQL]
+/* list all tags */
+SELECT tags.id, tags.name, tags.description
+FROM tags;
+
+/* retrieve tag by id */
+SELECT tags.id, tags.name, tags.description
+FROM tags
+WHERE tags.id = $ID;
+
+/* retrieve tags for a given sensor (by id) */
+SELECT tags.id, tags.name, tags.description
+FROM tags
+INNER JOIN sensors_tags
+ON (tags.id = sensors_tags.tag_id)
+WHERE sensors_tags.sensor_id = $ID;
+\end{lstlisting}
+
+  \subsubsection{Sensor Data}
+\begin{lstlisting}[style=SQL]
+/* list the sum total usage of all sensors for each minute of today for a given user */
+SELECT recent_data.timestamp, sensors.home_id AS home_id, homes.name AS home_name, SUM(recent_data.usage) AS usage
+FROM recent_data
+INNER JOIN sensors
+ON (recent_data.sensor_id = sensors.id)
+INNER JOIN homes ON (sensors.home_id = homes.id)
+WHERE (homes.owner_id = $ID AND recent_data.timestamp >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND recent_data.timestamp < NOW() )
+GROUP BY recent_data.timestamp, sensors.home_id, homes.name
+ORDER BY home_id ASC, recent_data.timestamp ASC;
+
+/* Aggregate all minutely data from today into one record for all sensors */
+INSERT INTO daily_data (sensor_id, timestamp, usage, n_measurements)
+SELECT recent_data.sensor_id, CONCAT(DATE(NOW()), ' 00:00:00') AS new_date, AVG(recent_data.usage), SUM(recent_data.n_measurements)
+FROM recent_data
+WHERE ( recent_data.timestamp >= new_date AND recent_data.timestamp < DATE_ADD(new_date, INTERVAL 1 DAY) )
+GROUP BY recent_data.sensor_id
+
+\end{lstlisting}
+
+\subsection{SQL Database Structure}
+\begin{lstlisting}[style=SQL]
+--
+-- Tabelstructuur voor tabel `account_emailaddress`
+--
+
+CREATE TABLE IF NOT EXISTS `account_emailaddress` (
+  `id` int(11) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `verified` tinyint(1) NOT NULL,
+  `primary` tinyint(1) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `account_emailconfirmation`
+--
+
+CREATE TABLE IF NOT EXISTS `account_emailconfirmation` (
+  `id` int(11) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `sent` datetime(6) DEFAULT NULL,
+  `key` varchar(64) NOT NULL,
+  `email_address_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `authtoken_token`
+--
+
+CREATE TABLE IF NOT EXISTS `authtoken_token` (
+  `key` varchar(40) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `auth_group`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_group` (
+  `id` int(11) NOT NULL,
+  `name` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `auth_group_permissions`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_group_permissions` (
+  `id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `auth_permission`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_permission` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `content_type_id` int(11) NOT NULL,
+  `codename` varchar(100) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
+
+--
+-- Gegevens worden geëxporteerd voor tabel `auth_permission`
+--
+
+INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALUES
+(1, 'Can add log entry', 1, 'add_logentry'),
+(2, 'Can change log entry', 1, 'change_logentry'),
+(3, 'Can delete log entry', 1, 'delete_logentry'),
+(4, 'Can add permission', 2, 'add_permission'),
+(5, 'Can change permission', 2, 'change_permission'),
+(6, 'Can delete permission', 2, 'delete_permission'),
+(7, 'Can add group', 3, 'add_group'),
+(8, 'Can change group', 3, 'change_group'),
+(9, 'Can delete group', 3, 'delete_group'),
+(10, 'Can add user', 4, 'add_user'),
+(11, 'Can change user', 4, 'change_user'),
+(12, 'Can delete user', 4, 'delete_user'),
+(13, 'Can add content type', 5, 'add_contenttype'),
+(14, 'Can change content type', 5, 'change_contenttype'),
+(15, 'Can delete content type', 5, 'delete_contenttype'),
+(16, 'Can add session', 6, 'add_session'),
+(17, 'Can change session', 6, 'change_session'),
+(18, 'Can delete session', 6, 'delete_session'),
+(19, 'Can add site', 7, 'add_site'),
+(20, 'Can change site', 7, 'change_site'),
+(21, 'Can delete site', 7, 'delete_site'),
+(22, 'Can add token', 8, 'add_token'),
+(23, 'Can change token', 8, 'change_token'),
+(24, 'Can delete token', 8, 'delete_token'),
+(25, 'Can add email address', 9, 'add_emailaddress'),
+(26, 'Can change email address', 9, 'change_emailaddress'),
+(27, 'Can delete email address', 9, 'delete_emailaddress'),
+(28, 'Can add email confirmation', 10, 'add_emailconfirmation'),
+(29, 'Can change email confirmation', 10, 'change_emailconfirmation'),
+(30, 'Can delete email confirmation', 10, 'delete_emailconfirmation'),
+(31, 'Can add social application', 11, 'add_socialapp'),
+(32, 'Can change social application', 11, 'change_socialapp'),
+(33, 'Can delete social application', 11, 'delete_socialapp'),
+(34, 'Can add social account', 12, 'add_socialaccount'),
+(35, 'Can change social account', 12, 'change_socialaccount'),
+(36, 'Can delete social account', 12, 'delete_socialaccount'),
+(37, 'Can add social application token', 13, 'add_socialtoken'),
+(38, 'Can change social application token', 13, 'change_socialtoken'),
+(39, 'Can delete social application token', 13, 'delete_socialtoken'),
+(40, 'Can add cors model', 14, 'add_corsmodel'),
+(41, 'Can change cors model', 14, 'change_corsmodel'),
+(42, 'Can delete cors model', 14, 'delete_corsmodel'),
+(43, 'Can add home', 15, 'add_home'),
+(44, 'Can change home', 15, 'change_home'),
+(45, 'Can delete home', 15, 'delete_home'),
+(46, 'Can add sensor', 16, 'add_sensor'),
+(47, 'Can change sensor', 16, 'change_sensor'),
+(48, 'Can delete sensor', 16, 'delete_sensor'),
+(49, 'Can add sensors tags', 17, 'add_sensorstags'),
+(50, 'Can change sensors tags', 17, 'change_sensorstags'),
+(51, 'Can delete sensors tags', 17, 'delete_sensorstags'),
+(52, 'Can add tag', 18, 'add_tag'),
+(53, 'Can change tag', 18, 'change_tag'),
+(54, 'Can delete tag', 18, 'delete_tag'),
+(55, 'Can add users homes', 19, 'add_usershomes'),
+(56, 'Can change users homes', 19, 'change_usershomes'),
+(57, 'Can delete users homes', 19, 'delete_usershomes'),
+(58, 'Can add yearly data', 20, 'add_yearlydata'),
+(59, 'Can change yearly data', 20, 'change_yearlydata'),
+(60, 'Can delete yearly data', 20, 'delete_yearlydata'),
+(61, 'Can add monthly data', 21, 'add_monthlydata'),
+(62, 'Can change monthly data', 21, 'change_monthlydata'),
+(63, 'Can delete monthly data', 21, 'delete_monthlydata'),
+(64, 'Can add daily data', 22, 'add_dailydata'),
+(65, 'Can change daily data', 22, 'change_dailydata'),
+(66, 'Can delete daily data', 22, 'delete_dailydata'),
+(67, 'Can add recent data', 23, 'add_recentdata'),
+(68, 'Can change recent data', 23, 'change_recentdata'),
+(69, 'Can delete recent data', 23, 'delete_recentdata'),
+(70, 'Can add friend request', 24, 'add_friendrequest'),
+(71, 'Can change friend request', 24, 'change_friendrequest'),
+(72, 'Can delete friend request', 24, 'delete_friendrequest'),
+(73, 'Can add post', 25, 'add_post'),
+(74, 'Can change post', 25, 'change_post'),
+(75, 'Can delete post', 25, 'delete_post');
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `auth_user`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_user` (
+  `id` int(11) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `last_login` datetime(6) DEFAULT NULL,
+  `is_superuser` tinyint(1) NOT NULL,
+  `username` varchar(30) NOT NULL,
+  `first_name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `is_staff` tinyint(1) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `date_joined` datetime(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `auth_user_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_user_groups` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `auth_user_user_permissions`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_user_user_permissions` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `daily_data`
+--
+
+CREATE TABLE IF NOT EXISTS `daily_data` (
+  `id` int(11) NOT NULL,
+  `timestamp` datetime(6) NOT NULL,
+  `usage` int(11) NOT NULL,
+  `n_measurements` int(11) NOT NULL,
+  `sensor_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `friend_requests`
+--
+
+CREATE TABLE IF NOT EXISTS `friend_requests` (
+  `id` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `date_sent` datetime(6) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `homes`
+--
+
+CREATE TABLE IF NOT EXISTS `homes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `country` varchar(2) NOT NULL,
+  `city` varchar(64) NOT NULL,
+  `zipcode` varchar(16) NOT NULL,
+  `street` varchar(64) NOT NULL,
+  `house_number` varchar(8) NOT NULL,
+  `date_added` datetime(6) NOT NULL,
+  `owner_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `messages`
+--
+
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` int(11) NOT NULL,
+  `content` longtext NOT NULL,
+  `plot` longtext NOT NULL,
+  `date_sent` datetime(6) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `monthly_data`
+--
+
+CREATE TABLE IF NOT EXISTS `monthly_data` (
+  `id` int(11) NOT NULL,
+  `timestamp` datetime(6) NOT NULL,
+  `usage` int(11) NOT NULL,
+  `n_measurements` int(11) NOT NULL,
+  `sensor_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `recent_data`
+--
+
+CREATE TABLE IF NOT EXISTS `recent_data` (
+  `id` int(11) NOT NULL,
+  `timestamp` datetime(6) NOT NULL,
+  `usage` int(11) NOT NULL,
+  `n_measurements` int(11) NOT NULL,
+  `sensor_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `sensors`
+--
+
+CREATE TABLE IF NOT EXISTS `sensors` (
+  `id` int(11) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `description` varchar(256) NOT NULL,
+  `power_unit` varchar(3) NOT NULL,
+  `date_created` datetime(6) NOT NULL,
+  `home_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `sensors_tags`
+--
+
+CREATE TABLE IF NOT EXISTS `sensors_tags` (
+  `id` int(11) NOT NULL,
+  `date_created` datetime(6) NOT NULL,
+  `sensor_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `tags`
+--
+
+CREATE TABLE IF NOT EXISTS `tags` (
+  `id` int(11) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `description` varchar(256) NOT NULL,
+  `date_created` datetime(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `users_homes`
+--
+
+CREATE TABLE IF NOT EXISTS `users_homes` (
+  `id` int(11) NOT NULL,
+  `permission_flags` int(11) NOT NULL,
+  `date_created` datetime(6) NOT NULL,
+  `home_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `yearly_data`
+--
+
+CREATE TABLE IF NOT EXISTS `yearly_data` (
+  `id` int(11) NOT NULL,
+  `timestamp` datetime(6) NOT NULL,
+  `usage` int(11) NOT NULL,
+  `n_measurements` int(11) NOT NULL,
+  `sensor_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexen voor geëxporteerde tabellen
+--
+
+--
+-- Indexen voor tabel `account_emailaddress`
+--
+ALTER TABLE `account_emailaddress`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `account_emailaddress_user_id_2c513194_fk_auth_user_id` (`user_id`);
+
+--
+-- Indexen voor tabel `account_emailconfirmation`
+--
+ALTER TABLE `account_emailconfirmation`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `key` (`key`),
+  ADD KEY `account_ema_email_address_id_5b7f8c58_fk_account_emailaddress_id` (`email_address_id`);
+
+--
+-- Indexen voor tabel `authtoken_token`
+--
+ALTER TABLE `authtoken_token`
+  ADD PRIMARY KEY (`key`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
+
+--
+-- Indexen voor tabel `auth_group`
+--
+ALTER TABLE `auth_group`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Indexen voor tabel `auth_group_permissions`
+--
+ALTER TABLE `auth_group_permissions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `auth_group_permissions_group_id_0cd325b0_uniq` (`group_id`,`permission_id`),
+  ADD KEY `auth_group_permissi_permission_id_84c5c92e_fk_auth_permission_id` (`permission_id`);
+
+--
+-- Indexen voor tabel `auth_permission`
+--
+ALTER TABLE `auth_permission`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `auth_permission_content_type_id_01ab375a_uniq` (`content_type_id`,`codename`);
+
+--
+-- Indexen voor tabel `auth_user`
+--
+ALTER TABLE `auth_user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indexen voor tabel `auth_user_groups`
+--
+ALTER TABLE `auth_user_groups`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `auth_user_groups_user_id_94350c0c_uniq` (`user_id`,`group_id`),
+  ADD KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`);
+
+--
+-- Indexen voor tabel `auth_user_user_permissions`
+--
+ALTER TABLE `auth_user_user_permissions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `auth_user_user_permissions_user_id_14a6b632_uniq` (`user_id`,`permission_id`),
+  ADD KEY `auth_user_user_perm_permission_id_1fbb5f2c_fk_auth_permission_id` (`permission_id`);
+
+--
+-- Indexen voor tabel `daily_data`
+--
+ALTER TABLE `daily_data`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `daily_data_d96d866a` (`sensor_id`);
+
+--
+-- Indexen voor tabel `friend_requests`
+--
+ALTER TABLE `friend_requests`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `friend_requests_receiver_id_6e370850_fk_auth_user_id` (`receiver_id`),
+  ADD KEY `friend_requests_sender_id_e02b64d5_fk_auth_user_id` (`sender_id`);
+
+--
+-- Indexen voor tabel `homes`
+--
+ALTER TABLE `homes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `homes_owner_id_32e87e52_fk_auth_user_id` (`owner_id`);
+
+--
+-- Indexen voor tabel `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `messages_receiver_id_874b4e0a_fk_auth_user_id` (`receiver_id`),
+  ADD KEY `messages_sender_id_dc5a0bbd_fk_auth_user_id` (`sender_id`);
+
+--
+-- Indexen voor tabel `monthly_data`
+--
+ALTER TABLE `monthly_data`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `monthly_data_d96d866a` (`sensor_id`);
+
+--
+-- Indexen voor tabel `recent_data`
+--
+ALTER TABLE `recent_data`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `recent_data_d96d866a` (`sensor_id`);
+
+--
+-- Indexen voor tabel `sensors`
+--
+ALTER TABLE `sensors`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sensors_home_id_1b6b9891_fk_homes_id` (`home_id`);
+
+--
+-- Indexen voor tabel `sensors_tags`
+--
+ALTER TABLE `sensors_tags`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sensors_tags_sensor_id_ec6d5d5a_fk_sensors_id` (`sensor_id`),
+  ADD KEY `sensors_tags_76f094bc` (`tag_id`);
+
+--
+-- Indexen voor tabel `tags`
+--
+ALTER TABLE `tags`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexen voor tabel `users_homes`
+--
+ALTER TABLE `users_homes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `users_homes_home_id_6d8097a2_fk_homes_id` (`home_id`),
+  ADD KEY `users_homes_user_id_c35d6efe_fk_auth_user_id` (`user_id`);
+
+--
+-- Indexen voor tabel `yearly_data`
+--
+ALTER TABLE `yearly_data`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `yearly_data_sensor_id_349bf5e9_fk_sensors_id` (`sensor_id`);
+
+--
+-- AUTO_INCREMENT voor geëxporteerde tabellen
+--
+
+--
+-- AUTO_INCREMENT voor een tabel `account_emailaddress`
+--
+ALTER TABLE `account_emailaddress`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `account_emailconfirmation`
+--
+ALTER TABLE `account_emailconfirmation`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `auth_group`
+--
+ALTER TABLE `auth_group`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `auth_group_permissions`
+--
+ALTER TABLE `auth_group_permissions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `auth_permission`
+--
+ALTER TABLE `auth_permission`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=76;
+--
+-- AUTO_INCREMENT voor een tabel `auth_user`
+--
+ALTER TABLE `auth_user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `auth_user_groups`
+--
+ALTER TABLE `auth_user_groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `auth_user_user_permissions`
+--
+ALTER TABLE `auth_user_user_permissions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `daily_data`
+--
+ALTER TABLE `daily_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `friend_requests`
+--
+ALTER TABLE `friend_requests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `homes`
+--
+ALTER TABLE `homes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `monthly_data`
+--
+ALTER TABLE `monthly_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `recent_data`
+--
+ALTER TABLE `recent_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `sensors`
+--
+ALTER TABLE `sensors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `sensors_tags`
+--
+ALTER TABLE `sensors_tags`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `tags`
+--
+ALTER TABLE `tags`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `users_homes`
+--
+ALTER TABLE `users_homes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT voor een tabel `yearly_data`
+--
+ALTER TABLE `yearly_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Beperkingen voor geëxporteerde tabellen
+--
+
+--
+-- Beperkingen voor tabel `account_emailaddress`
+--
+ALTER TABLE `account_emailaddress`
+  ADD CONSTRAINT `account_emailaddress_user_id_2c513194_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Beperkingen voor tabel `account_emailconfirmation`
+--
+ALTER TABLE `account_emailconfirmation`
+  ADD CONSTRAINT `account_ema_email_address_id_5b7f8c58_fk_account_emailaddress_id` FOREIGN KEY (`email_address_id`) REFERENCES `account_emailaddress` (`id`);
+
+--
+-- Beperkingen voor tabel `authtoken_token`
+--
+ALTER TABLE `authtoken_token`
+  ADD CONSTRAINT `authtoken_token_user_id_35299eff_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Beperkingen voor tabel `auth_group_permissions`
+--
+ALTER TABLE `auth_group_permissions`
+  ADD CONSTRAINT `auth_group_permissi_permission_id_84c5c92e_fk_auth_permission_id` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+  ADD CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`);
+
+--
+-- Beperkingen voor tabel `auth_permission`
+--
+ALTER TABLE `auth_permission`
+  ADD CONSTRAINT `auth_permissi_content_type_id_2f476e4b_fk_django_content_type_id` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`);
+
+--
+-- Beperkingen voor tabel `auth_user_groups`
+--
+ALTER TABLE `auth_user_groups`
+  ADD CONSTRAINT `auth_user_groups_group_id_97559544_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
+  ADD CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Beperkingen voor tabel `auth_user_user_permissions`
+--
+ALTER TABLE `auth_user_user_permissions`
+  ADD CONSTRAINT `auth_user_user_perm_permission_id_1fbb5f2c_fk_auth_permission_id` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+  ADD CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Beperkingen voor tabel `daily_data`
+--
+ALTER TABLE `daily_data`
+  ADD CONSTRAINT `daily_data_sensor_id_c70d4260_fk_sensors_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+
+--
+-- Beperkingen voor tabel `friend_requests`
+--
+ALTER TABLE `friend_requests`
+  ADD CONSTRAINT `friend_requests_receiver_id_6e370850_fk_auth_user_id` FOREIGN KEY (`receiver_id`) REFERENCES `auth_user` (`id`),
+  ADD CONSTRAINT `friend_requests_sender_id_e02b64d5_fk_auth_user_id` FOREIGN KEY (`sender_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Beperkingen voor tabel `homes`
+--
+ALTER TABLE `homes`
+  ADD CONSTRAINT `homes_owner_id_32e87e52_fk_auth_user_id` FOREIGN KEY (`owner_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Beperkingen voor tabel `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_receiver_id_874b4e0a_fk_auth_user_id` FOREIGN KEY (`receiver_id`) REFERENCES `auth_user` (`id`),
+  ADD CONSTRAINT `messages_sender_id_dc5a0bbd_fk_auth_user_id` FOREIGN KEY (`sender_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Beperkingen voor tabel `monthly_data`
+--
+ALTER TABLE `monthly_data`
+  ADD CONSTRAINT `monthly_data_sensor_id_5f3ceaa9_fk_sensors_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+
+--
+-- Beperkingen voor tabel `recent_data`
+--
+ALTER TABLE `recent_data`
+  ADD CONSTRAINT `recent_data_sensor_id_4cb30b35_fk_sensors_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+
+--
+-- Beperkingen voor tabel `sensors`
+--
+ALTER TABLE `sensors`
+  ADD CONSTRAINT `sensors_home_id_1b6b9891_fk_homes_id` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`);
+
+--
+-- Beperkingen voor tabel `sensors_tags`
+--
+ALTER TABLE `sensors_tags`
+  ADD CONSTRAINT `sensors_tags_sensor_id_ec6d5d5a_fk_sensors_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`),
+  ADD CONSTRAINT `sensors_tags_tag_id_7ab85af9_fk_tags_id` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`);
+
+--
+-- Beperkingen voor tabel `users_homes`
+--
+ALTER TABLE `users_homes`
+  ADD CONSTRAINT `users_homes_home_id_6d8097a2_fk_homes_id` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`),
+  ADD CONSTRAINT `users_homes_user_id_c35d6efe_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Beperkingen voor tabel `yearly_data`
+--
+ALTER TABLE `yearly_data`
+  ADD CONSTRAINT `yearly_data_sensor_id_349bf5e9_fk_sensors_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
+\end{lstlisting}
+\end{document}

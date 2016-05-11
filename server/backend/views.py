@@ -271,8 +271,6 @@ class DataView(APIView):
         if sensor_id != None:
             queryset = queryset.filter(sensor_id=sensor_id).annotate(key=F('sensor__name')).values('key', 'timestamp', 'usage').order_by('timestamp')
 
-        print(queryset.values())
-
         content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(queryset, lambda x: x['key'])]
         return Response(content)
 
@@ -297,6 +295,8 @@ class DataStatsView(APIView):
             from_date = datetime.min
 
         queryset = data_class.objects.all().filter(timestamp__gte=from_date)
+
+
 #        if user_id != None:
 #            queryset = queryset.filter(sensor__home__owner_id=user_id).annotate(home_id=F('sensor__home_id'), key=F('sensor__home__name')).values('home_id', 'key', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
 #        if home_id != None:
