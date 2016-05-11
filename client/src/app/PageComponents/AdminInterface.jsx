@@ -26,7 +26,25 @@ const AdminInterface = React.createClass({
 	handleChange: function (event, index, value) {
 		this.setState({value});
 	},
-	render: function() {
+	componentDidMount: function () {
+		if (!this.props.rest) throw "Wall Error: No rest client provided!";
+
+		this.props.rest.get(["api", "users", "me"], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				user: data.data.attributes,
+			});
+		}.bind(this));
+	},
+    render: function() {
+        console.log(this.state.user);
+        if (!this.state.user.is_staff)
+            return (<div>You need to be an administrator to use this function!</div>);
+
 		return (
 			<form className="AdminGetData" style={styles.form}>
 				<TextField hintText="" floatingLabelText={this.props.lang.city}/>

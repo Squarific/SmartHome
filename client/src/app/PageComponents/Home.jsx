@@ -2,6 +2,9 @@ import React from 'react';
 import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
 import HouseHoldCardExample from '../Components/HouseHoldCardExample';
 
+
+
+
 const bodyStyles = {
 	first: {
 		color: grey500,
@@ -81,10 +84,9 @@ const Home = React.createClass({
 	
 
  	render: function() {
-	
 		
 		return (
-			
+
 			<div style={Style}>
 				<div style={bodyStyles.first}>
 					<div style={bodyStyles.text}><img src='http://www.loxone.com/tl_files/loxone/Content_images/illustrations/other/energy-3d-house.png' /></div>
@@ -95,11 +97,13 @@ const Home = React.createClass({
 							{this.props.lang.introMessage}
 							<br/><br/>
 							<b>{this.props.lang.welcomeMessage}</b>
+
 						</div>
 					</div>
 
 				</div>
 				<div style={bodyStyles.first}>
+
 					<table style={bodyStyles.table}>
 						<tbody>
 							<tr>
@@ -116,6 +120,7 @@ const Home = React.createClass({
 							</tr>
 						</tbody>
 					</table>
+
 				</div>
 			</div>
 		);

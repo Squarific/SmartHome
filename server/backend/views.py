@@ -142,7 +142,7 @@ class FriendPostList(generics.ListCreateAPIView):
         if (user_id == 'me'):
             user_id = request.user.id
 
-        queryset = Post.objects.all().filter(Q(user__sent_requests__status = 1, user__sent_requests__receiver_id = user_id) | Q(user__received_requests__status = 1, user__received_requests__sender_id=user_id))
+        queryset = Post.objects.all().filter(Q(user_id = user_id) | Q(user__sent_requests__status = 1, user__sent_requests__receiver_id = user_id) | Q(user__received_requests__status = 1, user__received_requests__sender_id=user_id)).order_by('-date_sent')
         serializer = PostSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -152,7 +152,6 @@ class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
 
     def list(self, request, user_id=None):
-        # Note the use of `get_queryset()` instead of `self.queryset`
         if (user_id == 'me'):
             user_id = request.user.id
 
@@ -174,7 +173,6 @@ class HomeList(generics.ListCreateAPIView):
     serializer_class = HomeSerializer
 
     def list(self, request, user_id=None):
-        # Note the use of `get_queryset()` instead of `self.queryset`
         if (user_id == 'me'):
             user_id = request.user.id
 
@@ -203,7 +201,6 @@ class SensorList(generics.ListCreateAPIView):
     serializer_class = SensorSerializer
 
     def list(self, request, user_id=None, home_id=None):
-        # Note the use of `get_queryset()` instead of `self.queryset`
         if (user_id == 'me'):
             user_id = request.user.id
 
@@ -279,90 +276,35 @@ class DataView(APIView):
         content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(queryset, lambda x: x['key'])]
         return Response(content)
 
-class DataList(APIView):
+class DataStatsView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, user_id, format=None):
-        user = User.objects.get(pk=user_id)
-        home_data = []
-        for home in user.owned_homes.all():
-            sensor_data = {'home_id':home.id, 'data':[]}
-            for sensor in home.sensor_set.all():
-                now = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-                recent_data = RecentData.objects.filter(sensor=sensor, timestamp__gte=(now - timedelta(days=2)))
-                daily_data = DailyData.objects.filter(sensor=sensor, timestamp__lt=(now - timedelta(days=1)))
-
-                for dataset in [daily_data, recent_data]:
-                    sensor_data['data'].append( [{'timestamp':data.timestamp, 'sensor_id':sensor.id, 'usage':data.usage, 'n_measurements':data.n_measurements, 'interval':data.get_resolution()} for data in dataset] )
-
-            home_data.append( sensor_data )
-
-        return Response(home_data)
-
-
-class UserDataList(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, user_id, format=None):
+    def get(self, request, period, format=None):
         now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        from_date = self.get_from_date(now)
-        data = self.get_class().objects.filter(sensor__home__owner_id=user_id, timestamp__gte=from_date).annotate(home_id=F('sensor__home_id'), home_name=F('sensor__home__name')).values('home_id', 'home_name', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
-        content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(data, lambda x: x['home_name'])]
+        from_date = now - timedelta(days=1)
+        data_class = RecentData
+        if period == 'today':
+            data_class = RecentData
+            from_date = now - timedelta(days=1)
+        elif period == 'last_month':
+            data_class = DailyData
+            from_date = now - relativedelta(months=1)
+        elif period == 'last_year':
+            data_class = MonthlyData
+            from_date = now - relativedelta(years=1)
+        elif period == 'past_years':
+            data_class = YearlyData
+            from_date = datetime.min
+
+        queryset = data_class.objects.all().filter(timestamp__gte=from_date)
+#        if user_id != None:
+#            queryset = queryset.filter(sensor__home__owner_id=user_id).annotate(home_id=F('sensor__home_id'), key=F('sensor__home__name')).values('home_id', 'key', 'timestamp').annotate(usage=Sum('usage')).order_by('home_id', 'timestamp')
+#        if home_id != None:
+#            queryset = queryset.filter(sensor__home_id=home_id).annotate(sensor_id=F('sensor_id'), key=F('sensor__name')).values('sensor_id', 'key', 'timestamp').annotate(usage=Sum('usage')).order_by('sensor_id', 'timestamp')
+#        if sensor_id != None:
+#            queryset = queryset.filter(sensor_id=sensor_id).annotate(key=F('sensor__name')).values('key', 'timestamp', 'usage').order_by('timestamp')
+
+        print(queryset.values())
+
+        content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(queryset, lambda x: x['key'])]
         return Response(content)
-
-
-class RecentUserDataList(UserDataList):
-    permission_classes = (IsAuthenticated,)
-
-    def get_class(self):
-        return RecentData
-
-    def get_from_date(self, to_date):
-        return to_date - timedelta(days=1)
-
-
-class DailyUserDataList(UserDataList):
-    permission_classes = (IsAuthenticated,)
-
-    def get_class(self):
-        return DailyData
-
-    def get_from_date(self, to_date):
-        return to_date - relativedelta(months=1)
-
-
-class MonthlyUserDataList(UserDataList):
-    permission_classes = (IsAuthenticated,)
-
-    def get_class(self):
-        return MonthlyData
-
-    def get_from_date(self, to_date):
-        return to_date - relativedelta(years=1)
-
-
-class YearlyUserDataList(UserDataList):
-    permission_classes = (IsAuthenticated,)
-
-    def get_class(self):
-        return YearlyData
-
-    def get_from_date(self, to_date):
-        return datetime.min
-
-
-class HomeDataList(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, home_id, format=None):
-        from_date = datetime.now() - relativedelta(years=1)
-        recent_data = RecentData.objects.filter(sensor__home_id=home_id, timestamp__gte=from_date).annotate(sensor_name=F('sensor__name')).values('sensor_id', 'sensor_name', 'timestamp').annotate(usage=Sum('usage')).order_by('sensor_name', 'timestamp')
-        content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(recent_data, lambda x: x['sensor_name'])]
-        return Response(content)
-
-    def put(self, request, home_id, format=None):
-        serializer = DataSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
