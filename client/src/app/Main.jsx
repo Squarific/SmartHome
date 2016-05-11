@@ -468,12 +468,14 @@ class Main extends React.Component {
 
 					{(() => {
         				switch (this.state.active) {
+
           					case "Home": return <Home lang={Translations[this.state.lang]}/>;
           					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
           					case "Wall":   return <Wall userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
           					case "Notifications":   return <Notifications userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
           					case "AdminInterface":   return <AdminInterface rest={rest} lang={Translations[this.state.lang]}/>;
           					default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
+
         				}
       				})()}
 
