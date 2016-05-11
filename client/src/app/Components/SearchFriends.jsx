@@ -7,19 +7,18 @@ import {Profile} from './Profile';
 
 const Styles = {
 	search: {
-		color: "white",
+		textAlign: "center",
 	},
 	dialog: {
 		textAlign: "center",
 	},
 	floatingLabelStyle: {
-		color: "white",
+		textAlign: "center",
 	},
 	floatingLabelFocusStyle: {
-		color: "white",
+		textAlign: "center",
 	},
 	underlineStyle: {
-		borderColor: "white",
 	},
 };
 
@@ -98,11 +97,12 @@ const SearchFriends = React.createClass({
 			searched.push(<Profile key={i} rest={this.props.rest} result={searchedFriend[i]} me={this.state.searcher}/>);
 		}
 		if (searched.length === 0) {
-			searched = "no Friends found :("
+			searched = "No results found."
 		}
 		return (
 			<div>
 				<AutoComplete
+					style={Styles.search}
 					inputStyle={Styles.search}
 		  			floatingLabelText="Search Friends"
 		  			filter={AutoComplete.fuzzyFilter}
