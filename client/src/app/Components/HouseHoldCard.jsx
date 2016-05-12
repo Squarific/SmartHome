@@ -11,10 +11,19 @@ import CardText from 'material-ui/Card/CardText';
 import CircularProgress from 'material-ui/CircularProgress';
 import {GraphCard} from './Graphing';
 import {ShareGraphButton} from './ShareGraphButton';
+import Toggle from 'material-ui/Toggle';
 
 const style = {
 	maxWidth: "64em",
 	margin: "2em auto 2em auto",
+};
+
+const styles = {
+  checkbox: {
+    margin: 8,
+    display: "inline-block",
+    width: "16em",
+  },
 };
 
 let dataStyle = {
@@ -59,15 +68,19 @@ const HouseHoldCard = React.createClass({
 			let sdata = this.state.data || {};
 			sdata[this.state.period] = data;
 
+			let selected = {};
+			selected[randomElement.key] = true;
 			this.setState({
 				loading: false,
-				selected: randomElement.key,
+				selected,
 				data: sdata,
 			});
 		}.bind(this));
 	},
-	handleChange: function (event, index, value) {
-		this.setState({selected: value});
+	handleChange: function (event, isChecked) {
+		let currentSelected = this.state.selected;
+		currentSelected[event.target.id] = isChecked;
+		this.setState({selected: currentSelected});
 	},
 	handleTimelineChange: function (event, index, value) {
 		// Periods we can ask the server
@@ -154,16 +167,22 @@ const HouseHoldCard = React.createClass({
 		const MenuItems = [];
 		for (let k = 0; k < this.state.data[this.state.period].data.length; k++) {
 			MenuItems.push((
-				<MenuItem value={this.state.data[this.state.period].data[k].key} primaryText={this.state.data[this.state.period].data[k].key} key={k}/>
+				<Toggle
+					id={this.state.data[this.state.period].data[k].key}
+					label={this.state.data[this.state.period].data[k].key}
+					style={styles.checkbox}
+					key={k}
+					toggled={this.state.selected[this.state.data[this.state.period].data[k].key]}
+					onToggle={this.handleChange}
+				/>
 			));
+			//Syntax highlight fix
 		}
 
 		// Create selectField
 		return (
-			<div style={{display: "inline-block", width:256, minWidth: "initial"}}>
-				<SelectField value={this.state.selected} onChange={this.handleChange}>
-					{MenuItems}
-				</SelectField>
+			<div style={{"textAlign": "left", padding: "1em", boxSizing: "border-box"}}>
+				{MenuItems}
 			</div>
 		);
 	},
@@ -185,13 +204,38 @@ const HouseHoldCard = React.createClass({
 
 		return date.toLocaleDateString();
 	},
-	getData: function () {
+	getData: function (element) {
+		let data = {
+			labels: [],
+			datasets: [],
+		};
+
+		for (let element in this.state.selected) {
+			if (!this.state.selected[element]) continue;
+			let sensorData = this.getDataForElement(element);
+
+			data.labels = sensorData[0];
+			data.datasets.push({
+				data: sensorData[1],
+			});
+
+			// Put the datastyle into the actual data
+			for (let key in dataStyle) {
+				data.datasets[data.datasets.length - 1][key] = dataStyle[key];
+			}
+		}
+
+		console.log("inside", data);
+
+		return data;
+	},
+	getDataForElement: function (element) {
 		let labels = [];
 		let values = [];
 		let targetElement;
 
 		for (let k = 0; k < this.state.data[this.state.period].data.length; k++) {
-			if (this.state.data[this.state.period].data[k].key === this.state.selected) {
+			if (this.state.data[this.state.period].data[k].key === element) {
 				targetElement = this.state.data[this.state.period].data[k];
 				break;
 			}			
@@ -248,21 +292,7 @@ const HouseHoldCard = React.createClass({
 			values.push(sum);
 		}
 
-		let data = {
-			labels: labels,
-			datasets: [
-				{
-					data: values,
-				},
-			],
-		};
-
-		// Put the datastyle into the actual data
-		for (let key in dataStyle) {
-			data.datasets[0][key] = dataStyle[key];
-		}
-
-		return data;
+		return [labels, values];
 	},
 	render: function () {
 		if (this.state.error) return (<div>{this.state.error}</div>);
@@ -279,22 +309,24 @@ const HouseHoldCard = React.createClass({
 			</CardActions>
 			</Card>);
 
+		let data = this.getData();
+
 		return (<Card style={style}>
 			<CardHeader
 				title={this.props.title || this.props.lang.household}
-				subtitle={this.state.selected || this.props.lang.loading}/>
+				subtitle={"Graphs" || this.props.lang.loading}/>
 			<CardMedia>
 				{this.getSensorSelectField()}
 				<br/>
 				{this.getPeriodSelectField()}
-				<GraphCard data={this.getData()}
+				<GraphCard data={data}
 						graphType="Bar"
 						graphTypes={["Line", "Bar", "Radar"]}/>
 			</CardMedia>
 			<CardText>
 			</CardText>
 			<CardActions>
-				<ShareGraphButton data={this.getData()} lang={this.props.lang} rest={this.props.rest}/>
+				<ShareGraphButton data={data} lang={this.props.lang} rest={this.props.rest}/>
 			</CardActions>
 			</Card>
 		);
