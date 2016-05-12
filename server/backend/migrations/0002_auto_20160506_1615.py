@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='friendrequest',
             name='date_sent',
-            field=models.DateTimeField(default=datetime.datetime(2016, 5, 12, 13, 15, 25, 960616)),
+            field=models.DateTimeField(default=datetime.datetime(2016, 5, 6, 16, 15, 31, 381230)),
         ),
         migrations.AlterField(
             model_name='post',
             name='date_sent',
-            field=models.DateTimeField(default=datetime.datetime(2016, 5, 12, 13, 15, 25, 961487)),
+            field=models.DateTimeField(default=datetime.datetime(2016, 5, 6, 16, 15, 31, 381855)),
         ),
     ]

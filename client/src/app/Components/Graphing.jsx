@@ -71,13 +71,12 @@ const GraphCard = React.createClass({
 
 		// Hacky way to force the graph to rerender
 		let key = this.state.lastResize;
-		let OurChart = (<Chart data={this.props.data} key={key}/>);
 
 		return (
 			<div style={styles.chart}>
 				{selectField}
 				<CardMedia>
-					{OurChart}
+					<Chart data={this.props.data} key={key}/>
 				</CardMedia>
 			</div>
 		)
