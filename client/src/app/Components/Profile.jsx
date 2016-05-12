@@ -33,6 +33,7 @@ const Profile = React.createClass({
 			myFriends: [],
 			deletePopUp: false,
 			sent: [],
+			visible: true,
 		};
 	},
 	componentDidMount: function () {
@@ -46,27 +47,36 @@ const Profile = React.createClass({
 				myFriends: data.data,
 			});
 		}.bind(this));
+		this.props.rest.get(["api", "friend_requests"], {}, function(data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+			for (let i = 0; i < data.data.length; i++) {
+				if((data.data[i].relationships.sender.data.id === this.props.me.id && data.data[i].relationships.receiver.data.id === this.props.result.id) || (data.data[i].relationships.sender.data.id === this.props.result.id && data.data[i].relationships.receiver.data.id === this.props.me.id)) {
+					this.setState({
+						visible: false,
+					});
+				}
+			}
+		}.bind(this));
 	},
 	handleAdd: function () {
-		this.props.rest.get(["api", "friend_requests"], {
-			
+		this.props.rest.post(["api", "friend_requests"], {
+			status: 0,
+			read: false,
+			sender: this.props.me.id,
+			receiver: this.props.result.id,
 		}, function(data) {
 			if (data.error) {
 				console.log(data.error);
 				return;
 			}
 		}.bind(this));
-		/*this.props.rest.post(["api", "users", this.props.result.id, "friend_requests", "received"], {
-			status: 'Pending',
-			read: false,
-			sender: this.props.me,
-			receiver: this.props.result,
-		}, function(data) {
-			if (data.error) {
-				console.log(data.error);
-				return;
-			}
-		}.bind(this));*/
+		this.setState({
+			visible: false,
+		});
+
 	},
 	handleDeletePopUp: function () {
 		this.setState({
@@ -78,12 +88,12 @@ const Profile = React.createClass({
 			deletePopUp: false,
 		});
 	},
-	/*handleDelete: function () {
-		
-	},*/
+	handleDelete: function () {
+		this.props.rest
+	},
 	render: function () {
 		let profileActions;
-		if (this.state.myFriends.length > 0 && this.state.myFriends.indexOf(this.props.result) > -1) {
+		if (this.state.myFriends.length > 0 || this.state.myFriends.id === this.props.result.id) {
 				profileActions = [<FlatButton 
 								style={Styles.Button}
 								label={'Friends'}
@@ -95,10 +105,15 @@ const Profile = React.createClass({
 								secondary={true} 
 								onTouchTap={this.handleDeletePopUp} />,
 							];
-				return;
+
 			}
 
-		
+		else if (!this.state.visible) {
+			profileActions = <FlatButton 
+					style={Styles.Button}
+					label={'Request Send'}
+					primary={true} />;
+		}
 		else {
 			
 			profileActions = <FlatButton style={Styles.addButton}
