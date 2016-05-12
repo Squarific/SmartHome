@@ -14,7 +14,7 @@ from django.db.models import Avg, Sum, Max
 from datetime import datetime, timedelta
 
 class Home(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_homes')
+    owner = models.ForeignKey(User, models.CASCADE, related_name='owned_homes')
     users = models.ManyToManyField(User, through='UsersHomes', related_name='homes')
     name = models.CharField(max_length=64)
     country = models.CharField(max_length=2)
@@ -22,7 +22,7 @@ class Home(models.Model):
     zipcode = models.CharField(max_length=16)
     street = models.CharField(max_length=64)
     house_number = models.CharField(max_length=8)
-    date_added = models.DateTimeField()
+    date_added = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return str(self.pk)
@@ -32,12 +32,12 @@ class Home(models.Model):
 
 
 class Sensor(models.Model):
-    home = models.ForeignKey(Home, on_delete=models.DO_NOTHING)
+    home = models.ForeignKey(Home, models.DO_NOTHING)
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256)
     tags = models.ManyToManyField('Tag', through='SensorsTags')
     power_unit = models.CharField(max_length=3)
-    date_created = models.DateTimeField()
+    date_created = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return self.name
@@ -47,9 +47,15 @@ class Sensor(models.Model):
 
 
 class SensorsTags(models.Model):
+<<<<<<< HEAD
     sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
     tag = models.ForeignKey('Tag', on_delete=models.DO_NOTHING)
+    date_created = models.DateTimeField(default=datetime.now())
+=======
+    sensor = models.ForeignKey(Sensor, models.CASCADE)
+    tag = models.ForeignKey('Tag', models.DO_NOTHING)
     date_created = models.DateTimeField()
+>>>>>>> b1b391f60f15ce435af993b546d89466cd0f67c9
 
     class Meta:
         db_table = 'sensors_tags'
@@ -58,7 +64,7 @@ class SensorsTags(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256)
-    date_created = models.DateTimeField()
+    date_created = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return self.name
@@ -68,18 +74,23 @@ class Tag(models.Model):
 
 
 class UsersHomes(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    home = models.ForeignKey(Home, on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', models.CASCADE)
+    home = models.ForeignKey(Home, models.CASCADE)
     permission_flags = models.IntegerField()
-    date_created = models.DateTimeField()
+    date_created = models.DateTimeField(default=datetime.now())
 
     class Meta:
         db_table = 'users_homes'
 
 
 class SensorData(models.Model):
+<<<<<<< HEAD
     sensor = models.ForeignKey('Sensor', on_delete=models.DO_NOTHING)
+    timestamp = models.DateTimeField(default=datetime.now())
+=======
+    sensor = models.ForeignKey('Sensor', models.DO_NOTHING)
     timestamp = models.DateTimeField()
+>>>>>>> b1b391f60f15ce435af993b546d89466cd0f67c9
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
 
@@ -222,8 +233,8 @@ class FriendRequest(models.Model):
         (1, 'Approved'),
         (2, 'Denied'),
     )
-    sender = models.ForeignKey(User, related_name='sent_requests')
-    receiver = models.ForeignKey(User, related_name='received_requests')
+    sender = models.ForeignKey('auth.User', related_name='sent_requests')
+    receiver = models.ForeignKey('auth.User', related_name='received_requests')
     status = models.IntegerField(choices=REQUEST_STATUS)
     read = models.BooleanField(default=False)
     date_sent = models.DateTimeField(default=datetime.now())
@@ -236,7 +247,7 @@ class FriendRequest(models.Model):
 
 
 class Post(models.Model):
-    user = models.ForeignKey(User, related_name='posts')
+    user = models.ForeignKey('auth.User', related_name='posts')
     content = models.TextField(blank=True)
     plot = models.TextField(blank=True)
     read = models.BooleanField(default=False)
