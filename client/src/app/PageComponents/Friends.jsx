@@ -60,12 +60,21 @@ const Friends = React.createClass({
 		let FriendList= [];
 		let friend = {};
 
-
 		if (!this.state.loading) {
 			for (let i = 0; i < this.state.friends.length; i++) {
-				FriendList.push(friend = {ranking: i+1, name: this.state.friends[i].attributes.first_name+" "+this.state.friends[i].attributes.last_name, usage: "placeholder", households: this.state.friends[i].relationships.owned_homes.meta.count});
+				FriendList.push(friend = {ranking: i+1, name: this.state.friends[i].attributes.first_name+" "+this.state.friends[i].attributes.last_name, usage: Math.floor(Math.random()*20), households: this.state.friends[i].relationships.owned_homes.meta.count});
 			}
 		}
+
+		FriendList.sort(function(a, b){
+		    let keyA = new Date(a.usage),
+				keyB = new Date(b.usage);
+				// Compare the 2 dates
+			if(keyA < keyB) return -1;
+			if(keyA > keyB) return 1;
+			return 0;
+		});
+
 
 		const tableData = FriendList;/*[
 			{
