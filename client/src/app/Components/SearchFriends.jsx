@@ -1,8 +1,8 @@
 import React from 'react';
-import AutoComplete from 'material-ui/lib/auto-complete';
-import Dialog from 'material-ui/lib/dialog';
-import FlatButton from 'material-ui/lib/flat-button';
-import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
+import AutoComplete from 'material-ui/AutoComplete';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import {green700, green600, green500, green300, green100, grey500} from 'material-ui/styles/colors';
 import {Profile} from './Profile';
 
 const Styles = {

@@ -1,14 +1,14 @@
 import React from 'react';
-import Card from 'material-ui/lib/card/card';
-import CardActions from 'material-ui/lib/card/card-actions';
-import CardHeader from 'material-ui/lib/card/card-header';
-import CardMedia from 'material-ui/lib/card/card-media';
-import CardTitle from 'material-ui/lib/card/card-title';
-import FlatButton from 'material-ui/lib/flat-button';
-import CardText from 'material-ui/lib/card/card-text';
-import Dialog from 'material-ui/lib/dialog';
-import TextField from 'material-ui/lib/text-field';
-import {green500, grey500} from 'material-ui/lib/styles/colors';
+import Card from 'material-ui/Card/Card';
+import CardActions from 'material-ui/Card/CardActions';
+import CardHeader from 'material-ui/Card/CardHeader';
+import CardMedia from 'material-ui/Card/CardMedia';
+import CardTitle from 'material-ui/Card/CardTitle';
+import FlatButton from 'material-ui/FlatButton';
+import CardText from 'material-ui/Card/CardText';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import {green500, grey500} from 'material-ui/styles/colors';
 import {Notification} from '../Components/Notification';
 
 const styles = {
@@ -16,12 +16,16 @@ const styles = {
 		color: green500,
 		padding: 32,
 	},
+	title: {
+		fontWeight: 100,
+	},
 }
 
 const AdminInterface = React.createClass({
 	getInitialState: function () {
-		const value = '';
-		return {value};
+		return {
+			loading: true,
+		};
 	},
 	handleChange: function (event, index, value) {
 		this.setState({value});
@@ -37,16 +41,25 @@ const AdminInterface = React.createClass({
 
 			this.setState({
 				user: data.data.attributes,
+				loading: false,
 			});
 		}.bind(this));
 	},
-    render: function() {
-        console.log(this.state.user);
-        if (!this.state.user.is_staff)
-            return (<div>You need to be an administrator to use this function!</div>);
+	render: function() {
+		if (!this.state.loading) {
+			console.log(this.state.user);
+		}
 
-		return (
-			<form className="AdminGetData" style={styles.form}>
+		let adminInterface;
+
+		if (this.state.loading) {
+			adminInterface = <div>Loading...</div>;
+		} else if (!this.state.user.is_staff) {
+			adminInterface = <div>You need to be an administrator to use this function!</div>
+		} else {
+			adminInterface = <form className="AdminGetData" style={styles.form}>
+				<TextField hintText="" floatingLabelText={this.props.lang.country}/>
+				<br/>
 				<TextField hintText="" floatingLabelText={this.props.lang.city}/>
 				<br/>
 				<TextField hintText="" floatingLabelText={this.props.lang.street}/>
@@ -54,6 +67,13 @@ const AdminInterface = React.createClass({
 				<br/>
 				<FlatButton label={this.props.lang.getData} primary={true}/>
 			</form>
+		}
+
+		return (
+			<div>
+				<h2 style={styles.title}>Admin Interface</h2>
+				{adminInterface}
+			</div>
 		)
 	},
 });
