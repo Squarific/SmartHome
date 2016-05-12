@@ -1,5 +1,5 @@
 import React from 'react';
-import {green700, green600, green500, green300, green100, grey500} from 'material-ui/lib/styles/colors';
+import {green700, green600, green500, green300, green100, grey500} from 'material-ui/styles/colors';
 import HouseHoldCardExample from '../Components/HouseHoldCardExample';
 
 
@@ -20,11 +20,13 @@ const bodyStyles = {
 		marginLeft: 0,
 		marginRight: 0,
 		marginTop: -5,
+
 		minWidth: "100%",
 	},
+
 	text: {
 		
-		textAlign: "left",
+		textAlign: "center",
 		marginLeft: "auto",
 		marginRight: "auto",
 		paddingTop: 32,
@@ -46,11 +48,13 @@ const bodyStyles = {
 		marginLeft:0,
 		marginRight: "auto",
 		float: "left",
+
 		textAlign: "center",
 	},
 	box2: {
 		textAlign: "center",
 		whiteSpace: "pre",
+
 	},
 	table: {
 		width: "100%",
@@ -93,16 +97,19 @@ const Home = React.createClass({
 				</div>
 				<div style={bodyStyles.second}>
 					<div style={bodyStyles.text}>
+
 						<div style={bodyStyles.box2}>
 							{this.props.lang.introMessage}
 							<br/><br/>
 							<b>{this.props.lang.welcomeMessage}</b>
 
 						</div>
+
 					</div>
 
 				</div>
 				<div style={bodyStyles.first}>
+
 
 					<table style={bodyStyles.table}>
 						<tbody>
@@ -121,7 +128,9 @@ const Home = React.createClass({
 						</tbody>
 					</table>
 
+
 				</div>
+
 			</div>
 		);
 	},

@@ -1,12 +1,12 @@
 import React from 'react';
-import Card from 'material-ui/lib/card/card';
-import CardActions from 'material-ui/lib/card/card-actions';
-import CardHeader from 'material-ui/lib/card/card-header';
-import CardMedia from 'material-ui/lib/card/card-media';
-import CardTitle from 'material-ui/lib/card/card-title';
-import FlatButton from 'material-ui/lib/flat-button';
-import CardText from 'material-ui/lib/card/card-text';
-import {green500, grey500} from 'material-ui/lib/styles/colors';
+import Card from 'material-ui/Card/Card';
+import CardActions from 'material-ui/Card/CardActions';
+import CardHeader from 'material-ui/Card/CardHeader';
+import CardMedia from 'material-ui/Card/CardMedia';
+import CardTitle from 'material-ui/Card/CardTitle';
+import FlatButton from 'material-ui/FlatButton';
+import CardText from 'material-ui/Card/CardText';
+import {green500, grey500} from 'material-ui/styles/colors';
 
 const styles = {
 	notification: {
@@ -42,12 +42,13 @@ const Notification = React.createClass({
 		return {
 			sender: "Loading...",
 			loading: true,
+			visible: true,
 		}
 	},
 	handleChange: function (event, index, value) {
 		this.setState({value});
 	},
-	clearNotification: function () {
+	acceptNotification: function () {
 		console.log(this.props.request)
 
 		this.props.rest.put(["api", "friend_requests", this.props.request.id], {
@@ -61,6 +62,10 @@ const Notification = React.createClass({
 				return;
 			}
 		}.bind(this));
+
+		this.setState({
+			visible: false,
+		});
 	},
 	componentDidMount: function () {
 		if (!this.props.rest) throw "Notification Error: No rest client provided!";
@@ -83,7 +88,7 @@ const Notification = React.createClass({
 			actions = <FlatButton style={styles.right2}
 				label={this.props.lang.accept}
 				primary={true}
-				onTouchTap={this.clearNotification}/>;
+				onTouchTap={this.acceptNotification}/>;
 		} else if (this.props.type === "ALERT") {
 			actions = '';
 		} else {
@@ -112,20 +117,28 @@ const Notification = React.createClass({
 			typeTranslated = "Error"
 		}
 
-		return (
-			<Card style={styles.notification}>
-			<CardHeader style={styles.inline}
-				title={typeTranslated}
-				subtitle={Date(this.props.post.attributes.date_sent).toLocaleString()}/>
-			<CardText  style={styles.inline}>
-				{message}
-			</CardText>
-			{actions}
-			<FlatButton style={styles.right}
-				label={this.props.lang.clear}
-				secondary={true}/>
-			</Card>
-		)
+		console.log(this.props);
+
+		if (this.state.visible) {
+			return (
+				<Card style={styles.notification}>
+				<CardHeader style={styles.inline}
+					title={typeTranslated}
+					subtitle={Date(this.props.request.attributes.date_sent).toLocaleString()}/>
+				<CardText  style={styles.inline}>
+					{message}
+				</CardText>
+				{actions}
+				<FlatButton style={styles.right}
+					label={this.props.lang.clear}
+					secondary={true}/>
+				</Card>
+			)
+		} else {
+			return (
+				<div></div>
+			);
+		}
 	},
 });
 
