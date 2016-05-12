@@ -53,4 +53,3 @@ class DataSerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorData
         fields = ('sensor', 'timestamp', 'usage', 'n_measurements')
-
