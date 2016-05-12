@@ -64,7 +64,7 @@ const WallPost = React.createClass({
 			<Card style={styles.wallpost}>
 			<CardHeader
 				title={postTitle}
-				subtitle={Date(this.props.post.attributes.date_sent).toLocaleString()}/>
+				subtitle={this.props.post.attributes.date_sent}/>
 			<CardText>
 				{this.props.post.attributes.content}
 			</CardText>

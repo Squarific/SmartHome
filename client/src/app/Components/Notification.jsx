@@ -124,7 +124,7 @@ const Notification = React.createClass({
 				<Card style={styles.notification}>
 				<CardHeader style={styles.inline}
 					title={typeTranslated}
-					subtitle={Date(this.props.request.attributes.date_sent).toLocaleString()}/>
+					subtitle={this.props.request.attributes.date_sent}/>
 				<CardText  style={styles.inline}>
 					{message}
 				</CardText>

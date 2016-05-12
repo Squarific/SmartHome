@@ -127,7 +127,6 @@ const HouseHoldCard = React.createClass({
 
 			this.setState({
 				loading: false,
-				selected: randomElement.key,
 				data: sdata,
 			});
 		}.bind(this));
