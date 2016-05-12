@@ -87,8 +87,9 @@ const SearchFriends = React.createClass({
 		
 		let searchedFriend=[];
 		for (let totalusers = 0; totalusers < this.state.users.length; totalusers++) {
-			if(this.state.users[totalusers].attributes.username.startsWith(this.state.searchInput) && this.state.users[totalusers] !== this.state.searcher) {
+			if(this.state.users[totalusers].attributes.username.startsWith(this.state.searchInput) && this.state.users[totalusers].id !== this.state.searcher.id) {
 				searchedFriend.push(this.state.users[totalusers]);
+				
 			}
 		}
 		
@@ -106,12 +107,12 @@ const SearchFriends = React.createClass({
 					inputStyle={Styles.search}
 		  			floatingLabelText="Search Friends"
 		  			filter={AutoComplete.fuzzyFilter}
-		  			dataSource={USERS}
+		  			dataSource={searchedFriend}
 					onNewRequest={this.selectedItem}
 					searchText={this.state.searchInput}
 					maxSearchResults={5}
 					floatingLabelStyle={Styles.floatingLabelStyle}
-					floatingLabelFocusStyle={Styles.floatingLabelFocusStyle}
+					floatingLabelFocusStyle={Styles.floatingLabelFcusStyle}
 					underlineFocusStyle={Styles.underlineStyle}
 				/>
 				
@@ -119,7 +120,7 @@ const SearchFriends = React.createClass({
 					title="Search Results"
 					open={this.state.profileOpen}
 					onRequestClose={this.handleProfileClose}
-				>{searched}
+				>{searched}o
 				</Dialog>
 			</div>
 		)	
