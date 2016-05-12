@@ -211,7 +211,7 @@ const HouseHoldCard = React.createClass({
 		};
 
 		for (let element in this.state.selected) {
-			if (!this.state.selected[element]) return;
+			if (!this.state.selected[element]) continue;
 			let sensorData = this.getDataForElement(element);
 
 			data.labels = sensorData[0];
@@ -224,6 +224,8 @@ const HouseHoldCard = React.createClass({
 				data.datasets[data.datasets.length - 1][key] = dataStyle[key];
 			}
 		}
+
+		console.log("inside", data);
 
 		return data;
 	},
@@ -307,6 +309,8 @@ const HouseHoldCard = React.createClass({
 			</CardActions>
 			</Card>);
 
+		let data = this.getData();
+
 		return (<Card style={style}>
 			<CardHeader
 				title={this.props.title || this.props.lang.household}
@@ -315,14 +319,14 @@ const HouseHoldCard = React.createClass({
 				{this.getSensorSelectField()}
 				<br/>
 				{this.getPeriodSelectField()}
-				<GraphCard data={this.getData()}
+				<GraphCard data={data}
 						graphType="Bar"
 						graphTypes={["Line", "Bar", "Radar"]}/>
 			</CardMedia>
 			<CardText>
 			</CardText>
 			<CardActions>
-				<ShareGraphButton data={this.getData()} lang={this.props.lang} rest={this.props.rest}/>
+				<ShareGraphButton data={data} lang={this.props.lang} rest={this.props.rest}/>
 			</CardActions>
 			</Card>
 		);
