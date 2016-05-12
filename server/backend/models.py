@@ -22,7 +22,7 @@ class Home(models.Model):
     zipcode = models.CharField(max_length=16)
     street = models.CharField(max_length=64)
     house_number = models.CharField(max_length=8)
-    date_added = models.DateTimeField()
+    date_added = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return str(self.pk)
@@ -37,7 +37,7 @@ class Sensor(models.Model):
     description = models.CharField(max_length=256)
     tags = models.ManyToManyField('Tag', through='SensorsTags')
     power_unit = models.CharField(max_length=3)
-    date_created = models.DateTimeField()
+    date_created = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return self.name
@@ -49,7 +49,7 @@ class Sensor(models.Model):
 class SensorsTags(models.Model):
     sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
     tag = models.ForeignKey('Tag', on_delete=models.DO_NOTHING)
-    date_created = models.DateTimeField()
+    date_created = models.DateTimeField(default=datetime.now())
 
     class Meta:
         db_table = 'sensors_tags'
@@ -58,7 +58,7 @@ class SensorsTags(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256)
-    date_created = models.DateTimeField()
+    date_created = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return self.name
@@ -71,7 +71,7 @@ class UsersHomes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     home = models.ForeignKey(Home, on_delete=models.CASCADE)
     permission_flags = models.IntegerField()
-    date_created = models.DateTimeField()
+    date_created = models.DateTimeField(default=datetime.now())
 
     class Meta:
         db_table = 'users_homes'
@@ -79,7 +79,7 @@ class UsersHomes(models.Model):
 
 class SensorData(models.Model):
     sensor = models.ForeignKey('Sensor', on_delete=models.DO_NOTHING)
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(default=datetime.now())
     usage = models.IntegerField()
     n_measurements = models.IntegerField()
 
