@@ -27,14 +27,57 @@ const styles = {
 */
 const CreateHousehold = React.createClass({
 	getInitialState: function () {
-		return {};
+		return {
+			name: "",
+			country: "",
+			city: "",
+			zipcode: "",
+			street: "",
+			housenumber: "",
+			me: "",
+		};
 	},
-	handleInputChange: function (event) {
-		let newState = {};
-		newState[event.target.id] = event.target.value;
-		this.setState(newState);
+	handleName: function (event) {
+		this.setState({
+			name: event.target.value,
+		});
 	},
+	handleCountry: function (event) {
+		this.setState({
+			country: event.target.value,
+		});
+	},
+	handleCity: function (event) {
+		this.setState({
+			city: event.target.value,
+		});
+	},
+	handleZipCode: function (event) {
+		this.setState({
+			zipcode: event.target.value,
+		});
+	},
+	handleStreet: function (event) {
+		this.setState({
+			street: event.target.value,
+		});
+	},
+	handleHouseNumber: function (event) {
+		this.setState({
+			housenumber: event.target.value,
+		});
+	},
+	
 	componentDidMount: function () {
+		this.props.rest.get(["api", "users", "me"], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+			this.setState({
+				me: data.data,
+			});
+		}.bind(this));
 		// this.props.rest.get(["api", "data", "home", this.props.id], {}, function (data) {
 		// 	if (data.error) {
 		// 		this.setState({error: data.error});
@@ -76,7 +119,7 @@ const CreateHousehold = React.createClass({
 			zipcode: this.state.zipcode,
 			street: this.state.street,
 			house_number: this.state.housenumber,
-			owner: "me",
+			owner: this.state.me.id,
 		}, function (data) {
 			if (data.error) {
 				// If there was an error but no response something went wrong
@@ -121,17 +164,17 @@ const CreateHousehold = React.createClass({
 				<form className="createHouseHold" style={styles.form}>
 					{this.state.error || ""}
 					<br/>
-					<TextField id="name" floatingLabelText={this.props.lang.householdName}/>
+					<TextField id="name" floatingLabelText={this.props.lang.householdName} onChange={this.handleName}/>
 					<br/>
-					<TextField id="country" floatingLabelText={this.props.lang.country}/>
+					<TextField id="country" floatingLabelText={this.props.lang.country} onChange={this.handleCountry}/>
 					<br/>
-					<TextField id="city" floatingLabelText={this.props.lang.city}/>
+					<TextField id="city" floatingLabelText={this.props.lang.city} onChange={this.handleCity}/>
 					<br/>
-					<TextField id="zipcode" floatingLabelText={this.props.lang.zipCode}/>
+					<TextField id="zipcode" floatingLabelText={this.props.lang.zipCode} onChange={this.handleZipCode}/>
 					<br/>
-					<TextField id="street" floatingLabelText={this.props.lang.street}/>
+					<TextField id="street" floatingLabelText={this.props.lang.street} onChange={this.handleStreet}/>
 					<br/>
-					<TextField id="housenumber" floatingLabelText={this.props.lang.houseNumber}/>
+					<TextField id="housenumber" floatingLabelText={this.props.lang.houseNumber} onChange={this.handleHouseNumber}/>
 				</form>
 			</Dialog>
 		);
