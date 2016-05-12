@@ -1,30 +1,18 @@
 import React from 'react';
-import Card from 'material-ui/lib/card/card';
-import CardActions from 'material-ui/lib/card/card-actions';
-import CardHeader from 'material-ui/lib/card/card-header';
-import Table from 'material-ui/lib/table/table';
-import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
-import TableRow from 'material-ui/lib/table/table-row';
-import TableHeader from 'material-ui/lib/table/table-header';
-import TableRowColumn from 'material-ui/lib/table/table-row-column';
-import TableBody from 'material-ui/lib/table/table-body';
-import TableFooter from 'material-ui/lib/table/table-footer';
-import TextField from 'material-ui/lib/text-field';
-import Toggle from 'material-ui/lib/toggle';
-import {green500, grey500} from 'material-ui/lib/styles/colors';
+import Card from 'material-ui/Card/Card';
+import CardHeader from 'material-ui/Card/CardHeader';
+import Table from 'material-ui/Table/Table';
+import TableHeaderColumn from 'material-ui/Table/TableHeaderColumn';
+import TableRow from 'material-ui/Table/TableRow';
+import TableHeader from 'material-ui/Table/TableHeader';
+import TableRowColumn from 'material-ui/Table/TableRowColumn';
+import TableBody from 'material-ui/Table/TableBody';
+import {green500} from 'material-ui/styles/colors';
 
 const styles = {
 	friends: {
 		color: green500,
 		padding: 32,
-	},
-	propContainer: {
-		width: 200,
-		overflow: 'hidden',
-		margin: '20px auto 0',
-	},
-	propToggleHeader: {
-		margin: '20px auto 10px',
 	},
 }
 
@@ -74,48 +62,54 @@ const Friends = React.createClass({
 
 
 		if (!this.state.loading) {
-			for (let i = 0; i < 5; i++) {
-				/*if (!this.state.friends[i].attributes.read)*/
-					FriendList.push(friend = {ranking: i+1, name: 'John Smith', usage: 'Employed'});
+			for (let i = 0; i < this.state.friends.length; i++) {
+				FriendList.push(friend = {ranking: i+1, name: this.state.friends[i].attributes.first_name+" "+this.state.friends[i].attributes.last_name, usage: "placeholder", households: this.state.friends[i].relationships.owned_homes.meta.count});
 			}
 		}
 
 		const tableData = FriendList;/*[
-		  {
-		  	ranking: '1',
-		    name: 'John Smith',
-		    usage: 'Employed',
-		  },
-		  {
-		  	ranking: '2',
-		    name: 'Randal White',
-		    usage: 'Unemployed',
-		  },
-		  {
-		  	ranking: '3',
-		    name: 'Stephanie Sanders',
-		    usage: 'Employed',
-		  },
-		  {
-		  	ranking: '4',
-		    name: 'Steve Brown',
-		    usage: 'Employed',
-		  },
-		  {
-		  	ranking: '5',
-		    name: 'Joyce Whitten',
-		    usage: 'Employed',
-		  },
-		  {
-		  	ranking: '6',
-		    name: 'Samuel Roberts',
-		    usage: 'Employed',
-		  },
-		  {
-		  	ranking: '7',
-		    name: 'Adam Moore',
-		    usage: 'Employed',
-		  },
+			{
+				ranking: '1',
+				name: 'John Smith',
+				usage: 'Employed',
+				households: '3',
+			},
+			{
+				ranking: '2',
+				name: 'Randal White',
+				usage: 'Unemployed',
+				households: '4',
+			},
+			{
+				ranking: '3',
+				name: 'Stephanie Sanders',
+				usage: 'Employed',
+				households: '1',
+			},
+			{
+				ranking: '4',
+				name: 'Steve Brown',
+				usage: 'Employed',
+				households: '5',
+			},
+			{
+				ranking: '5',
+				name: 'Joyce Whitten',
+				usage: 'Employed',
+				households: '1',
+			},
+			{
+				ranking: '6',
+				name: 'Samuel Roberts',
+				usage: 'Employed',
+				households: '2',
+			},
+			{
+				ranking: '7',
+				name: 'Adam Moore',
+				usage: 'Employed',
+				households: '2',
+			},
 		];*/
 		
 		return (
@@ -126,19 +120,22 @@ const Friends = React.createClass({
 				<div>
 			      <Table
 			        height={this.state.height}>
-			        <TableHeader>
+			        <TableHeader
+			        	displaySelectAll={false}>
 			          <TableRow>
-			            <TableHeaderColumn tooltip="The Rank">Ranking</TableHeaderColumn>
-			            <TableHeaderColumn tooltip="The Name">Name</TableHeaderColumn>
-			            <TableHeaderColumn tooltip="The Usage">Usage</TableHeaderColumn>
+			            <TableHeaderColumn tooltip="Rank">Ranking</TableHeaderColumn>
+			            <TableHeaderColumn tooltip="Name">Name</TableHeaderColumn>
+			            <TableHeaderColumn tooltip="Total Usage">Usage</TableHeaderColumn>
+			            <TableHeaderColumn tooltip="Amount of Households">Households</TableHeaderColumn>
 			          </TableRow>
 			        </TableHeader>
 			        <TableBody>
 			          {tableData.map( (row, index) => (
 			            <TableRow key={index} selected={row.selected}>
-			              <TableRowColumn>{row.ranking}</TableRowColumn>
+			              <TableRowColumn>{index+1}</TableRowColumn>
 			              <TableRowColumn>{row.name}</TableRowColumn>
 			              <TableRowColumn>{row.usage}</TableRowColumn>
+			              <TableRowColumn>{row.households}</TableRowColumn>
 			            </TableRow>
 			            ))}
 			        </TableBody>
