@@ -50,7 +50,9 @@ You can generate your own configurations using ElecSim (found on Blackboard and 
 
 ###Client
 
-    python -m SimpleHTTPServer
+    cd client
+    npm install
+    npm start
 
-Then open your browser to localhost:8000
+Then open your browser to localhost:3000
 
