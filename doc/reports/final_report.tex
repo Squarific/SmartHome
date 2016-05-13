@@ -40,6 +40,13 @@
 
 		(Thanh, Jens)
 
+  \subsection{Translation}
+	\subsubsection{Dutch - English}
+		The footer features a Dutch and English flag, used to switch languages.
+		Everything on the website is translated in both languages, and they can be switched on the spot, at any time.
+
+		(Filip, Jens)
+
   \subsection{Login and Registration}
 	\subsubsection{Simple and elegant}
 		We have added both the register and login button to the top-right of the screen.
@@ -119,21 +126,39 @@
 		(Nisse)
 
 	\subsubsection{Clustering}
-		WILT FILIP DIT EVEN INVULLEN? KKTHXBYE
+		WILT FILIP OF DAVID DIT EVEN INVULLEN? KKTHXBYE
 
 \section{Design}
-  \subsection{Keuzes}
-	We hebben tot nu toe vooral gewerkt aan de verplichte toepassingen omdat we die al eerst willen
-	afhebben voor we starten aan de extra features. Maar we zullen meer aan deze beginnen
-	werken nu dat al het noodzakelijke gebeurd is.\\
+  \subsection{Client}
+	\subsubsection{React}
+		We have chosen to use React for our client's UI. React describes itself as "the V in MVC",
+		which is exactly what we intend to use it for.\\
+		
+		React's component based design allows us to construct new components (such as the graphs, household cards, notifications, and so on),
+		and then use these components to create so called PageComponents. These allow us to switch pages without the need to refresh the browser,
+		ensuring maximum smoothness.
 
-	We hebben gekozen voor een interface dat zeer gemakkelijk is om mee te werken zodat de
-	gebruiken zo min mogelijk problemen zal ondervinden. Simpele knoppen en duidelijke text en
-	grafieken maakt het voor de gebruiker efficient en snel om mee te werken.\\
-	
-	We hebben het sociale aspect nog vrij minimaal gehouden, maar hebben nog veel ruimte open
-	gelaten om extra features toe te voegen die ervoor zullen zorgen dat communiceren met anderen
-	veel vlotter kan verlopen.
+	\subsubsection{Material-UI}
+		Google's widely used design standard, Material, is used everywhere. Android, along with many smartphone apps and websites use Material.
+		This means the user will recognize the interface, making the UI feel familiar.
+		Furthermore, the interface will react exactly the way the end user expects it to, making Material the best possible option.
+
+		The Material-UI Library for react incorporates these design standards in simple components such as appbars, sidebars, and more.
+		This made it possible for us to create a responsive and recognizable design that will do exactly what the user wants it to.
+		
+	\subsubsection{ChartJs}
+		Graphs are the core of SmartHome, so their responsiveness and readability were top priority for us.
+		We have opted to use ChartJs, a React library that provides us with easiliy customizable chart components,
+		which we have incorporated in the household cards. 
+		
+  \subsection{Server}
+	\subsubsection{Django}
+		DAVID VUL HIER WAT MOOIE WOORDEN IN PLS
+
+  \subsection{REST API}
+	\subsubsection{Retrieving data from the server}
+		The communication between client and server happens using a well defined REST api. This splits the logic well, and ensures seperation of concerns.
+		Client side, we use plain XMLHttpRequests wrapped in a small homebrew library. Server side, Django provides an interface to make it easy to handle the requests.
 
   \subsection{Database Schema}
   %Zie \textbf{figuur \ref{fig:erd}}.
@@ -152,21 +177,32 @@
   \caption{Deployment diagram voor server (links) en client (rechts).}
   \label{fig:uml}
   \end{figure}
+
 \section{Product}
+	This section contains a short synopsis of all the required and extra features that we have implemented.
+	For more information about a certain feature, please refer to the Status section.
+
   \subsection{Basisvereisten}
-  Al de basisvereisten zijn geimplementeerd.\\
-  De login en registratie zijn afgewerkt en ook de administator interface werkt. Met deze interface
-  kan men gegevens op grote schaal opvragen en bekijken om een beter zicht te krijgen op het
-  algemeen verbruik van de gebruikers. Het sociale aspect is ook toegevoegd, dit zorgt ervoor dat
-  het mogelijk is om groepen en vrienden toe te voegen en om berichten te plaatsen.
+	All requirements have been met. We have implemented a REST interface, to retrieve the sensor data from the server.
+	This data can then be shown in the "View Household" menu, and the user can select one or more sensors and a time period to see exactly what he or she wants.
+	The user can register, log in, create sensors and households. Sensors have editable tags, a name, a power unit, a description, and a household.
+	Households also have all required attributes.\\
+
+	Translations are part of the interface, so that languages can be switched at any time.\\
+
+	On the social side, it is possible to search for other users, and send them a friendrequest.
+	Once they have accepted the request in their notifications menu, it will be possible to see each other's posts.
+	Posts can either be posted using the wall, resulting in a plain text post, or graphs can be shared.
+	When the end users shares a graph, it is possible to add a message to the graph in order to provide some extra information.\\
+
+	An admin interface is accessible for users that are marked as staff.\\
+
   \subsection{Extra functionaliteit}
-  Er is nog geen extra functionaliteit klaar.
-\section{Planning}
-Het eerste waar we aan zullen werken is het toevoegen van kleine extra features aan de
-basisvereisten om het gebruik te vergemakkelijken. Zo zullen we bijvoorbeeld het sociale aspect
-verder uitwerken met toepassingen zoals persoonlijke berichten.\\
-We zullen natuurlijk ook extra toepassingen toevoegen waar we aan denken als we bezig zijn
-met het uiterken van deze eerste features.
+	CLUSTERING NOG INVULLEN
+
+	We have also added a ranking feature that allows the user to compare energy usage amongst their friends.
+	Users that have a lower average consumption, will rank higher. This promotes saving energy, which is essentially what SmartHome is all about.
+
 \section{Appendix}
   \subsection{SQL Queries}
   \subsubsection{Households}

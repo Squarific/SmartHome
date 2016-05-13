@@ -51,17 +51,17 @@ const Wall = React.createClass({
 
 	handleTextFieldChange: function (e) {
 		this.setState({
-            postMessage: e.target.value,
-        });
+			postMessage: e.target.value,
+		});
 	},
 
 	postMessage: function () {
 		if (this.state.postMessage !== "") {
 			this.props.rest.post(["api", "posts"], {
-	            content: this.state.postMessage,
-	            plot: "",
-	            read: false,
-	            user: this.state.myId,
+				content: this.state.postMessage,
+				plot: "",
+				read: false,
+				user: this.state.myId,
 			}, function (data) {
 				if (data.error) {
 					console.log(data.error);
