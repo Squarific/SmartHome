@@ -35,6 +35,7 @@ const CreateHousehold = React.createClass({
 			street: "",
 			housenumber: "",
 			me: "",
+			gebruikers: [],
 		};
 	},
 	handleName: function (event) {
@@ -120,6 +121,7 @@ const CreateHousehold = React.createClass({
 			street: this.state.street,
 			house_number: this.state.housenumber,
 			owner: this.state.me.id,
+			users: [],
 		}, function (data) {
 			if (data.error) {
 				// If there was an error but no response something went wrong
@@ -136,6 +138,7 @@ const CreateHousehold = React.createClass({
 			} else {
 				this.props.handleCreateHouseHoldClose();
 			}
+			this.handleCreateHouseHoldClose();
 		}.bind(this));
 	},
 	render: function () {
