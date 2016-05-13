@@ -67,6 +67,18 @@ const Wall = React.createClass({
 					console.log(data.error);
 					return;
 				}
+
+				this.props.rest.get(["api", "users", "me", "friends", "posts"], {}, function (data) {
+					if (data.error) {
+						console.log(data.error);
+						return;
+					}
+
+					this.setState({
+						posts: data.data,
+						loading: false,
+					});
+				}.bind(this));
 			}.bind(this));
 
 			this.setState({
