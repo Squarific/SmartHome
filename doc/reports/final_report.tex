@@ -32,11 +32,94 @@
 %\tableofcontents
 
 \section{Status}
-Alle verplichte toepassingen zijn geimplementeerd. De login en registratie, de administator
-interface en ook de basis van het sociale aspect zijn afgewerkt.\\
+  \subsection{Homepage}
+	\subsubsection{Appealing to the end user}
+		The Homepage is where the end user will be when he or she first visits SmartHome.
+		Since first impressions are important, we made sure to make the homepage look appealing,
+		and added some example graphs to showcase the features of our project.\\
 
-Het volgende waar we aan zullen werken is het verder toevoegen van features voor het sociale
-aspect en ook meer customisatie opties voor de households, en meer weergave toepassingen.
+		(Thanh, Jens)
+
+  \subsection{Login and Registration}
+	\subsubsection{Simple and elegant}
+		We have added both the register and login button to the top-right of the screen.
+		Both buttons open a pop-over dialog, which makes for a smooth transition.
+		This is one of the reasons we went for React in combination with Material-UI.
+		Everything happens on one page. No refreshing and unnecessary loading times needed.\\
+
+		(Filip)
+
+  \subsection{Households and Sensors}
+	\subsubsection{Creation}
+		Although the simulation software doesn't really support this, the user can create both households and sensors.
+		Creating a household opens a new dialog where the user can fill in the name, country, city, zip code, street, and housenumber.
+		Likewise, creating a sensor opens another dialog where the user can provide a name, household, description, power unit, and tags.\\
+
+		(Thanh, Jens)
+
+	\subsubsection{Viewing}
+		The "View Households" menu changes the layout of the page so that it now displays a card for every household.
+		The graph type can be chosen by the user (Line, Bar, Radar).
+		It is also possible to change how the usage is shown (price in euros, or the original format).\\
+
+		(Filip)
+
+	\subsubsection{Filtering}
+		Within the Household cards, the user can select which sensor should be shown (a combination of sensors is also possible).
+		It is also possible to specify a time period and graph type, allowing for maximum flexibility.\\
+
+		(Filip)
+
+	\subsubsection{Tags and Editing}
+		Household cards also contain a button that can be used to edit a sensor's tags.
+		This button opens a new dialog where tags can be added and removed to the user's liking.\\
+
+		(Jens)
+
+  \subsection{Social Aspect}
+	\subsubsection{Friends}
+		Using the friend search feature, it is possible to find other people by name and send them a friend request.
+		Users need to be friends before they can see each other's posts and shared graphs.\\
+
+		(Thanh)
+
+	\subsubsection{Notifications}
+		Users can find any pending friend requests in their notifications menu, where they can choose to approve said request.
+		Once the request is approved, they will be able to see posts and compare their energy consumption using the Ranking feature.\\
+
+		(Jens)
+
+	\subsubsection{Wall}
+		The Wall is where all the user's friends' posts and shared graphs will be displayed,
+		much like the activity feed on the Facebook homepage.
+		Shared graphs can still be viewed using a graph type chosen by the end user.\\
+
+		There is also a button that opens a dialog for posting a new message.\\
+
+		(Jens)
+
+	\subsubsection{Sharing Graphs}
+		Every card in the "View Household" menu has a "Share Graph" button that opens up a new dialog where the graph can be shared,
+		along with a textfield for any additional info the user might want provide.
+
+		(Jens)
+		
+  \subsection{Back end}
+	\subsubsection{IK DENK DAT DAVID DIT HET BEST EVEN INVULT?}
+	\subsubsection{Meerdere subsubsections om het proper te houden pls}
+
+  \subsection{Extra Functionalities}
+	\subsubsection{Ranking}
+		The first extra feature we have decided to add is the possibility to see a ranking among friends.
+		This ranking would show which one of your friends on SmartHome has the lowest energy consumption.
+		We feel that this would provide an extra incentive to try and decrease your usage.\\
+
+		It is possible to rank either by total usage, or average usage per household.\\
+
+		(Nisse)
+
+	\subsubsection{Clustering}
+		WILT FILIP DIT EVEN INVULLEN? KKTHXBYE
 
 \section{Design}
   \subsection{Keuzes}

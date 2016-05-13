@@ -24,7 +24,7 @@ Once all the possibilities are displayed you can choose who you want to add as f
 If you are already friends, it should be possible to delete your friend.
 
 ####Back End:
-DAVID INVULLEN
+Enhanced the REST API with functionality needed for new features in the client. Fully finished permissions management for the retrieval, creation, update and deletion of database entities. Bugfixes.
 
 ####Small Changes:
 Some pages now refresh correctly (for example when accepting a friendrequest), to maintain responsiveness.
