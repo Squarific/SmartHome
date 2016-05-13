@@ -24,14 +24,44 @@ const styles = {
     display: "inline-block",
     width: "16em",
   },
+  euroToggle: {
+  	maxWidth: 256,
+  	minWidth: "initial",
+  	display: "inline-block",
+  	verticalAlign: "middle",
+  },
 };
 
-let dataStyle = {
-	fillColor: "rgba(220,220,220,0.5)",
-	strokeColor: "rgba(220,220,220,0.8)",
-	highlightFill: "rgba(220,220,220,0.75)",
-	highlightStroke: "rgba(220,220,220,1)",
-};
+// Helper function to generate an attractive color from a string.
+// Returns an array in the form [h, s, l]
+function string2Color (str) {
+    let h = 2348;
+    let s = 0.9;
+    let l = 0.4;
+    
+    for(let j = Math.max(str.length - 1, 2); j >= 0; j--)
+        for(let i = str.length-1; i >= 0; i--) {
+            h = ((h << 5) - h) + ~ str.charCodeAt(i);
+        }
+    
+    if(h < 0) {
+        h = -h;
+        l = 0.35;
+    }
+    
+    if(h > 360) {
+        let c = parseInt(h / 360.0);
+        h -= c * 360;
+        
+        if(c % 3 === 0) {
+            s = 1;
+        } else if(c % 2 === 0) {
+            s = 0.95;
+        }
+    }
+    
+    return [h, s*100, l*70];
+}
 
 /*
 	Props: {
@@ -46,7 +76,7 @@ let dataStyle = {
 
 const HouseHoldCard = React.createClass({
 	getInitialState: function () {
-		return {loading: true, period: "today", selectedPeriod: "24 hours"};
+		return {loading: true, period: "today", selectedPeriod: "24 hours", convertToEuro: false, euroFactor: 0.0003};
 	},
 	componentDidMount: function () {
 		this.props.rest.get(["api", "homes", this.props.id, "data", this.state.period], {}, function (data) {
@@ -166,10 +196,13 @@ const HouseHoldCard = React.createClass({
 		// Create menuoptions if we have multiple graphtypes
 		const MenuItems = [];
 		for (let k = 0; k < this.state.data[this.state.period].data.length; k++) {
+			let c = string2Color(this.state.data[this.state.period].data[k].key);
+
 			MenuItems.push((
 				<Toggle
 					id={this.state.data[this.state.period].data[k].key}
 					label={this.state.data[this.state.period].data[k].key}
+					labelStyle={{color: "hsl("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 5) +"%)"}}
 					style={styles.checkbox}
 					key={k}
 					toggled={this.state.selected[this.state.data[this.state.period].data[k].key]}
@@ -215,17 +248,24 @@ const HouseHoldCard = React.createClass({
 			let sensorData = this.getDataForElement(element);
 
 			data.labels = sensorData[0];
+
+			let c = string2Color(element);
+
 			data.datasets.push({
 				data: sensorData[1],
+				fillColor: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 5) +"%, .5)", // Generate a random color based on the name
+				strokeColor: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 12) +"%, .5)",
+				highlightFill: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 7) +"%, .5)",
+				highlightStroke: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 18) +"%, .5)",
 			});
 
-			// Put the datastyle into the actual data
-			for (let key in dataStyle) {
-				data.datasets[data.datasets.length - 1][key] = dataStyle[key];
-			}
+			let dataStyle = {
+				fillColor: "rgba(220,220,220,0.5)",
+				strokeColor: "rgba(220,220,220,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+			};
 		}
-
-		console.log("inside", data);
 
 		return data;
 	},
@@ -289,10 +329,13 @@ const HouseHoldCard = React.createClass({
 				break
 
 			labels.push(this.convertTimestampToLabel(targetElement.values[targetElement.values.length - (key * per) - 1].timestamp, this.state.selectedPeriod));
-			values.push(sum);
+			values.push(Math.round(sum * (this.state.convertToEuro ? this.state.euroFactor : 1) * 100) / 100);
 		}
 
 		return [labels, values];
+	},
+	toggleConversion: function (event, isChecked) {
+		this.setState({convertToEuro: isChecked});
 	},
 	render: function () {
 		if (this.state.error) return (<div>{this.state.error}</div>);
@@ -310,6 +353,12 @@ const HouseHoldCard = React.createClass({
 			</Card>);
 
 		let data = this.getData();
+		let toggle = (<Toggle
+			label="Toggle euro conversion"
+			onToggle={this.toggleConversion}
+			style={styles.euroToggle}
+			toggled={this.state.convertToEuro}
+		/>);
 
 		return (<Card style={style}>
 			<CardHeader
@@ -317,8 +366,8 @@ const HouseHoldCard = React.createClass({
 				subtitle={"Graphs" || this.props.lang.loading}/>
 			<CardMedia>
 				{this.getSensorSelectField()}
-				<br/>
 				{this.getPeriodSelectField()}
+				{toggle}
 				<GraphCard data={data}
 						graphType="Bar"
 						graphTypes={["Line", "Bar", "Radar"]}/>
