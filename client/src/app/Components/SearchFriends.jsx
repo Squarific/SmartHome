@@ -120,7 +120,7 @@ const SearchFriends = React.createClass({
 					title="Search Results"
 					open={this.state.profileOpen}
 					onRequestClose={this.handleProfileClose}
-				>{searched}o
+				>{searched}
 				</Dialog>
 			</div>
 		)	
