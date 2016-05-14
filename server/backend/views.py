@@ -75,7 +75,7 @@ class UserList(generics.ListAPIView):
         queryset = User.objects.all()
         username = self.request.query_params.get('username', None)
         if username is not None:
-            queryset = queryset.filter(username__contains=username)
+            queryset = queryset.filter(Q(username__contains=username) | Q(firstname__contains=username) | Q(lastname__contains=username))
         return queryset
 
 class UserDetail(APIView):
