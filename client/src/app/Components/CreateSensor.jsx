@@ -8,6 +8,7 @@ import MenuItem from 'material-ui/MenuItem';
 import {HouseHoldSelect} from './HouseHoldSelect';
 import {PowerUnitSelect} from './PowerUnitSelect';
 import {TagSelect} from './TagSelect';
+import Snackbar from 'material-ui/Snackbar';
 
 
 const styles = {
@@ -33,7 +34,7 @@ const CreateSensor = React.createClass({
 			household: "",
 			description: "",
 			powerUnit: "",
-			tags: "",			
+			tags: "",	
 		};
 	},
 	componentDidMount: function () {
@@ -72,6 +73,20 @@ const CreateSensor = React.createClass({
 			tags: value,
 		});
 	},
+	handleSubmit: function () {
+		this.props.rest.post(["api", "sensors"], {
+			name: this.state.name,
+			home: 1,
+			description: this.state.description,
+			tags: this.state.tags,
+			power_unit: "wh",
+		}, function(data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+		}.bind(this));
+	},
 	render: function () {
 
 		const sensorActions = [
@@ -84,14 +99,14 @@ const CreateSensor = React.createClass({
 				label={this.props.lang.create}
 				primary={true}
 				keyboardFocused={true}
-				onTouchTap={this.props.handleCreateSensorClose}/>,
+				onTouchTap={this.handleSubmit}/>,
 		];
 
 		return (
 			<Dialog style={styles.dialog}
 				title={this.props.lang.createSensor}
 				open={this.props.createSensorOpen}
-				onRequestClose={this.props.handleCreateSensorClose}
+				//onRequestClose={this.props.handleCreateSensorClose}
 				actions={sensorActions}>
 
 				<form className="createSensor" style={styles.form}>
@@ -111,6 +126,7 @@ const CreateSensor = React.createClass({
 					<TagSelect rest={this.props.rest} lang={this.props.lang} handleTag={this.handleTag} />
 					</form>
 			</Dialog>
+			
 		);
 	},
 

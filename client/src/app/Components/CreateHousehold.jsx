@@ -70,7 +70,13 @@ const CreateHousehold = React.createClass({
 			housenumber: event.target.value,
 		});
 	},
-	
+	handleClose: function (event, index, value) {
+		value: "",
+		this.setState({
+			value,
+		});
+		this.props.handleCreateHouseHoldClose;
+	},
 	componentDidMount: function () {
 		this.props.rest.get(["api", "users", "me"], {}, function (data) {
 			if (data.error) {
@@ -142,7 +148,6 @@ const CreateHousehold = React.createClass({
 			}
 			this.props.handleCreateHouseHoldClose();
 		}.bind(this));
-
 	},
 	render: function () {
 
@@ -151,7 +156,7 @@ const CreateHousehold = React.createClass({
 				label={this.props.lang.cancel}
 				secondary={true}
 				onTouchTap={this.props.handleCreateHouseHoldClose}
-				onClick={this.props.handleCreateHouseHoldClose}/>,
+				onClick={this.handleClose}/>,
 
 			<FlatButton style={styles.submitButton}
 				label={this.props.lang.create}
@@ -164,7 +169,7 @@ const CreateHousehold = React.createClass({
 		return (<Dialog style={styles.dialog}
 				title={this.props.lang.createHousehold}
 				open={this.props.createHouseHoldOpen}
-				onRequestClose={this.props.handleCreateHouseHoldClose}
+				//onRequestClose={this.props.handleCreateHouseHoldClose}
 				actions={houseHoldActions}>
 				
 				<form className="createHouseHold" style={styles.form}>

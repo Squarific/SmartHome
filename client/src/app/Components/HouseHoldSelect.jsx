@@ -17,7 +17,7 @@ const HouseHoldSelect = React.createClass({
 		};
 	},
 	handleChange: function (event, index, value) {
-		this.setState({value});
+		this.setState({value, value: value});
 	},
 	componentDidMount: function () {
 		this.props.rest.get(["api", "users", "me", "homes"], {}, function (data) {
@@ -41,7 +41,7 @@ const HouseHoldSelect = React.createClass({
 		}
 
 		return (
-			<SelectField style={styles.householdselect} value={this.state.value} onChange={this.props.handleHousehold} floatingLabelText={this.props.lang.household}>
+			<SelectField style={styles.householdselect} value={this.state.value} onChange={this.props.handleHousehold, this.handleChange} floatingLabelText={this.props.lang.household}>
 				{MenuItems}
 			</SelectField>
 		)
