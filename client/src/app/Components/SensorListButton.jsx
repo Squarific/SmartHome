@@ -10,27 +10,27 @@ const styles = {
 	},
 }
 
-const ShareGraphButton = React.createClass({
+const SensorListButton = React.createClass({
 	getInitialState: function () {
 		return {
-			shareGraphOpen: false,
+			sensorListOpen: false,
 			loading: true,
 		}
 	},
 	componentDidMount: function () {
-		if (!this.props.rest) throw "ShareGraphButton Error: No rest client provided!";
+		if (!this.props.rest) throw "SensorListButton Error: No rest client provided!";
 
-		this.props.rest.get(["api", "users", "me"], {}, function (data) {
-			if (data.error) {
-				console.log(data.error);
-				return;
-			}
+		// this.props.rest.get(["api", "users", "me"], {}, function (data) {
+		// 	if (data.error) {
+		// 		console.log(data.error);
+		// 		return;
+		// 	}
 
-			this.setState({
-				myId: data.data.id,
-				loading: false,
-			});
-		}.bind(this));
+		// 	this.setState({
+		// 		myId: data.data.id,
+		// 		loading: false,
+		// 	});
+		// }.bind(this));
 	},
 	handleChange: function (event, index, value) {
 		this.setState({value});
@@ -113,5 +113,5 @@ const ShareGraphButton = React.createClass({
 });
 
 module.exports = {
-	ShareGraphButton: ShareGraphButton,
+	SensorListButton: SensorListButton,
 };
