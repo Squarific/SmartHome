@@ -30,6 +30,7 @@ import {PowerUnitSelect} from './Components/PowerUnitSelect';
 import {Rest} from './Components/Rest';
 import Translations from './Components/Translations';
 import {SearchFriends} from './Components/SearchFriends';
+import CreateSensor from './Components/CreateSensor';
 
 // Page components
 import {HouseHoldList} from './PageComponents/HouseHoldList';
@@ -502,27 +503,8 @@ class Main extends React.Component {
 						handleCreateHouseHoldClose={this.handleCreateHouseHoldClose}/>
 
 					{/* Create Sensor */}
-					<Dialog style={styles.dialog}
-						title={Translations[this.state.lang].createSensor}
-						open={this.state.createSensorOpen}
-						onRequestClose={this.handleCreateSensorClose}
-						actions={sensorActions}>
-
-						<form className="createSensor" style={styles.form}>
-							<TextField hintText="" floatingLabelText={Translations[this.state.lang].sensorName}/>
-							<br/>
-							<HouseHoldSelect lang={Translations[this.state.lang]}/>
-							<br/>
-							<TextField floatingLabelText={Translations[this.state.lang].sensorDescription}
-								multiLine={true}
-								rows={3}
-								rowsMax={3}/>
-							<br/>
-							<PowerUnitSelect lang={Translations[this.state.lang]}/>
-							<br/>
-							<TextField hintText="" floatingLabelText={Translations[this.state.lang].sensorTags}/>
-						</form>
-					</Dialog>
+					<CreateSensor rest={rest} lang={Translations[this.state.lang]} createSensorOpen={this.state.createSensorOpen} handleCreateSensorClose={this.handleCreateSensorClose} />
+					
 
 				</div>
 				<div style={styles.footer}>

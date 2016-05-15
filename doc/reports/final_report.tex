@@ -32,25 +32,133 @@
 %\tableofcontents
 
 \section{Status}
-Alle verplichte toepassingen zijn geimplementeerd. De login en registratie, de administator
-interface en ook de basis van het sociale aspect zijn afgewerkt.\\
+  \subsection{Homepage}
+	\subsubsection{Appealing to the end user}
+		The Homepage is where the end user will be when he or she first visits SmartHome.
+		Since first impressions are important, we made sure to make the homepage look appealing,
+		and added some example graphs to showcase the features of our project.\\
 
-Het volgende waar we aan zullen werken is het verder toevoegen van features voor het sociale
-aspect en ook meer customisatie opties voor de households, en meer weergave toepassingen.
+		(Thanh, Jens)
+
+  \subsection{Translation}
+	\subsubsection{Dutch - English}
+		The footer features a Dutch and English flag, used to switch languages.
+		Everything on the website is translated in both languages, and they can be switched on the spot, at any time.
+
+		(Filip, Jens)
+
+  \subsection{Login and Registration}
+	\subsubsection{Simple and elegant}
+		We have added both the register and login button to the top-right of the screen.
+		Both buttons open a pop-over dialog, which makes for a smooth transition.
+		This is one of the reasons we went for React in combination with Material-UI.
+		Everything happens on one page. No refreshing and unnecessary loading times needed.\\
+
+		(Filip)
+
+  \subsection{Households and Sensors}
+	\subsubsection{Creation}
+		Although the simulation software doesn't really support this, the user can create both households and sensors.
+		Creating a household opens a new dialog where the user can fill in the name, country, city, zip code, street, and housenumber.
+		Likewise, creating a sensor opens another dialog where the user can provide a name, household, description, power unit, and tags.\\
+
+		(Thanh, Jens)
+
+	\subsubsection{Viewing}
+		The "View Households" menu changes the layout of the page so that it now displays a card for every household.
+		The graph type can be chosen by the user (Line, Bar, Radar).
+		It is also possible to change how the usage is shown (price in euros, or the original format).\\
+
+		(Filip)
+
+	\subsubsection{Filtering}
+		Within the Household cards, the user can select which sensor should be shown (a combination of sensors is also possible).
+		It is also possible to specify a time period and graph type, allowing for maximum flexibility.\\
+
+		(Filip)
+
+	\subsubsection{Tags and Editing}
+		Household cards also contain a button that can be used to edit a sensor's tags.
+		This button opens a new dialog where tags can be added and removed to the user's liking.\\
+
+		(Jens)
+
+  \subsection{Social Aspect}
+	\subsubsection{Friends}
+		Using the friend search feature, it is possible to find other people by name and send them a friend request.
+		Users need to be friends before they can see each other's posts and shared graphs.\\
+
+		(Thanh)
+
+	\subsubsection{Notifications}
+		Users can find any pending friend requests in their notifications menu, where they can choose to approve said request.
+		Once the request is approved, they will be able to see posts and compare their energy consumption using the Ranking feature.\\
+
+		(Jens)
+
+	\subsubsection{Wall}
+		The Wall is where all the user's friends' posts and shared graphs will be displayed,
+		much like the activity feed on the Facebook homepage.
+		Shared graphs can still be viewed using a graph type chosen by the end user.\\
+
+		There is also a button that opens a dialog for posting a new message.\\
+
+		(Jens)
+
+	\subsubsection{Sharing Graphs}
+		Every card in the "View Household" menu has a "Share Graph" button that opens up a new dialog where the graph can be shared,
+		along with a textfield for any additional info the user might want provide.
+
+		(Jens)
+		
+  \subsection{Back end}
+	\subsubsection{IK DENK DAT DAVID DIT HET BEST EVEN INVULT?}
+	\subsubsection{Meerdere subsubsections om het proper te houden pls}
+
+  \subsection{Extra Functionalities}
+	\subsubsection{Ranking}
+		The first extra feature we have decided to add is the possibility to see a ranking among friends.
+		This ranking would show which one of your friends on SmartHome has the lowest energy consumption.
+		We feel that this would provide an extra incentive to try and decrease your usage.\\
+
+		It is possible to rank either by total usage, or average usage per household.\\
+
+		(Nisse)
+
+	\subsubsection{Clustering}
+		WILT FILIP OF DAVID DIT EVEN INVULLEN? KKTHXBYE
 
 \section{Design}
-  \subsection{Keuzes}
-	We hebben tot nu toe vooral gewerkt aan de verplichte toepassingen omdat we die al eerst willen
-	afhebben voor we starten aan de extra features. Maar we zullen meer aan deze beginnen
-	werken nu dat al het noodzakelijke gebeurd is.\\
+  \subsection{Client}
+	\subsubsection{React}
+		We have chosen to use React for our client's UI. React describes itself as "the V in MVC",
+		which is exactly what we intend to use it for.\\
+		
+		React's component based design allows us to construct new components (such as the graphs, household cards, notifications, and so on),
+		and then use these components to create so called PageComponents. These allow us to switch pages without the need to refresh the browser,
+		ensuring maximum smoothness.
 
-	We hebben gekozen voor een interface dat zeer gemakkelijk is om mee te werken zodat de
-	gebruiken zo min mogelijk problemen zal ondervinden. Simpele knoppen en duidelijke text en
-	grafieken maakt het voor de gebruiker efficient en snel om mee te werken.\\
-	
-	We hebben het sociale aspect nog vrij minimaal gehouden, maar hebben nog veel ruimte open
-	gelaten om extra features toe te voegen die ervoor zullen zorgen dat communiceren met anderen
-	veel vlotter kan verlopen.
+	\subsubsection{Material-UI}
+		Google's widely used design standard, Material, is used everywhere. Android, along with many smartphone apps and websites use Material.
+		This means the user will recognize the interface, making the UI feel familiar.
+		Furthermore, the interface will react exactly the way the end user expects it to, making Material the best possible option.
+
+		The Material-UI Library for react incorporates these design standards in simple components such as appbars, sidebars, and more.
+		This made it possible for us to create a responsive and recognizable design that will do exactly what the user wants it to.
+		
+	\subsubsection{ChartJs}
+		Graphs are the core of SmartHome, so their responsiveness and readability were top priority for us.
+		We have opted to use ChartJs, a React library that provides us with easiliy customizable chart components,
+		which we have incorporated in the household cards. 
+		
+  \subsection{Server}
+	\subsubsection{Django}
+		DAVID VUL HIER WAT MOOIE WOORDEN IN PLS
+
+  \subsection{REST API}
+	\subsubsection{Retrieving data from the server}
+		The communication between client and server happens using a well defined REST api. This splits the logic well, and ensures seperation of concerns.
+		Client side, we use plain XMLHttpRequests wrapped in a small homebrew library. Server side, Django provides an interface to make it easy to handle the requests.
 
   \subsection{Database Schema}
   %Zie \textbf{figuur \ref{fig:erd}}.
@@ -69,21 +177,32 @@ aspect en ook meer customisatie opties voor de households, en meer weergave toep
   \caption{Deployment diagram voor server (links) en client (rechts).}
   \label{fig:uml}
   \end{figure}
+
 \section{Product}
+	This section contains a short synopsis of all the required and extra features that we have implemented.
+	For more information about a certain feature, please refer to the Status section.
+
   \subsection{Basisvereisten}
-  Al de basisvereisten zijn geimplementeerd.\\
-  De login en registratie zijn afgewerkt en ook de administator interface werkt. Met deze interface
-  kan men gegevens op grote schaal opvragen en bekijken om een beter zicht te krijgen op het
-  algemeen verbruik van de gebruikers. Het sociale aspect is ook toegevoegd, dit zorgt ervoor dat
-  het mogelijk is om groepen en vrienden toe te voegen en om berichten te plaatsen.
+	All requirements have been met. We have implemented a REST interface, to retrieve the sensor data from the server.
+	This data can then be shown in the "View Household" menu, and the user can select one or more sensors and a time period to see exactly what he or she wants.
+	The user can register, log in, create sensors and households. Sensors have editable tags, a name, a power unit, a description, and a household.
+	Households also have all required attributes.\\
+
+	Translations are part of the interface, so that languages can be switched at any time.\\
+
+	On the social side, it is possible to search for other users, and send them a friendrequest.
+	Once they have accepted the request in their notifications menu, it will be possible to see each other's posts.
+	Posts can either be posted using the wall, resulting in a plain text post, or graphs can be shared.
+	When the end users shares a graph, it is possible to add a message to the graph in order to provide some extra information.\\
+
+	An admin interface is accessible for users that are marked as staff.\\
+
   \subsection{Extra functionaliteit}
-  Er is nog geen extra functionaliteit klaar.
-\section{Planning}
-Het eerste waar we aan zullen werken is het toevoegen van kleine extra features aan de
-basisvereisten om het gebruik te vergemakkelijken. Zo zullen we bijvoorbeeld het sociale aspect
-verder uitwerken met toepassingen zoals persoonlijke berichten.\\
-We zullen natuurlijk ook extra toepassingen toevoegen waar we aan denken als we bezig zijn
-met het uiterken van deze eerste features.
+	CLUSTERING NOG INVULLEN
+
+	We have also added a ranking feature that allows the user to compare energy usage amongst their friends.
+	Users that have a lower average consumption, will rank higher. This promotes saving energy, which is essentially what SmartHome is all about.
+
 \section{Appendix}
   \subsection{SQL Queries}
   \subsubsection{Households}

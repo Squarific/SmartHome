@@ -36,7 +36,6 @@ The social aspect still needs some depth (sending friend requests, sharing graph
 
 ####Admin Interface:
 The Admin Interface needs to be coupled with the back end.  
-Currently, front end and back end both work, but are not coupled yet.
 
 ####Graphs:
 Graphs need more options for determining which data will be shown.  
