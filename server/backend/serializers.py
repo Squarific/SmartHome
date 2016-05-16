@@ -25,7 +25,7 @@ class SensorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sensor
-        fields = ('name', 'home', 'description', 'tags', 'power_unit')
+        fields = ('name', 'home', 'description', 'tags', 'power_unit', 'usage_category')
 
 class FriendRequestSerializer(serializers.ModelSerializer):
     sender = serializers.PrimaryKeyRelatedField(many=False, queryset = User.objects.all())

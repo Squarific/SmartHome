@@ -387,3 +387,23 @@ class LocationStatsView(APIView):
                 data['past_years']['total_usage'] = queryset.filter(owned_homes__sensor__recentdata__timestamp__gte=from_date).aggregate(Sum('owned_homes__sensor__yearlydata__usage')).values()[0]
 
         return Response(data)
+
+class ClusterView(APIView):
+    permission_classes = (IsAuthenticated)
+
+    def get(self, request, home_id, format=None):
+        queryset = Sensor.objects.filter(home__id = home_id)
+        data = {}
+        data['low'] = queryset.filter(usage_category=0).values()
+        data['medium'] = queryset.filter(usage_category=1).values()
+        data['high'] = queryset.filter(usage_category=2).values()
+        return Response(data)
+
+    def post(self, request, home_id, format=None):
+        self.k_means(home_id)
+
+    def k_means(self, home_id):
+        now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        sensor_totals = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id'), total_usage=Sum('usage')).values('id', 'total_usage')
+        clusters = [0, 0.5, 1]
+        while True:

@@ -33,11 +33,17 @@ class Home(models.Model):
 
 
 class Sensor(models.Model):
+    USAGE_CATEGORY = (
+        (0, 'Low'),
+        (1, 'Medium'),
+        (2, 'High'),
+    )
     home = models.ForeignKey(Home, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=64)
-    description = models.CharField(max_length=256)
+    description = models.CharField(max_length=256, blank=True)
     tags = models.ManyToManyField('Tag', through='SensorsTags')
     power_unit = models.CharField(max_length=3)
+    usage_category = models.IntegerField(choices=USAGE_CATEGORY, null=True)
     date_created = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
