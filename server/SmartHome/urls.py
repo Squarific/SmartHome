@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^api/users/(?P<user_id>[0-9]+|me)/posts/$', views.PostList.as_view()),
     url(r'^api/users/(?P<user_id>[0-9]+|me)/friends/$', views.FriendList.as_view()),
     url(r'^api/users/(?P<user_id>[0-9]+|me)/friends/posts/$', views.FriendPostList.as_view()),
+    url(r'^api/users/(?P<user_id>[0-9]+|me)/friends/stats/$', views.FriendStats.as_view()),
     url(r'^api/users/(?P<user_id>[0-9]+|me)/data/(?P<period>today|last_month|last_year|past_years)/$', views.DataView.as_view()),
     url(r'^api/homes/$', views.HomeList.as_view()),
     url(r'^api/homes/(?P<pk>[0-9]+)/$', views.HomeDetail.as_view()),

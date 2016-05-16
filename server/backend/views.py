@@ -153,6 +153,47 @@ class FriendList(generics.ListAPIView):
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
+class FriendStats(APIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get(self, request, user_id, format=None):
+        now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        from_date = now - timedelta(days=1)
+
+        if (user_id == 'me'):
+            user_id = request.user.id
+        queryset = User.objects.all().filter(Q(sent_requests__status = 1, sent_requests__receiver_id = user_id) | Q(received_requests__status = 1, received_requests__sender_id=user_id))
+
+        friend_ids = queryset.values('id')
+
+        period = self.request.query_params.getlist('period[]', ['today', 'last_month', 'last_year', 'past_years'])
+        data = {}
+        if 'today' in period:
+                from_date = now - timedelta(days=1)
+                data['today'] = queryset.filter(owned_homes__sensor__recentdata__timestamp__gte=from_date).annotate(user_id=F('id'), total_usage_today=Sum('owned_homes__sensor__recentdata__usage')).values('user_id', 'total_usage_today')
+        if 'last_month' in period:
+                from_date = now - relativedelta(months=1)
+                data['last_month'] = queryset.filter(owned_homes__sensor__dailydata__timestamp__gte=from_date).annotate(user_id=F('id'), total_usage_last_month = Sum('owned_homes__sensor__dailydata__usage')).values('user_id', 'total_usage_last_month')
+        if 'last_year' in period:
+                from_date = now - relativedelta(years=1)
+                data['last_year'] = queryset.filter(owned_homes__sensor__monthlydata__timestamp__gte=from_date).annotate(user_id=F('id'), total_usage_last_year = Sum('owned_homes__sensor__monthlydata__usage')).values('user_id', 'total_usage_last_year')
+        if 'past_years' in period:
+                from_date = datetime.min
+                data['past_years'] = queryset.filter(owned_homes__sensor__yearlydata__timestamp__gte=from_date).annotate(user_id=F('id'), total_usage_past_years = Sum('owned_homes__sensor__yearlydata__usage')).values('user_id', 'total_usage_past_years')
+
+        merged = {}
+
+        for friend_id in friend_ids:
+            merged[friend_id['id']] = {}
+
+        for p in period:
+            for entry in data[p]:
+                merged[entry['user_id']].update(entry)
+
+        return Response(merged)
+
 class FriendPostList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Post.objects.all()
@@ -251,6 +292,7 @@ class TagList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    pagination_class = None
 
 
 class TagDetail(generics.RetrieveUpdateDestroyAPIView):
