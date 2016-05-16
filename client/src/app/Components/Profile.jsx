@@ -34,6 +34,7 @@ const Profile = React.createClass({
 			deletePopUp: false,
 			sent: [],
 			visible: true,
+			friends: false,
 		};
 	},
 	componentDidMount: function () {
@@ -53,9 +54,10 @@ const Profile = React.createClass({
 				return;
 			}
 			for (let i = 0; i < data.data.length; i++) {
-				if((data.data[i].relationships.sender.data.id === this.props.me.id && data.data[i].relationships.receiver.data.id === this.props.result.id) || (data.data[i].relationships.sender.data.id === this.props.result.id && data.data[i].relationships.receiver.data.id === this.props.me.id)) {
+				if(((data.data[i].relationships.sender.data.id === this.props.me.id && data.data[i].relationships.receiver.data.id === this.props.result.id) || (data.data[i].relationships.sender.data.id === this.props.result.id && data.data[i].relationships.receiver.data.id === this.props.me.id)) && data.data[i].attributes.status === 1) {
 					this.setState({
 						visible: false,
+						friends: true,
 					});
 				}
 			}
@@ -93,7 +95,7 @@ const Profile = React.createClass({
 	},
 	render: function () {
 		let profileActions;
-		if (this.state.myFriends.length > 0 || this.state.myFriends.id === this.props.result.id) {
+		if (this.state.myFriends.length > 0 && this.state.myFriends.id === this.props.result.id) {
 				profileActions = [<FlatButton 
 								style={Styles.Button}
 								label={'Friends'}
@@ -108,10 +110,16 @@ const Profile = React.createClass({
 
 			}
 
-		else if (!this.state.visible) {
+		else if (!this.state.visible && !this.state.friends) {
 			profileActions = <FlatButton 
 					style={Styles.Button}
 					label={'Request Send'}
+					primary={true} />;
+		}
+		else if (!this.state.visible && this.state.friends) {
+			profileActions = <FlatButton 
+					style={Styles.Button}
+					label={'Friends'}
 					primary={true} />;
 		}
 		else {
