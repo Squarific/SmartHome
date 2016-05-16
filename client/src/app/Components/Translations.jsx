@@ -58,6 +58,7 @@ const nl = {
 	wantsToBeFriends: " wil je vriend worden",
 	shareGraph: "Deel Grafiek",
 	toggleEuroConversion: "Converteer naar euro",
+	clickToEdit: "Klik om aan te passen",
 }
 
 const en = {
@@ -118,6 +119,7 @@ const en = {
 	wantsToBeFriends: " wants to be friends",
 	shareGraph: "Share Graph",
 	toggleEuroConversion: "Convert to euro",
+	clickToEdit: "Click to edit",
 }
 
 module.exports = {

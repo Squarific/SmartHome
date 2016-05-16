@@ -16,7 +16,7 @@ class HomeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Home
-        fields = ('name', 'owner', 'users', 'sensor_set', 'name', 'country', 'city', 'zipcode', 'street', 'house_number', 'date_added')
+        fields = ('name', 'owner', 'users', 'sensor_set', 'name', 'country', 'city', 'zipcode', 'street', 'house_number', 'price_per_kwh', 'date_added')
 
 
 class SensorSerializer(serializers.ModelSerializer):

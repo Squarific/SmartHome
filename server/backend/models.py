@@ -23,6 +23,7 @@ class Home(models.Model):
     street = models.CharField(max_length=64)
     house_number = models.CharField(max_length=8)
     date_added = models.DateTimeField(default=datetime.now())
+    price_per_kwh = models.FloatField(null=True)
 
     def __str__(self):
         return str(self.pk)
