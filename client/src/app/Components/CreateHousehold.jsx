@@ -87,6 +87,7 @@ const CreateHousehold = React.createClass({
 				me: data.data,
 			});
 		}.bind(this));
+
 		// this.props.rest.get(["api", "data", "home", this.props.id], {}, function (data) {
 		// 	if (data.error) {
 		// 		this.setState({error: data.error});

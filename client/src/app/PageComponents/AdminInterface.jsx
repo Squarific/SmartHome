@@ -11,13 +11,19 @@ import TextField from 'material-ui/TextField';
 import {green500, grey500} from 'material-ui/styles/colors';
 import {Notification} from '../Components/Notification';
 
+/*
+	global stats zijn te vinden op /api/stats/ met
+	'country', 'city', 'street', en 'housenumber'
+	als get parameters voor de filters.
+*/
+
 const styles = {
 	admininterface: {
 		color: green500,
 		padding: 32,
 	},
 	title: {
-		fontWeight: 100,
+		fontWeight: 400,
 	},
 }
 
@@ -25,6 +31,10 @@ const AdminInterface = React.createClass({
 	getInitialState: function () {
 		return {
 			loading: true,
+			dataCountry: "",
+			dataCity: "",
+			dataStreet: "",
+			dataHouseNumber: "",
 		};
 	},
 	handleChange: function (event, index, value) {
@@ -45,6 +55,26 @@ const AdminInterface = React.createClass({
 			});
 		}.bind(this));
 	},
+	handleDataCountry: function (e) {
+		this.setState({
+			dataCountry: e.target.value,
+		});
+	},
+	handleDataCity: function (e) {
+		this.setState({
+			dataCity: e.target.value,
+		});
+	},
+	handleDataStreet: function (e) {
+		this.setState({
+			dataStreet: e.target.value,
+		});
+	},
+	handleDataHouseNumber: function (e) {
+		this.setState({
+			dataHouseNumber: e.target.value,
+		});
+	},
 	render: function() {
 		if (!this.state.loading) {
 			console.log(this.state.user);
@@ -58,11 +88,21 @@ const AdminInterface = React.createClass({
 			adminInterface = <div>You need to be an administrator to use this function!</div>
 		} else {
 			adminInterface = <form className="AdminGetData" style={styles.form}>
-				<TextField hintText="" floatingLabelText={this.props.lang.country}/>
+				<TextField hintText="" floatingLabelText={this.props.lang.country}
+					value={this.state.dataCountry}
+					onChange={this.handleDataCountry}/>
 				<br/>
-				<TextField hintText="" floatingLabelText={this.props.lang.city}/>
+				<TextField hintText="" floatingLabelText={this.props.lang.city}
+					value={this.state.dataCity}
+					onChange={this.handleDataCity}/>
 				<br/>
-				<TextField hintText="" floatingLabelText={this.props.lang.street}/>
+				<TextField hintText="" floatingLabelText={this.props.lang.street}
+					value={this.state.dataStreet}
+					onChange={this.handleDataStreet}/>
+				<br/>
+				<TextField hintText="" floatingLabelText={this.props.lang.houseNumber}
+					value={this.state.dataHouseNumber}
+					onChange={this.handleDataHouseNumber}/>
 				<br/>
 				<br/>
 				<FlatButton label={this.props.lang.getData} primary={true}/>
