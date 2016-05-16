@@ -3,6 +3,8 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {green500, grey500} from 'material-ui/styles/colors';
 import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 
 const styles = {
 	form: {
@@ -35,7 +37,6 @@ const CreateHousehold = React.createClass({
 			street: "",
 			housenumber: "",
 			me: "",
-			gebruikers: [],
 		};
 	},
 	handleName: function (event) {
@@ -43,9 +44,10 @@ const CreateHousehold = React.createClass({
 			name: event.target.value,
 		});
 	},
-	handleCountry: function (event) {
+	handleCountry: function (event, index, value) {
 		this.setState({
-			country: event.target.value,
+			value,
+			country: value,
 		});
 	},
 	handleCity: function (event) {
@@ -68,7 +70,13 @@ const CreateHousehold = React.createClass({
 			housenumber: event.target.value,
 		});
 	},
-	
+	handleClose: function (event, index, value) {
+		value: "",
+		this.setState({
+			value,
+		});
+		this.props.handleCreateHouseHoldClose;
+	},
 	componentDidMount: function () {
 		this.props.rest.get(["api", "users", "me"], {}, function (data) {
 			if (data.error) {
@@ -121,7 +129,7 @@ const CreateHousehold = React.createClass({
 			street: this.state.street,
 			house_number: this.state.housenumber,
 			owner: this.state.me.id,
-			users: [],
+			users: 1,
 		}, function (data) {
 			if (data.error) {
 				// If there was an error but no response something went wrong
@@ -138,7 +146,7 @@ const CreateHousehold = React.createClass({
 			} else {
 				this.props.handleCreateHouseHoldClose();
 			}
-			this.handleCreateHouseHoldClose();
+			this.props.handleCreateHouseHoldClose();
 		}.bind(this));
 	},
 	render: function () {
@@ -148,7 +156,7 @@ const CreateHousehold = React.createClass({
 				label={this.props.lang.cancel}
 				secondary={true}
 				onTouchTap={this.props.handleCreateHouseHoldClose}
-				onClick={this.props.handleCreateHouseHoldClose}/>,
+				onClick={this.handleClose}/>,
 
 			<FlatButton style={styles.submitButton}
 				label={this.props.lang.create}
@@ -161,15 +169,22 @@ const CreateHousehold = React.createClass({
 		return (<Dialog style={styles.dialog}
 				title={this.props.lang.createHousehold}
 				open={this.props.createHouseHoldOpen}
-				onRequestClose={this.props.handleCreateHouseHoldClose}
+				//onRequestClose={this.props.handleCreateHouseHoldClose}
 				actions={houseHoldActions}>
-
+				
 				<form className="createHouseHold" style={styles.form}>
 					{this.state.error || ""}
 					<br/>
 					<TextField id="name" floatingLabelText={this.props.lang.householdName} onChange={this.handleName}/>
 					<br/>
-					<TextField id="country" floatingLabelText={this.props.lang.country} onChange={this.handleCountry}/>
+					<SelectField value={this.state.value} onChange={this.handleCountry} floatingLabelText="Country">
+						<MenuItem value={1} primaryText="BE" />
+					  	<MenuItem value={2} primaryText="FR" />
+					  	<MenuItem value={3} primaryText="GB" />
+					  	<MenuItem value={4} primaryText="NL" />
+
+
+					</SelectField>
 					<br/>
 					<TextField id="city" floatingLabelText={this.props.lang.city} onChange={this.handleCity}/>
 					<br/>

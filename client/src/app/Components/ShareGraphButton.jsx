@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 const styles = {
 	sharegraphbutton: {
+		display: "inline-block",
 		textAlign: "center",
 	},
 }
@@ -17,7 +18,7 @@ const ShareGraphButton = React.createClass({
 		}
 	},
 	componentDidMount: function () {
-		if (!this.props.rest) throw "Wall Error: No rest client provided!";
+		if (!this.props.rest) throw "ShareGraphButton Error: No rest client provided!";
 
 		this.props.rest.get(["api", "users", "me"], {}, function (data) {
 			if (data.error) {
