@@ -60,6 +60,13 @@ const Profile = React.createClass({
 						friends: true,
 					});
 				}
+				else if(((data.data[i].relationships.sender.data.id === this.props.me.id && data.data[i].relationships.receiver.data.id === this.props.result.id) || (data.data[i].relationships.sender.data.id === this.props.result.id && data.data[i].relationships.receiver.data.id === this.props.me.id)) && data.data[i].attributes.status === 0) {
+					this.setState({
+						visible: false,
+
+					});
+
+				}
 			}
 		}.bind(this));
 	},
