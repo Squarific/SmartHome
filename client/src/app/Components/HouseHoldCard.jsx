@@ -6,11 +6,11 @@ import CardMedia from 'material-ui/Card/CardMedia';
 import CardTitle from 'material-ui/Card/CardTitle';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/FlatButton';
 import CardText from 'material-ui/Card/CardText';
 import CircularProgress from 'material-ui/CircularProgress';
 import {GraphCard} from './Graphing';
 import {ShareGraphButton} from './ShareGraphButton';
+import {SensorListButton} from './SensorListButton';
 import Toggle from 'material-ui/Toggle';
 
 const style = {
@@ -246,7 +246,9 @@ const HouseHoldCard = React.createClass({
 		for (let element in this.state.selected) {
 			if (!this.state.selected[element]) continue;
 			let sensorData = this.getDataForElement(element);
-
+			sensorData[0].reverse();
+			sensorData[1].reverse();
+			
 			data.labels = sensorData[0];
 
 			let c = string2Color(element);
@@ -354,7 +356,7 @@ const HouseHoldCard = React.createClass({
 
 		let data = this.getData();
 		let toggle = (<Toggle
-			label="Toggle euro conversion"
+			label={this.props.lang.toggleEuroConversion}
 			onToggle={this.toggleConversion}
 			style={styles.euroToggle}
 			toggled={this.state.convertToEuro}
@@ -376,6 +378,7 @@ const HouseHoldCard = React.createClass({
 			</CardText>
 			<CardActions>
 				<ShareGraphButton data={data} lang={this.props.lang} rest={this.props.rest}/>
+				<SensorListButton household={this.props.id} lang={this.props.lang} rest={this.props.rest}/>
 			</CardActions>
 			</Card>
 		);

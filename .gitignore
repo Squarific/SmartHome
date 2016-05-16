@@ -1,4 +1,5 @@
 *~
 *.pyc
 /server/database.sqlite3
-server/SmartHome/settings.py
+/server/SmartHome/settings.py
+/server/backend/migrations/

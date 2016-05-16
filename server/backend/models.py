@@ -23,6 +23,7 @@ class Home(models.Model):
     street = models.CharField(max_length=64)
     house_number = models.CharField(max_length=8)
     date_added = models.DateTimeField(default=datetime.now())
+    price_per_kwh = models.FloatField(null=True)
 
     def __str__(self):
         return str(self.pk)
@@ -32,11 +33,17 @@ class Home(models.Model):
 
 
 class Sensor(models.Model):
+    USAGE_CATEGORY = (
+        (0, 'Low'),
+        (1, 'Medium'),
+        (2, 'High'),
+    )
     home = models.ForeignKey(Home, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=64)
-    description = models.CharField(max_length=256)
+    description = models.CharField(max_length=256, blank=True)
     tags = models.ManyToManyField('Tag', through='SensorsTags')
     power_unit = models.CharField(max_length=3)
+    usage_category = models.IntegerField(choices=USAGE_CATEGORY, null=True)
     date_created = models.DateTimeField(default=datetime.now())
 
     def __str__(self):

@@ -30,6 +30,7 @@ import {PowerUnitSelect} from './Components/PowerUnitSelect';
 import {Rest} from './Components/Rest';
 import Translations from './Components/Translations';
 import {SearchFriends} from './Components/SearchFriends';
+import CreateSensor from './Components/CreateSensor';
 
 // Page components
 import {HouseHoldList} from './PageComponents/HouseHoldList';
@@ -400,7 +401,7 @@ class Main extends React.Component {
 						</LeftNav>;
 		}
 
-		let logInBar
+		let logInBar, dialogBoxes;
 		if (!this.state.loggedIn) {
 			logInBar = <AppBar
 				title="SmartHome"
@@ -422,11 +423,22 @@ class Main extends React.Component {
 				}
 
 				onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
+
+			dialogBoxes = <div></div>;
 		}
 		else if (this.state.loggedIn) {
 			logInBar = <AppBar
 			title="SmartHome"
 			onLeftIconButtonTouchTap={this.handleNavTouchTap}/>;
+
+			dialogBoxes = <div>
+				<CreateHousehold rest={rest}
+					lang={Translations[this.state.lang]}
+					createHouseHoldOpen={this.state.createHouseHoldOpen}
+					handleCreateHouseHoldClose={this.handleCreateHouseHoldClose}/>
+
+				<CreateSensor rest={rest} lang={Translations[this.state.lang]} createSensorOpen={this.state.createSensorOpen} handleCreateSensorClose={this.handleCreateSensorClose} />
+			</div>;
 		}
 
 		return (
@@ -477,52 +489,25 @@ class Main extends React.Component {
 					  */}
 
 					{(() => {
-        				switch (this.state.active) {
+						switch (this.state.active) {
 
-          					case "Home": return <Home lang={Translations[this.state.lang]}/>;
-          					case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
-          					case "Wall":   return <Wall userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
-          					case "Notifications":   return <Notifications userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
-          					case "Friends":   return <Friends userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
-          					case "AdminInterface":   return <AdminInterface rest={rest} lang={Translations[this.state.lang]}/>;
-          					default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
+							case "Home": return <Home lang={Translations[this.state.lang]}/>;
+							case "HouseHoldList":   return <HouseHoldList userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
+							case "Wall":   return <Wall userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
+							case "Notifications":   return <Notifications userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
+							case "Friends":   return <Friends userid={1} rest={rest} lang={Translations[this.state.lang]}/>;
+							case "AdminInterface":   return <AdminInterface rest={rest} lang={Translations[this.state.lang]}/>;
+							default:      return <div>Error: No valid view selected. current state.active: {this.state.active}</div>;
 
-        				}
-      				})()}
+						}
+					})()}
 
 					{/**
 					  * Dialog boxes
 					  */}
 
-					{/* Create HouseHold */}
-
-					<CreateHousehold rest={rest}
-						lang={Translations[this.state.lang]}
-						createHouseHoldOpen={this.state.createHouseHoldOpen}
-						handleCreateHouseHoldClose={this.handleCreateHouseHoldClose}/>
-
-					{/* Create Sensor */}
-					<Dialog style={styles.dialog}
-						title={Translations[this.state.lang].createSensor}
-						open={this.state.createSensorOpen}
-						onRequestClose={this.handleCreateSensorClose}
-						actions={sensorActions}>
-
-						<form className="createSensor" style={styles.form}>
-							<TextField hintText="" floatingLabelText={Translations[this.state.lang].sensorName}/>
-							<br/>
-							<HouseHoldSelect lang={Translations[this.state.lang]}/>
-							<br/>
-							<TextField floatingLabelText={Translations[this.state.lang].sensorDescription}
-								multiLine={true}
-								rows={3}
-								rowsMax={3}/>
-							<br/>
-							<PowerUnitSelect lang={Translations[this.state.lang]}/>
-							<br/>
-							<TextField hintText="" floatingLabelText={Translations[this.state.lang].sensorTags}/>
-						</form>
-					</Dialog>
+					{dialogBoxes}
+					
 
 				</div>
 				<div style={styles.footer}>
@@ -531,11 +516,11 @@ class Main extends React.Component {
 					{Translations[this.state.lang].footerMessage}
 				</div>
 				<Snackbar
-			      open={this.state.languageNotificationOpen}
-			      message={Translations[this.state.lang].languageChanged + this.state.lang.toUpperCase()}
-			      autoHideDuration={3000}
-			      onRequestClose={this.handleLanguageNotficationSnackbarRequestClose}
-			    />
+				  open={this.state.languageNotificationOpen}
+				  message={Translations[this.state.lang].languageChanged + this.state.lang.toUpperCase()}
+				  autoHideDuration={3000}
+				  onRequestClose={this.handleLanguageNotficationSnackbarRequestClose}
+				/>
 			</div>
 			</MuiThemeProvider>
 		);

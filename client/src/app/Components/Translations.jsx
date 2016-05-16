@@ -22,6 +22,7 @@ const nl = {
 	street: "Straat",
 	houseNumber: "Huisnummer",
 	createSensor: "Sensor aanmaken",
+	sensors: "Sensoren",
 	sensorName: "Naam sensor",
 	sensorDescription: "Beschrijving",
 	sensorTags: "Tags",
@@ -56,6 +57,8 @@ const nl = {
 	friendsPosts: "Posts van je vrienden",
 	wantsToBeFriends: " wil je vriend worden",
 	shareGraph: "Deel Grafiek",
+	toggleEuroConversion: "Converteer naar euro",
+	clickToEdit: "Klik om aan te passen",
 }
 
 const en = {
@@ -80,6 +83,7 @@ const en = {
 	street: "Street",
 	houseNumber: "House number",
 	createSensor: "Create Sensor",
+	sensors: "Sensoren",
 	sensorName: "Sensor name",
 	sensorDescription: "Description",
 	sensorTags: "Tags",
@@ -114,6 +118,8 @@ const en = {
 	friendsPosts: "Your friends' posts",
 	wantsToBeFriends: " wants to be friends",
 	shareGraph: "Share Graph",
+	toggleEuroConversion: "Convert to euro",
+	clickToEdit: "Click to edit",
 }
 
 module.exports = {
