@@ -349,6 +349,13 @@ class LocationStatsView(APIView):
         street = self.request.query_params.get('street', None)
         housenumber = self.request.query_params.get('housenumber', None)
 
+        check = True
+        for i in [country, city, street, housenumber]:
+            if i is None:
+                check = False
+            elif check == False:
+                raise Http404
+
         queryset = filterUsersByLocation(country, city, street, housenumber)
 
 
