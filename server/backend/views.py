@@ -407,3 +407,4 @@ class ClusterView(APIView):
         sensor_totals = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id'), total_usage=Sum('usage')).values('id', 'total_usage')
         clusters = [0, 0.5, 1]
         while True:
+            pass
