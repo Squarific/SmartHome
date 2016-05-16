@@ -246,7 +246,9 @@ const HouseHoldCard = React.createClass({
 		for (let element in this.state.selected) {
 			if (!this.state.selected[element]) continue;
 			let sensorData = this.getDataForElement(element);
-
+			sensorData[0].reverse();
+			sensorData[1].reverse();
+			
 			data.labels = sensorData[0];
 
 			let c = string2Color(element);
