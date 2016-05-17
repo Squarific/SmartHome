@@ -22,7 +22,6 @@ from backend import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/auth/', include('rest_auth.urls')),
     url(r'^api/auth/registration/', include('rest_auth.registration.urls')),
     url(r'^api/auth/facebook/$', views.FacebookLogin.as_view(), name='fb_login'),
@@ -54,11 +53,6 @@ urlpatterns = [
     url(r'^api/posts/(?P<pk>[0-9]+)/$', views.PostDetail.as_view()),
     url(r'^api/stats/$', views.LocationStatsView.as_view()),
     url(r'^api/update_clusters/$', views.ClusterMassUpdateView().as_view())
-    #url(r'^api/data/home/(?P<home_id>[0-9]+)/$', views.HomeDataList.as_view()),
-    #url(r'^api/data/user/today/(?P<user_id>[0-9]+)/$', views.RecentUserDataList.as_view()),
-    #url(r'^api/data/user/last_month/(?P<user_id>[0-9]+)/$', views.DailyUserDataList.as_view()),
-    #url(r'^api/data/user/last_year/(?P<user_id>[0-9]+)/$', views.MonthlyUserDataList.as_view()),
-    #url(r'^api/data/user/past_years/(?P<user_id>[0-9]+)/$', views.YearlyUserDataList.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -1,3 +1,5 @@
+from django.db import connection
+
 from backend.models import *
 from backend.serializers import *
 from django.utils import timezone, dateparse
@@ -26,36 +28,14 @@ from itertools import chain, groupby
 from math import *
 
 
-def ParseConfig(data):
-    for x in data:
-        home = Home(id=x['id_household'], owner_id=1, date_added=timezone.now())
-        home.save()
-        for s in x['appliances']:
-            tag = Tag.objects.get(name = s)
-            sensor = Sensor(home=home, name=s, power_unit='Wh', date_created=timezone.now())
-            sensor.save()
-
-            relation = SensorsTags(sensor=sensor, tag=tag, date_created=timezone.now())
-            relation.save()
-
-def ParseData(csvreader):
-    sensor_map = {}
-    sensor_names = csvreader.next()[3:-1]
-    sensor_count = len(sensor_names)
-    sensors = Sensor.objects.filter(home_id=1, name__in=sensor_names)
-    for i, sensor_name in enumerate(sensor_names):
-        sensor_map[i] = sensors.get(name=sensor_name).id
-    for row in csvreader:
-        timestamp = dateparse.parse_datetime(row[0])
-        for i, x in enumerate(row[3:-1]):
-            datapoint = RecentData(sensor_id=sensor_map[i], timestamp=timestamp, usage=round(float(x)*1000), n_measurements=1)
-            datapoint.save()
-
 def filterUsersByName(username):
-    queryset = User.objects.all()
+    query = "SELECT id, username, first_name, last_name, email, is_staff, is_active, date_joined FROM auth_user"
+    params = []
     if (username is not None):
-        queryset = queryset.filter(Q(username__contains=username) | Q(firstname__contains=username) | Q(lastname__contains=username))
-    return queryset
+        query += " WHERE username LIKE %s OR first_name LIKE %s OR last_name LIKE %s"
+        params = ['%'+username+'%']*3
+
+    return User.objects.raw(query, params)
 
 def filterHomesByLocation(country, city=None, zipcode=None, street=None, housenumber=None):
     queryset = Home.objects.all()
@@ -90,9 +70,7 @@ class TwitterLogin(LoginView):
     serializer_class = TwitterLoginSerializer
     adapter_class = TwitterOAuthAdapter
 
-#######################
-# User API
-#######################
+
 class UserList(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = User.objects.all()
@@ -107,20 +85,13 @@ class UserList(generics.ListAPIView):
 
 class UserDetail(APIView):
     permission_classes = (IsAuthenticated,)
-    #queryset = User.objects.all()
-    #serializer_class = UserSerializer
-
-    def get_object(self, pk):
-        if (pk == 'me'):
-            return self.request.user
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise Http404
 
     def get(self, request, pk, format=None):
-        user = self.get_object(pk)
-        serializer = UserSerializer(user)
+        if (pk == 'me'):
+            pk = self.request.user.id
+
+        user = User.objects.raw("SELECT id, username, first_name, last_name, email, is_staff, is_active, date_joined FROM auth_user WHERE id = %s", [pk])
+        serializer = UserSerializer(list(user)[0])
         return Response(serializer.data)
 
 class FriendRequestList(generics.ListCreateAPIView):
@@ -135,16 +106,27 @@ class FriendRequestList(generics.ListCreateAPIView):
             user_id = request.user.id
         if (user_id != None):
             if sent:
-                queryset = queryset.filter(sender_id = user_id)
+                queryset = FriendRequest.objects.raw("SELECT id, sender_id, receiver_id, status, read, date_sent FROM friend_requests WHERE sender_id = %s", [user_id])
             if received:
-                queryset = queryset.filter(receiver_id = user_id)
+                queryset = FriendRequest.objects.raw("SELECT id, sender_id, receiver_id, status, read, date_sent FROM friend_requests WHERE receiver_id = %s", [user_id])
         serializer = FriendRequestSerializer(queryset, many=True)
         return Response(serializer.data)
 
-class FriendRequestDetail(generics.RetrieveUpdateDestroyAPIView):
+class FriendRequestDetail(APIView):
     permission_classes = (IsAuthenticated,)
-    queryset = FriendRequest.objects.all()
-    serializer_class = FriendRequestSerializer
+
+    def get(self, request, pk, format=None):
+        friend_request = FriendRequest.objects.raw("SELECT id, sender_id, receiver_id, status, read, date_sent FROM friend_requests WHERE id = %s", [pk])
+        serializer = FriendRequestSerializer(list(friend_request)[0])
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        p = request.data
+
+        cursor = connection.cursor()
+        cursor.execute("UPDATE friend_requests SET id = %s, status=%s, read=%s, date_sent=%s, receiver_id=%s, sender_id=%s WHERE id = %s", [p['id'], p['status'], p['read'], p['date_sent'], p['receiver_id'], p['sender_id'], pk])
+
+        return Response()
 
 class FriendList(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
@@ -155,7 +137,8 @@ class FriendList(generics.ListAPIView):
         # Note the use of `get_queryset()` instead of `self.queryset`
         if (user_id == 'me'):
             user_id = request.user.id
-        queryset = User.objects.all().filter(Q(id=user_id) | Q(sent_requests__status = 1, sent_requests__receiver_id = user_id) | Q(received_requests__status = 1, received_requests__sender_id=user_id))
+
+        queryset = User.objects.raw("SELECT auth_user.id, username, first_name, last_name, email, is_staff, is_active, date_joined FROM auth_user INNER JOIN friend_requests ON auth_user.id = friend_requests.sender_id WHERE (auth_user.id = %s) OR (friend_requests.status = 1 AND friend_requests.receiver_id = %s) OR (friend_requests.status = 1 AND friend_requests.sender_id = %s)", [user_id]*3)
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -165,11 +148,12 @@ class FriendStats(APIView):
     serializer_class = UserSerializer
 
     def get(self, request, user_id, format=None):
-        now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) # #now = datetime(2016, 3, 6)
         from_date = now - timedelta(days=1)
 
         if (user_id == 'me'):
             user_id = request.user.id
+
         queryset = User.objects.all().filter(Q(id=user_id) | Q(sent_requests__status = 1, sent_requests__receiver_id = user_id) | Q(received_requests__status = 1, received_requests__sender_id=user_id))
 
         friend_ids = queryset.values('id')
@@ -315,7 +299,7 @@ class DataView(APIView):
         if (user_id == 'me'):
             user_id = request.user.id
 
-        now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) #now = datetime(2016, 3, 6)
         from_date = now - timedelta(days=1)
         data_class = RecentData
         if period == 'today':
@@ -364,7 +348,7 @@ class LocationStatsView(APIView):
     permission_classes = (IsAuthenticated,IsAdminUser,)
 
     def get(self, request, format=None):
-        now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) #now = datetime(2016, 3, 6)
         from_date = now - timedelta(days=1)
 
         country = self.request.query_params.get('country', None)
@@ -382,7 +366,7 @@ class LocationStatsView(APIView):
 
         queryset = filterHomesByLocation(country, city, zipcode, street, housenumber)
 
-        if queryset.count() == 0:
+        if len(list(queryset)) == 0:
             raise Http404
 
         period = self.request.query_params.getlist('period[]', ['today', 'last_month', 'last_year', 'past_years'])
@@ -439,19 +423,26 @@ class ClusterMassUpdateView(APIView):
             persist_k_means(home['id'], 3)
         return Response()
 
+'''
+Logarithmic weight function for the k-means algorithm.
+This is to account for relative differences in sensor usages.
+'''
 def k_means_scale(value, max_value):
     return value*log(value*(exp(1)-1)/max_value + 1)
 
 '''
-k_means
+The k-means algorithm. Takes a househould id and the number of clusters (should be 3 for the frontend) as parameters.
+The clusters are placed weighted (see above) on 2/4, 3/4 and 4/4 of the maximum usage of the given sensors.
 '''
 def k_means(home_id, n_clusters=3):
-    now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) #now = datetime(2016, 3, 6)
     sensor_totals = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id')).values('sensor_id').annotate(total_usage=Sum('usage'))
     max_usage = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id'), total_usage=Sum('usage')).aggregate(max_usage=Max('total_usage'))['max_usage']
 
+    # No data
     if (len(sensor_totals) == 0 or max_usage == None):
         return [{'category': d, 'mean': 0, 'sensors': []} for d in range(0, n_clusters)]
+
 
     clusters = [{'category': d, 'mean': k_means_scale((n_clusters+d*n_clusters/float(n_clusters-1))*max_usage/float(2*n_clusters), max_usage), 'sensors': []} for d in range(0, n_clusters)]
     print(clusters)
@@ -480,6 +471,7 @@ def k_means(home_id, n_clusters=3):
     # finished
     return clusters
 
+# simply store the clusters to the database
 def persist_k_means(home_id, n_clusters=3):
     clusters = k_means(home_id, n_clusters)
     for cluster in clusters:
