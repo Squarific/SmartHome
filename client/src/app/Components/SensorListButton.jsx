@@ -18,6 +18,7 @@ const SensorListButton = React.createClass({
 			loading: true,
 			sensors: [],
 			tags: [],
+			values: {},
 		}
 	},
 	componentDidMount: function () {
@@ -39,10 +40,22 @@ const SensorListButton = React.createClass({
 		this.setState({value});
 	},
 	handleSensorEditSave: function () {
-		console.log("TODO: implement sensor save");
+		// this.props.rest.post(["api", "users", "me", "sensors"], {
+		// 	name: ,
+		// 	power_unit: ,
+		// }, function (data) {
+		// 	console.log(data);
+		// });
 	},
 	handleSensorEditClose: function () {
 		this.setState({editing: false});
+	},
+	handleSensorEditFieldChange: function (event, value) {
+		let values = this.state.values;
+
+		values[event.target.id] = value;
+
+		this.setState({values});
 	},
 	handleSensorListClose: function () {
 		this.setState({
@@ -54,21 +67,37 @@ const SensorListButton = React.createClass({
 			sensorListOpen: true,
 		});
 	},
+	getTagsFromTagIdList: function (tags) {
+		let ourTags = [];
+
+		for (let j = 0; j < tags.length; j++) {
+			for (let i = 0; i < this.state.tags.length; i++) {
+				if (this.state.tags[i].id === tags[j].id) {
+					ourTags.push(this.state.tags[i].attributes.name);
+					break;
+				}
+			}
+		}
+
+		return ourTags
+	},
 	onRowSelection: function (selectedRows) {
-		this.setState({editing: selectedRows[0], values: {}});
+		this.setState({editing: selectedRows[0], values: {
+			name: this.state.sensors[selectedRows[0]].attributes.name,
+			powerunit: this.state.sensors[selectedRows[0]].attributes.power_unit,
+			tags: this.getTagsFromTagIdList(this.state.sensors[selectedRows[0]].relationships.tags.data),
+		}});
 	},
 	getSensorTableRows: function () {
 		let rows = [];
 		for (let k = 0; k < this.state.sensors.length; k++) {
 			let tags = this.state.sensors[k].relationships.tags.data;
-			let ourTags = [];
+			let ourTags = this.getTagsFromTagIdList(tags);
 
-			for (let k = 0; k < tags.length; k++) {
-				for (let i = 0; i < this.state.tags.length; i++) {
-					if (this.state.tags[i].id === tags[k].id) {
-						ourTags.push(this.state.tags[i].attributes.name);
-						break;
-					}
+			let home = "Household not found";
+			for (let j = 0; j < this.state.households.length; j++) {
+				if (this.state.households[j].id === this.state.sensors[k].relationships.home.data.id) {
+					home = this.state.households[j].attributes.name;
 				}
 			}
 
@@ -77,6 +106,7 @@ const SensorListButton = React.createClass({
 					<TableRowColumn>{this.state.sensors[k].attributes.name}</TableRowColumn>
 					<TableRowColumn>{this.state.sensors[k].attributes.power_unit}</TableRowColumn>
 					<TableRowColumn>{ourTags.join("\n")}</TableRowColumn>
+					<TableRowColumn>{home}</TableRowColumn>
 				</TableRow>
 			));
 		}
@@ -91,6 +121,7 @@ const SensorListButton = React.createClass({
 						<TableHeaderColumn>{this.props.lang.sensorName}</TableHeaderColumn>
 						<TableHeaderColumn>{this.props.lang.powerUnit}</TableHeaderColumn>
 						<TableHeaderColumn>{this.props.lang.sensorTags}</TableHeaderColumn>
+						<TableHeaderColumn>{this.props.lang.household}</TableHeaderColumn>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -118,8 +149,6 @@ const SensorListButton = React.createClass({
 				onTouchTap={this.handleSensorEditSave}/>,
 		];
 
-		console.log(this.state.sensors, this.state.tags);
-
 		return (
 			<div style={styles.sensorlistbutton}>
 				<FlatButton label={this.props.lang.sensors}
@@ -142,7 +171,9 @@ const SensorListButton = React.createClass({
 					actions={sensorEditActions}>
 					<form>
 						<TextField id="name" value={this.state.values.name} floatingLabelText={this.props.lang.sensorName} onChange={this.handleSensorEditFieldChange} />
+						<br/>
 						<TextField id="powerunit" value={this.state.values.powerunit} floatingLabelText={this.props.lang.powerUnit} onChange={this.handleSensorEditFieldChange} />
+						<br/>
 						<TextField id="tags" value={this.state.values.tags} floatingLabelText={this.props.lang.sensorTags} onChange={this.handleSensorEditFieldChange} />
 					</form>
 				</Dialog>
