@@ -79,6 +79,16 @@ const HouseHoldCard = React.createClass({
 		return {loading: true, period: "today", selectedPeriod: "24 hours", convertToEuro: false, euroFactor: 0.0003};
 	},
 	componentDidMount: function () {
+		this.props.rest.get(["api", "users", "me", "homes"], {}, function (data) {
+			console.log(data, data.data.length, this.props.id)
+			for (let k = 0; k < data.data.length; k++) {
+				if (data.data[k].id.toString() === this.props.id.toString()) {
+					this.setState({convertToEuro: data.data[k].attributes.price_per_kwh || this.state.convertToEuro});
+					console.log("Price set to " + data.data[k].attributes.price_per_kwh);
+				}
+			}
+		}.bind(this));
+
 		this.props.rest.get(["api", "homes", this.props.id, "data", this.state.period], {}, function (data) {
 			if (data.error) {
 				this.setState({error: data.error});
@@ -261,13 +271,6 @@ const HouseHoldCard = React.createClass({
 				highlightFill: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 7) +"%, .5)",
 				highlightStroke: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 18) +"%, .5)",
 			});
-
-			let dataStyle = {
-				fillColor: "rgba(220,220,220,0.5)",
-				strokeColor: "rgba(220,220,220,0.8)",
-				highlightFill: "rgba(220,220,220,0.75)",
-				highlightStroke: "rgba(220,220,220,1)",
-			};
 		}
 
 		return data;
