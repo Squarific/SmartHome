@@ -57,8 +57,8 @@ def filterUsersByName(username):
         queryset = queryset.filter(Q(username__contains=username) | Q(firstname__contains=username) | Q(lastname__contains=username))
     return queryset
 
-def filterUsersByLocation(country, city=None, street=None, housenumber=None):
-    queryset = User.objects.all()
+def filterHomesByLocation(country, city=None, zipcode=None, street=None, housenumber=None):
+    queryset = Home.objects.all()
 
     if (country is None):
         return queryset
@@ -67,6 +67,10 @@ def filterUsersByLocation(country, city=None, street=None, housenumber=None):
     if (city is None):
         return queryset
     queryset = queryset.filter(city=city)
+
+    if (zipcode is None):
+        return queryset
+    queryset = queryset.filter(zipcode=zipcode)
 
     if (street is None):
         return queryset
@@ -256,7 +260,7 @@ class HomeDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = HomeSerializer
 
 
-class SensorList(generics.ListCreateAPIView):
+class SensorList(generics.ListAPIView):
     """
     List all sensors, or create a new sensor.
     """
@@ -366,6 +370,7 @@ class LocationStatsView(APIView):
 
         country = self.request.query_params.get('counry', None)
         city = self.request.query_params.get('city', None)
+        zipcode = self.request.query_params.get('zipcode', None)
         street = self.request.query_params.get('street', None)
         housenumber = self.request.query_params.get('housenumber', None)
 
@@ -376,7 +381,7 @@ class LocationStatsView(APIView):
             elif check == False:
                 raise Http404
 
-        queryset = filterUsersByLocation(country, city, street, housenumber)
+        queryset = filterHomesByLocation(country, city, zipcode, street, housenumber)
 
 
         period = self.request.query_params.getlist('period[]', ['today', 'last_month', 'last_year', 'past_years'])
@@ -384,27 +389,27 @@ class LocationStatsView(APIView):
         if 'today' in period:
                 data['today'] = {}
                 from_date = now - timedelta(days=1)
-                data['today']['data'] = queryset.filter(owned_homes__sensor__recentdata__timestamp__gte=from_date).annotate(timestamp=F('owned_homes__sensor__recentdata__timestamp'),usage=Sum('owned_homes__sensor__recentdata__usage')).values('timestamp', 'usage').order_by('timestamp')
-                data['today']['average_usage'] = queryset.filter(owned_homes__sensor__recentdata__timestamp__gte=from_date).aggregate(Avg('owned_homes__sensor__recentdata__usage')).values()[0]
-                data['today']['total_usage'] = queryset.filter(owned_homes__sensor__recentdata__timestamp__gte=from_date).aggregate(Sum('owned_homes__sensor__recentdata__usage')).values()[0]
+                data['today']['data'] = queryset.filter(sensor__recentdata__timestamp__gte=from_date).annotate(timestamp=F('sensor__recentdata__timestamp'),usage=Sum('sensor__recentdata__usage')).values('timestamp', 'usage').order_by('timestamp')
+                data['today']['average_usage'] = queryset.filter(sensor__recentdata__timestamp__gte=from_date).aggregate(Avg('sensor__recentdata__usage')).values()[0]
+                data['today']['total_usage'] = queryset.filter(sensor__recentdata__timestamp__gte=from_date).aggregate(Sum('sensor__recentdata__usage')).values()[0]
         if 'last_month' in period:
                 data['last_month'] = {}
                 from_date = now - relativedelta(months=1)
-                data['last_month']['data'] = queryset.filter(owned_homes__sensor__dailydata__timestamp__gte=from_date).annotate(timestamp=F('owned_homes__sensor__dailydata__timestamp'),usage=Sum('owned_homes__sensor__recentdata__usage')).values('timestamp', 'usage').order_by('timestamp')
-                data['last_month']['average_usage'] = queryset.filter(owned_homes__sensor__dailydata__timestamp__gte=from_date).aggregate(Avg('owned_homes__sensor__dailydata__usage')).values()[0]
-                data['last_month']['total_usage'] = queryset.filter(owned_homes__sensor__dailydata__timestamp__gte=from_date).aggregate(Sum('owned_homes__sensor__dailydata__usage')).values()[0]
+                data['last_month']['data'] = queryset.filter(sensor__dailydata__timestamp__gte=from_date).annotate(timestamp=F('sensor__dailydata__timestamp'),usage=Sum('sensor__recentdata__usage')).values('timestamp', 'usage').order_by('timestamp')
+                data['last_month']['average_usage'] = queryset.filter(sensor__dailydata__timestamp__gte=from_date).aggregate(Avg('sensor__dailydata__usage')).values()[0]
+                data['last_month']['total_usage'] = queryset.filter(sensor__dailydata__timestamp__gte=from_date).aggregate(Sum('sensor__dailydata__usage')).values()[0]
         if 'last_year' in period:
                 data['last_year'] = {}
                 from_date = now - relativedelta(years=1)
-                data['last_year']['data'] = queryset.filter(owned_homes__sensor__monthlydata__timestamp__gte=from_date).annotate(timestamp=F('owned_homes__sensor__monthlydata__timestamp'),usage=Sum('owned_homes__sensor__recentdata__usage')).values('timestamp', 'usage').order_by('timestamp')
-                data['last_year']['average_usage'] = queryset.filter(owned_homes__sensor__monthlydata__timestamp__gte=from_date).aggregate(Avg('owned_homes__sensor__monthlydata__usage')).values()[0]
-                data['last_year']['total_usage'] = queryset.filter(owned_homes__sensor__monthlydata__timestamp__gte=from_date).aggregate(Sum('owned_homes__sensor__monthlydata__usage')).values()[0]
+                data['last_year']['data'] = queryset.filter(sensor__monthlydata__timestamp__gte=from_date).annotate(timestamp=F('sensor__monthlydata__timestamp'),usage=Sum('sensor__recentdata__usage')).values('timestamp', 'usage').order_by('timestamp')
+                data['last_year']['average_usage'] = queryset.filter(sensor__monthlydata__timestamp__gte=from_date).aggregate(Avg('sensor__monthlydata__usage')).values()[0]
+                data['last_year']['total_usage'] = queryset.filter(sensor__monthlydata__timestamp__gte=from_date).aggregate(Sum('sensor__monthlydata__usage')).values()[0]
         if 'past_years' in period:
                 data['past_years'] = {}
                 from_date = datetime.min
-                data['past_years']['data'] = queryset.filter(owned_homes__sensor__yearlydata__timestamp__gte=from_date).annotate(timestamp=F('owned_homes__sensor__yearlydata__timestamp'),usage=Sum('owned_homes__sensor__recentdata__usage')).values('timestamp', 'usage').order_by('timestamp')
-                data['past_years']['average_usage'] = queryset.filter(owned_homes__sensor__recentdata__timestamp__gte=from_date).aggregate(Avg('owned_homes__sensor__yearlydata__usage')).values()[0]
-                data['past_years']['total_usage'] = queryset.filter(owned_homes__sensor__recentdata__timestamp__gte=from_date).aggregate(Sum('owned_homes__sensor__yearlydata__usage')).values()[0]
+                data['past_years']['data'] = queryset.filter(sensor__yearlydata__timestamp__gte=from_date).annotate(timestamp=F('sensor__yearlydata__timestamp'),usage=Sum('sensor__recentdata__usage')).values('timestamp', 'usage').order_by('timestamp')
+                data['past_years']['average_usage'] = queryset.filter(sensor__recentdata__timestamp__gte=from_date).aggregate(Avg('sensor__yearlydata__usage')).values()[0]
+                data['past_years']['total_usage'] = queryset.filter(sensor__recentdata__timestamp__gte=from_date).aggregate(Sum('sensor__yearlydata__usage')).values()[0]
 
         return Response(data)
 
