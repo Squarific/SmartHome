@@ -4,11 +4,11 @@ TODO - David
 - ~~User search op voornaam, achternaam, username (12/5)~~
 - Household, Sensor, Tags posten/putten/deleten (12/5)
 - ~~Prijsgegevens per househould (12/5)~~
-- API: data toevoegen per minuut (12/5)
+- ~~API: data toevoegen per minuut (12/5)~~
 - Ficiteve non-staff accounts: vrienden, households, posts, ... (13/5)
 - Tags in de sample data (13/5)
 - ORM -> SQL (14/5)
-- Clustering op verbruik (hoog-, medium- en laagverbruik): k-means of liefst nog een beter algoritmen. (13/5)
+- ~~Clustering op verbruik (hoog-, medium- en laagverbruik): k-means of liefst nog een beter algoritmen. (13/5)~~
 - Rapport (engels): (14/5)
     - Django
     - ERM aanpassen
