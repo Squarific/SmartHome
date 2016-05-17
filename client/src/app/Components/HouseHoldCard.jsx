@@ -254,6 +254,7 @@ const HouseHoldCard = React.createClass({
 			let c = string2Color(element);
 
 			data.datasets.push({
+				label: element,
 				data: sensorData[1],
 				fillColor: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 5) +"%, .5)", // Generate a random color based on the name
 				strokeColor: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 12) +"%, .5)",

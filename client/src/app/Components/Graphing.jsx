@@ -48,6 +48,9 @@ const GraphCard = React.createClass({
 	componentWillUnmount: function () {
 		window.removeEventListener("resize", this.handleResize);
 	},
+	sumData: function () {
+		
+	},
 	render: function() {
 		const Chart = Charts[this.state.value];
 
@@ -69,9 +72,11 @@ const GraphCard = React.createClass({
 				</SelectField>
 			);
 
+		if (!this.props.data) throw "GraphCard no data provided " + JSON.stringify(this.props);
+
 		// Hacky way to force the graph to rerender
 		let key = this.state.lastResize;
-		let ourChart = (<Chart data={this.props.data || {datasets: [], labels: []}} key={key} redraw/>);
+		let ourChart = (<Chart data={this.props.data} key={key} redraw/>);
 
 		return (
 			<div style={styles.chart}>
