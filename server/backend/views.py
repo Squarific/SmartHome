@@ -417,7 +417,8 @@ def k_means(home_id, n_clusters=3):
     now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     sensor_totals = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id')).values('sensor_id').annotate(total_usage=Sum('usage'))
     max_usage = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id'), total_usage=Sum('usage')).aggregate(max_usage=Max('total_usage'))['max_usage']
-    clusters = [{'category': d, 'mean': d*max_usage/float(n_clusters-1), 'sensors': []} for d in range(0, n_clusters)]
+    clusters = [{'category': d, 'mean': k_means_scale((n_clusters+d*n_clusters/float(n_clusters-1))*max_usage/float(2*n_clusters), max_usage), 'sensors': []} for d in range(0, n_clusters)]
+    print(clusters)
     converging = True
     while converging == True:
         # assignment step
@@ -432,9 +433,11 @@ def k_means(home_id, n_clusters=3):
         # update step
         locally_converging = False
         for cluster in clusters:
-            new_mean = reduce(lambda x, y: x + y, [k_means_scale(c['total_usage'], max_usage) for c in cluster['sensors']])/len(cluster['sensors'])
-            locally_converging |= (new_mean != cluster['mean'])
-            cluster['mean'] = new_mean
+            n_sensors = len(cluster['sensors'])
+            if (n_sensors > 0):
+                new_mean = reduce(lambda x, y: x + y, [k_means_scale(c['total_usage'], max_usage) for c in cluster['sensors']])/n_sensors
+                locally_converging |= (new_mean != cluster['mean'])
+                cluster['mean'] = new_mean
 
         converging = (locally_converging == False)
 
