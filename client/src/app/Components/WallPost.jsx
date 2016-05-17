@@ -42,8 +42,6 @@ const WallPost = React.createClass({
 		}.bind(this));
 	},
 	render: function() {
-		console.log(this.state.sender)
-
 		let postTitle;
 		if (!this.state.loading) {
 			postTitle = this.props.lang.postFrom + this.state.sender.attributes.first_name;
@@ -55,7 +53,7 @@ const WallPost = React.createClass({
 		if (this.props.post.attributes.plot !== "") {
 			graph = <GraphCard data={JSON.parse(this.props.post.attributes.plot)}
 				graphType="Bar"
-				graphTypes={["Line", "Bar", "Radar"]}/>
+				graphTypes={["Line", "Bar", "Radar", "Doughnut", "Pie", "PolarArea"]}/>
 		} else {
 			graph = "";
 		}

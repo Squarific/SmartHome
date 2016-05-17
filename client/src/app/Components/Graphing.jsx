@@ -50,7 +50,18 @@ const GraphCard = React.createClass({
 	componentWillUnmount: function () {
 		window.removeEventListener("resize", this.handleResize);
 	},
-	sumData: function (data) {
+	convertData: function (data) {
+		if (data.datasets.length === 1) {
+			let newData = [];
+			for (let k = 0; k < data.datasets[0].data.length; k++)
+				newData.push({
+					value: data.datasets[0].data[k],
+					color: data.datasets[0].fillColor || "gray",
+					label: data.labels[k],
+				});
+			return newData;
+		}
+
 		let newData = [];
 
 		for (let k = 0; k < data.datasets.length; k++) {
@@ -63,6 +74,7 @@ const GraphCard = React.createClass({
 			newData.push({
 				value: sum,
 				color: data.datasets[k].fillColor || "gray",
+				label: data.datasets[k].label,
 			});
 		}
 
@@ -96,7 +108,7 @@ const GraphCard = React.createClass({
 
 		let data = this.props.data;
 		if (summedGraph.indexOf(this.state.value) !== -1) {
-			data = sumData(data);
+			data = this.convertData(data);
 		}
 
 		let ourChart = (<Chart data={data} key={key} redraw/>);
