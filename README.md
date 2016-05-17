@@ -21,7 +21,7 @@ Your database should run on localhost and have the user smarthome with pass smar
 
     cd server
     ./manage.py migrate                 # create database tables
-    ./manage.py loaddata initial_data   # load users and tags
+    ./manage.py loaddata initial   # load users and tags
     ./manage.py runserver               # run the server on http://localhost:8000
 
 #### Load pregenerated sample data
