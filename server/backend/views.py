@@ -406,6 +406,14 @@ class ClusterView(APIView):
         persist_k_means(home_id, 3)
         return Response()
 
+class ClusterMassUpdateView(APIView):
+    permission_classes = (IsAuthenticated,IsAdminUser,)
+
+    def put(self, request, format=None):
+        homes = Home.objects.all().values('id')
+        for home in homes:
+            persist_k_means(home['id'], 3)
+        return Response()
 
 def k_means_scale(value, max_value):
     return value*log(value*(exp(1)-1)/max_value + 1)
@@ -417,6 +425,10 @@ def k_means(home_id, n_clusters=3):
     now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     sensor_totals = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id')).values('sensor_id').annotate(total_usage=Sum('usage'))
     max_usage = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id'), total_usage=Sum('usage')).aggregate(max_usage=Max('total_usage'))['max_usage']
+
+    if (len(sensor_totals) == 0 or max_usage == None):
+        return [{'category': d, 'mean': 0, 'sensors': []} for d in range(0, n_clusters)]
+
     clusters = [{'category': d, 'mean': k_means_scale((n_clusters+d*n_clusters/float(n_clusters-1))*max_usage/float(2*n_clusters), max_usage), 'sensors': []} for d in range(0, n_clusters)]
     print(clusters)
     converging = True
