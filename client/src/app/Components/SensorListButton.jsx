@@ -27,6 +27,10 @@ const SensorListButton = React.createClass({
 			this.setState({sensors: data.data});
 		}.bind(this));
 
+		this.props.rest.get(["api", "users", "me", "homes"], {}, function (data) {
+			this.setState({households: data.data});
+		}.bind(this));
+
 		this.props.rest.get(["api", "tags"], {}, function (data) {
 			this.setState({tags: data.data});
 		}.bind(this));
@@ -131,15 +135,15 @@ const SensorListButton = React.createClass({
 					{this.getSensorTable()}
 				</Dialog>
 
-				{/* TODO: SHOW A DIALOG IF this.state.editing IS NOT UNDEFINED*/}
-
 				<Dialog
 					title={this.props.lang.editSensor}
 					open={typeof this.state.editing === "number"}
 					onRequestClose={this.handleSensorEditClose}
 					actions={sensorEditActions}>
 					<form>
-						<TextField floatingLabelText={this.props.lang.description} onChange={this.handleSensorEditFieldChange} />
+						<TextField id="name" value={this.state.values.name} floatingLabelText={this.props.lang.sensorName} onChange={this.handleSensorEditFieldChange} />
+						<TextField id="powerunit" value={this.state.values.powerunit} floatingLabelText={this.props.lang.powerUnit} onChange={this.handleSensorEditFieldChange} />
+						<TextField id="tags" value={this.state.values.tags} floatingLabelText={this.props.lang.sensorTags} onChange={this.handleSensorEditFieldChange} />
 					</form>
 				</Dialog>
 			</div>
