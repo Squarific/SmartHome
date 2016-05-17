@@ -22,7 +22,7 @@ const styles = {
   checkbox: {
     margin: 8,
     display: "inline-block",
-    width: "16em",
+    width: 250,
   },
   euroToggle: {
   	maxWidth: 256,
@@ -76,9 +76,45 @@ function string2Color (str) {
 
 const HouseHoldCard = React.createClass({
 	getInitialState: function () {
-		return {loading: true, period: "today", selectedPeriod: "24 hours", convertToEuro: false, euroFactor: 0.0003};
+		return {loading: true, period: "today", selectedPeriod: "24 hours", convertToEuro: false, clusterGroup: false, euroFactor: 0.0003};
 	},
 	componentDidMount: function () {
+		// Put to force a recalculation
+		this.props.rest.put(["api", "homes", this.props.id, "sensors", "clusters"], {}, function () {
+			this.props.rest.get(["api", "homes", this.props.id, "sensors", "clusters"], {}, function (data) {
+				let high = [], medium = [], low = [];
+
+				for (let k = 0; k < data.data.high.length; k++) {
+					high.push(data.data.high[k].name);
+				}
+
+				for (let k = 0; k < data.data.medium.length; k++) {
+					medium.push(data.data.medium[k].name);
+				}
+
+				for (let k = 0; k < data.data.low.length; k++) {
+					low.push(data.data.low[k].name);
+				}
+
+				this.setState({
+					clusters: {
+						high,
+						medium,
+						low,
+					},
+				});
+			}.bind(this));
+		}.bind(this));
+
+		this.props.rest.get(["api", "users", "me", "homes"], {}, function (data) {
+			for (let k = 0; k < data.data.length; k++) {
+				if (data.data[k].id.toString() === this.props.id.toString()) {
+					this.setState({convertToEuro: data.data[k].attributes.price_per_kwh || this.state.convertToEuro});
+					console.log("Price set to " + data.data[k].attributes.price_per_kwh);
+				}
+			}
+		}.bind(this));
+
 		this.props.rest.get(["api", "homes", this.props.id, "data", this.state.period], {}, function (data) {
 			if (data.error) {
 				this.setState({error: data.error});
@@ -99,6 +135,9 @@ const HouseHoldCard = React.createClass({
 			sdata[this.state.period] = data;
 
 			let selected = {};
+			for (let k = 0; k < data.data.length; k++) {
+				selected[data.data[k].key] = false;
+			}
 			selected[randomElement.key] = true;
 			this.setState({
 				loading: false,
@@ -167,6 +206,12 @@ const HouseHoldCard = React.createClass({
 
 			let sdata = this.state.data || {};
 			sdata[period] = data;
+
+			let selected = this.state.selected;
+			for (let k = 0; k < data.data.length; k++) {
+				selected[data.data[k].key] = false;
+			}
+			selected[randomElement.key] = true;
 
 			this.setState({
 				loading: false,
@@ -237,6 +282,23 @@ const HouseHoldCard = React.createClass({
 
 		return date.toLocaleDateString();
 	},
+	getGroups: function () {
+		if (!this.state.clusters || !this.state.clusterGroup) return (<div></div>);
+		let data = this.getClusteredData();
+		return (
+			<div>
+				<div style={{margin: "1em"}}>
+					{this.props.lang.highUsage}: {this.state.clusters.high.join(", ")} ({data[0].value} Wh)
+				</div>
+				<div style={{margin: "1em"}}>
+					{this.props.lang.mediumUsage}: {this.state.clusters.medium.join(", ")} ({data[1].value} Wh)
+				</div>
+				<div style={{margin: "1em"}}>
+					{this.props.lang.lowUsage}: {this.state.clusters.low.join(", ")} ({data[2].value} Wh)
+				</div>
+			</div>
+		);
+	},
 	getData: function (element) {
 		let data = {
 			labels: [],
@@ -244,7 +306,7 @@ const HouseHoldCard = React.createClass({
 		};
 
 		for (let element in this.state.selected) {
-			if (!this.state.selected[element]) continue;
+			if (!this.state.selected[element] && !this.state.clusterGroup) continue;
 			let sensorData = this.getDataForElement(element);
 			sensorData[0].reverse();
 			sensorData[1].reverse();
@@ -261,16 +323,48 @@ const HouseHoldCard = React.createClass({
 				highlightFill: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 7) +"%, .5)",
 				highlightStroke: "hsla("+ c[0] +", "+ c[1] +"%, "+ (c[2] + 18) +"%, .5)",
 			});
-
-			let dataStyle = {
-				fillColor: "rgba(220,220,220,0.5)",
-				strokeColor: "rgba(220,220,220,0.8)",
-				highlightFill: "rgba(220,220,220,0.75)",
-				highlightStroke: "rgba(220,220,220,1)",
-			};
 		}
 
 		return data;
+	},
+	getClusteredData: function (element) {
+		let data = this.getData();
+		let clustered = [{
+			label: "High",
+			value: 0,
+			color: "#B71C1C",
+		}, {
+			label: "Medium",
+			value: 0,
+			color: "#E65100",
+		}, {
+			label: "Low",
+			value: 0,
+			color: "#33691E",
+		}];
+
+		for (let i = 0; i < data.datasets.length; i++) {
+			let sum = 0;
+			for (let k = 0; k < data.datasets[i].data.length; k++) {
+				sum += data.datasets[i].data[k];
+			}
+
+			if (this.state.clusters.high.indexOf(data.datasets[i].label) !== -1) {
+				clustered[0].value += sum;
+			}
+
+			if (this.state.clusters.medium.indexOf(data.datasets[i].label) !== -1) {
+				clustered[1].value += sum;
+			}
+
+			if (this.state.clusters.low.indexOf(data.datasets[i].label) !== -1) {
+				clustered[2].value += sum;
+			}
+		}
+
+		console.log(clustered);
+
+		return clustered;
 	},
 	getDataForElement: function (element) {
 		let labels = [];
@@ -340,6 +434,9 @@ const HouseHoldCard = React.createClass({
 	toggleConversion: function (event, isChecked) {
 		this.setState({convertToEuro: isChecked});
 	},
+	toggleClusterGrouping: function (event, isChecked) {
+		this.setState({clusterGroup: isChecked});
+	},
 	render: function () {
 		if (this.state.error) return (<div>{this.state.error}</div>);
 		if (this.state.loading) return (<Card style={style}>
@@ -355,13 +452,7 @@ const HouseHoldCard = React.createClass({
 			</CardActions>
 			</Card>);
 
-		let data = this.getData();
-		let toggle = (<Toggle
-			label={this.props.lang.toggleEuroConversion}
-			onToggle={this.toggleConversion}
-			style={styles.euroToggle}
-			toggled={this.state.convertToEuro}
-		/>);
+		let data = this.state.clusterGroup ? this.getClusteredData() : this.getData();
 
 		return (<Card style={style}>
 			<CardHeader
@@ -369,11 +460,27 @@ const HouseHoldCard = React.createClass({
 				subtitle={"Graphs" || this.props.lang.loading}/>
 			<CardMedia>
 				{this.getSensorSelectField()}
+				<br/>
 				{this.getPeriodSelectField()}
-				{toggle}
+				<Toggle
+					label={this.props.lang.toggleEuroConversion}
+					onToggle={this.toggleConversion}
+					style={styles.euroToggle}
+					toggled={this.state.convertToEuro}
+				/>
+				<Toggle
+					label={this.props.lang.toggleClusterGrouping}
+					onToggle={this.toggleClusterGrouping}
+					style={styles.euroToggle}
+					toggled={this.state.clusterGroup}
+				/>
+				<br/>
 				<GraphCard data={data}
-						graphType="Bar"
-						graphTypes={["Line", "Bar", "Radar", "Doughnut", "Pie", "PolarArea"]}/>
+					graphType={this.state.clusterGroup ? "Pie" : "Bar"}
+					graphTypes={this.state.clusterGroup ? [] : ["Line", "Bar", "Radar", "Doughnut", "Pie", "PolarArea"]}
+					key={Date.now()}/>
+				<br/>
+				{this.getGroups()}
 			</CardMedia>
 			<CardText>
 			</CardText>

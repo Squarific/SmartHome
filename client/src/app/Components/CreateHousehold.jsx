@@ -121,7 +121,11 @@ const CreateHousehold = React.createClass({
 		// 	});
 		// }.bind(this));
 	},
-	handleSubmit: function () {
+	handleSubmit: function (value) {
+		value: "",
+		this.setState({
+			value,
+		});
 		this.props.rest.post(["api", "homes"], {
 			name: this.state.name,
 			country: this.state.country,
@@ -149,6 +153,7 @@ const CreateHousehold = React.createClass({
 			}
 			this.props.handleCreateHouseHoldClose();
 		}.bind(this));
+		
 	},
 	render: function () {
 
@@ -179,11 +184,12 @@ const CreateHousehold = React.createClass({
 					<TextField id="name" floatingLabelText={this.props.lang.householdName} onChange={this.handleName}/>
 					<br/>
 					<SelectField value={this.state.value} onChange={this.handleCountry} floatingLabelText="Country">
-						<MenuItem value={1} primaryText="BE" />
-					  	<MenuItem value={2} primaryText="FR" />
-					  	<MenuItem value={3} primaryText="GB" />
-					  	<MenuItem value={4} primaryText="NL" />
-
+						<MenuItem value={'BE'} primaryText="BE" />
+					  	<MenuItem value={'DE'} primaryText="DE" />
+					  	<MenuItem value={'FR'} primaryText="FR" />
+					  	<MenuItem value={'GB'} primaryText="GB" />
+					  	<MenuItem value={'NL'} primaryText="NL" />
+						
 
 					</SelectField>
 					<br/>
