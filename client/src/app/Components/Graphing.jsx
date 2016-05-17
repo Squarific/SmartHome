@@ -107,9 +107,9 @@ const GraphCard = React.createClass({
 		let key = this.state.lastResize;
 
 		let data = this.props.data;
-		if (summedGraph.indexOf(this.state.value) !== -1) {
-			data = this.convertData(data);
-		}
+		if (summedGraph.indexOf(this.state.value) !== -1)
+			if (typeof data.length !== "number")
+				data = this.convertData(data);
 
 		let ourChart = (<Chart data={data} key={key} redraw/>);
 

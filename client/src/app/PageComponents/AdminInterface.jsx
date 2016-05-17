@@ -27,6 +27,9 @@ const styles = {
 	title: {
 		fontWeight: 400,
 	},
+	download: {
+		fontWegiht: 400,
+	},
 }
 
 const AdminInterface = React.createClass({
@@ -151,6 +154,18 @@ const AdminInterface = React.createClass({
 			));
 		}
 
+		let downloadButton;
+
+		if (!this.state.dataLoading && this.state.stateMessage !== "") {
+			downloadButton = <a href={"data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.state.data))}
+				download={"data.json"}
+				style={styles.download}>
+				Download
+			</a>
+		} else {
+			downloadButton = <div></div>
+		}
+
 		let adminInterface;
 
 		if (this.state.loading) {
@@ -190,6 +205,8 @@ const AdminInterface = React.createClass({
 				<FlatButton label={this.props.lang.getData} primary={true} onTouchTap={this.requestData}/>
 				<br/>
 				{this.state.stateMessage}
+				<br/>
+				{downloadButton}
 			</div>;
 		}
 
