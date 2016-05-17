@@ -260,7 +260,7 @@ class HomeDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = HomeSerializer
 
 
-class SensorList(generics.ListAPIView):
+class SensorList(generics.ListCreateAPIView):
     """
     List all sensors, or create a new sensor.
     """
