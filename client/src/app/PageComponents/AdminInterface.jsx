@@ -35,6 +35,8 @@ const AdminInterface = React.createClass({
 			dataCity: "",
 			dataStreet: "",
 			dataHouseNumber: "",
+			stateMessage: "",
+			dataLoading: false,
 		};
 	},
 	handleChange: function (event, index, value) {
@@ -75,6 +77,42 @@ const AdminInterface = React.createClass({
 			dataHouseNumber: e.target.value,
 		});
 	},
+	requestData: function() {
+		if (!this.state.dataLoading) {
+			this.setState({
+				stateMessage: "The data you requested is being retrieved...",
+				dataLoading: true,
+			});
+
+			// Create string for parameters
+			let parameterString, glueSign;
+
+			parameterString = "";
+			glueSign = "?";
+
+			if (this.state.dataCountry !== "") {
+				parameterString += "country=%22" + this.state.dataCountry + "%22";
+				glueSign = "&"
+			}
+
+			if (this.state.dataCity !== "") {
+				parameterString += "city=%22" + this.state.dataCity + "%22";
+				glueSign = "&"
+			}
+
+			if (this.state.dataStreet !== "") {
+				parameterString += "street=%22" + this.state.dataStreet + "%22";
+				glueSign = "&"
+			}
+
+			if (this.state.dataHouseNumber !== "") {
+				parameterString += "housenumber=%22" + this.state.dataHouseNumber + "%22";
+				glueSign = "&"
+			}
+
+			console.log("Parameters to be requested when server works: api/stats/" + parameterString);
+		}
+	},
 	render: function() {
 		if (!this.state.loading) {
 			console.log(this.state.user);
@@ -85,28 +123,32 @@ const AdminInterface = React.createClass({
 		if (this.state.loading) {
 			adminInterface = <div>Loading...</div>;
 		} else if (!this.state.user.is_staff) {
-			adminInterface = <div>You need to be an administrator to use this function!</div>
+			adminInterface = <div>You need to be an administrator to use this function!</div>;
 		} else {
-			adminInterface = <form className="AdminGetData" style={styles.form}>
-				<TextField hintText="" floatingLabelText={this.props.lang.country}
-					value={this.state.dataCountry}
-					onChange={this.handleDataCountry}/>
-				<br/>
-				<TextField hintText="" floatingLabelText={this.props.lang.city}
-					value={this.state.dataCity}
-					onChange={this.handleDataCity}/>
-				<br/>
-				<TextField hintText="" floatingLabelText={this.props.lang.street}
-					value={this.state.dataStreet}
-					onChange={this.handleDataStreet}/>
-				<br/>
-				<TextField hintText="" floatingLabelText={this.props.lang.houseNumber}
-					value={this.state.dataHouseNumber}
-					onChange={this.handleDataHouseNumber}/>
-				<br/>
-				<br/>
-				<FlatButton label={this.props.lang.getData} primary={true}/>
-			</form>
+			adminInterface = <div>
+				<form className="AdminGetData" style={styles.form}>
+					<TextField hintText="" floatingLabelText={this.props.lang.country}
+						value={this.state.dataCountry}
+						onChange={this.handleDataCountry}/>
+					<br/>
+					<TextField hintText="" floatingLabelText={this.props.lang.city}
+						value={this.state.dataCity}
+						onChange={this.handleDataCity}/>
+					<br/>
+					<TextField hintText="" floatingLabelText={this.props.lang.street}
+						value={this.state.dataStreet}
+						onChange={this.handleDataStreet}/>
+					<br/>
+					<TextField hintText="" floatingLabelText={this.props.lang.houseNumber}
+						value={this.state.dataHouseNumber}
+						onChange={this.handleDataHouseNumber}/>
+					<br/>
+					<br/>
+					<FlatButton label={this.props.lang.getData} primary={true} onTouchTap={this.requestData}/>
+				</form>
+
+				{this.state.stateMessage}
+			</div>;
 		}
 
 		return (
