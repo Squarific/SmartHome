@@ -1,0 +1,842 @@
+[
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$PVhgEsrjw3wL$583PHXmua3kEfbULSPnw1zTlL4YiqjWAqytufObdgXQ=",
+        "last_login": "2016-03-01T18:31:49.347",
+        "is_superuser": true,
+        "username": "david",
+        "first_name": "David",
+        "last_name": "Danssaert",
+        "email": "david.danssaert@gmail.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2016-03-01T03:53:56",
+        "groups": [
+            [
+                "Developers"
+            ]
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$AKADfJkASA4N$Mg4xjx0ypBaEiOI0hbtawc6zvnbzvAwaoZdBqVlIB5g=",
+        "last_login": null,
+        "is_superuser": true,
+        "username": "filip",
+        "first_name": "Filip",
+        "last_name": "Smets",
+        "email": "filip.smets@student.uantwerpen.be",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2016-02-28T03:55:28",
+        "groups": [
+            [
+                "Developers"
+            ]
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$2aqUUmPt8zJl$BWOi23AhwVKwnIm7q7YIry5i9EB4gD8xVRovnK28sO0=",
+        "last_login": "2016-05-17T15:35:46.740",
+        "is_superuser": true,
+        "username": "jens",
+        "first_name": "Jens",
+        "last_name": "Bijtebier",
+        "email": "jens.bijtebier@student.uantwerpen.be",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2016-02-28T03:55:51",
+        "groups": [
+            [
+                "Developers"
+            ]
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$CiuS5S2i1GRR$TfU+zT8OOZfwL4zjgLGOZPuVOJ/jIU+WPBQcPuMcAjc=",
+        "last_login": "2016-05-17T14:55:21.829",
+        "is_superuser": true,
+        "username": "thanh_danh",
+        "first_name": "Thanh Danh",
+        "last_name": "Le",
+        "email": "thanh.danh.le@student.uantwerpen.be",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2016-02-28T03:58:12",
+        "groups": [
+            [
+                "Developers"
+            ]
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$UtV2s0AYsCAT$vpBi8mbaFr7gDvTPRC0Z2tqZpEOTrkHvRDlZeCY4Nl4=",
+        "last_login": null,
+        "is_superuser": true,
+        "username": "nisse",
+        "first_name": "Nisse",
+        "last_name": "Strauven",
+        "email": "nisse.strauven@student.uantwerpen.be",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2016-02-28T03:58:30",
+        "groups": [
+            [
+                "Developers"
+            ]
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$paU9WPklL1QG$ztyKlKTBM5QqjGPoDx/o1ki53hlAwNT6t8bVHh9vJoQ=",
+        "last_login": "2016-05-17T00:37:01.020",
+        "is_superuser": false,
+        "username": "Bart",
+        "first_name": "Bart",
+        "last_name": "De Wever",
+        "email": "deWever.Bart@nva.be",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:11:04",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$xLcXZnk6Tvl3$deFH6zQ/sGRI4piga2q/FOqS6LfCa644wobg774s4TE=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Sonney",
+        "first_name": "Tim",
+        "last_name": "Son",
+        "email": "tim85@hotmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:12:46",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$JaLW70ebyAZW$UhFrncbi6uRWvUSHjzrDyos/EXYVto/LyrKcIIGUBYo=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Xzil",
+        "first_name": "Michiel",
+        "last_name": "engelen",
+        "email": "Xzil95@hotmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:13:15",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$xsljQ0KGxUVN$3iy0KJaMzJxQRiHby9sPQykaSyaIk2FQrnV8sJpQDIs=",
+        "last_login": "2016-05-17T00:57:52.238",
+        "is_superuser": false,
+        "username": "Jon_Snow",
+        "first_name": "Jon",
+        "last_name": "Snow",
+        "email": "i_know_nothing@stark.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:14:15",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$b9ehbbpnAt8t$PhTg6VO2LRrADqxFEnug4JpRKlbvAzVGqjzhfeU4+FM=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Lannister",
+        "first_name": "Tyrion",
+        "last_name": "Lannister",
+        "email": "Tyrion@paysdebt.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:14:51",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$gOcCiAYVBYtz$pj7QeNEnPTodso16mHxhBBjHeU++1Dqsthu+xPovsV4=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Stark",
+        "first_name": "Arya",
+        "last_name": "Stark",
+        "email": "agirl@hasnoname.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:15:27",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$fW4JMu3USYPg$LJkcpqifOIlSJWuf2J0pEUuBUHzaWYoxQzlTIwZOE9s=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Gaben",
+        "first_name": "Gabe",
+        "last_name": "Newell",
+        "email": "GNewell@valve.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:16:00",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$n4oEJNKKF8dv$NfuzHdpJ94kcIpohzKBhrTAYWN33Hv4cp/LSEY1/7kc=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Frank",
+        "first_name": "Frank",
+        "last_name": "Deboosere",
+        "email": "Deboosere.F@vrt.be",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:17:08",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$cfqZAQRAkSgl$FwgsPnUEcN9R9eVErXzt4aJUBgAY0932IhtEaZ0CmUA=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Thomas",
+        "first_name": "Thomas",
+        "last_name": "van de Velde",
+        "email": "vdv.thomas@yahoo.be",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:18:17",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$24000$7VwZbMG794RB$5fCcKvWWuSxq0bmPGyB+YgKaITteIQqm2FQZPWwN2iM=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Kathleen",
+        "first_name": "Kathleen",
+        "last_name": "Aerts",
+        "email": "kathleen.aerts@hotmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2016-05-16T16:19:58",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 1,
+    "fields": {
+        "owner": [
+            "david"
+        ],
+        "name": "Thuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:15.997",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 2,
+    "fields": {
+        "owner": [
+            "filip"
+        ],
+        "name": "Thuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:16.035",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 3,
+    "fields": {
+        "owner": [
+            "jens"
+        ],
+        "name": "Thuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:16.069",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 4,
+    "fields": {
+        "owner": [
+            "thanh_danh"
+        ],
+        "name": "Thuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:16.109",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 5,
+    "fields": {
+        "owner": [
+            "nisse"
+        ],
+        "name": "Thuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:16.141",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 6,
+    "fields": {
+        "owner": [
+            "david"
+        ],
+        "name": "Vakantiehuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:16.175",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 7,
+    "fields": {
+        "owner": [
+            "filip"
+        ],
+        "name": "Vakantiehuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:16.205",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 8,
+    "fields": {
+        "owner": [
+            "jens"
+        ],
+        "name": "Vakantiehuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:16.237",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 9,
+    "fields": {
+        "owner": [
+            "thanh_danh"
+        ],
+        "name": "Vakantiehuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:16.273",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 10,
+    "fields": {
+        "owner": [
+            "nisse"
+        ],
+        "name": "Vakantiehuis",
+        "country": "",
+        "city": "",
+        "zipcode": "",
+        "street": "",
+        "house_number": "",
+        "date_added": "2016-03-06T19:48:16.314",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 11,
+    "fields": {
+        "owner": [
+            "Frank"
+        ],
+        "name": "Mijn Huis",
+        "country": "BE",
+        "city": "Brussel",
+        "zipcode": "1043",
+        "street": "Auguste Reyerslaan",
+        "house_number": "52",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 0.7
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 12,
+    "fields": {
+        "owner": [
+            "Bart"
+        ],
+        "name": "Thuis",
+        "country": "BE",
+        "city": "Antwerpen",
+        "zipcode": "2000",
+        "street": "verschansingstraat",
+        "house_number": "52",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 0.8
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 13,
+    "fields": {
+        "owner": [
+            "Gaben"
+        ],
+        "name": "My Villa",
+        "country": "BE",
+        "city": "Gent",
+        "zipcode": "8000",
+        "street": "Boerenlaan",
+        "house_number": "8",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 0.6
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 14,
+    "fields": {
+        "owner": [
+            "Jon_Snow"
+        ],
+        "name": "Home",
+        "country": "NL",
+        "city": "Amsterdam",
+        "zipcode": "200",
+        "street": "Willemstraat",
+        "house_number": "25",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 0.8
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 15,
+    "fields": {
+        "owner": [
+            "Kathleen"
+        ],
+        "name": "mijn huis",
+        "country": "BE",
+        "city": "Antwerpen",
+        "zipcode": "2610",
+        "street": "ringlaan",
+        "house_number": "55",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 0.8
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 16,
+    "fields": {
+        "owner": [
+            "Lannister"
+        ],
+        "name": "My Castle",
+        "country": "BE",
+        "city": "Hasselt",
+        "zipcode": "3000",
+        "street": "prinslei",
+        "house_number": "65",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 0.7
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 17,
+    "fields": {
+        "owner": [
+            "Sonney"
+        ],
+        "name": "my appartment",
+        "country": "FR",
+        "city": "Berlin",
+        "zipcode": "1600",
+        "street": "rue de la bombasse",
+        "house_number": "85",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 0.9
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 18,
+    "fields": {
+        "owner": [
+            "Stark"
+        ],
+        "name": "House stark",
+        "country": "GB",
+        "city": "London",
+        "zipcode": "150",
+        "street": "Daisystreet",
+        "house_number": "160",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 1.2
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 19,
+    "fields": {
+        "owner": [
+            "Thomas"
+        ],
+        "name": "mijn kot",
+        "country": "BE",
+        "city": "Antwerpen",
+        "zipcode": "2610",
+        "street": "groenenborgerlaan",
+        "house_number": "20",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 0.6
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 20,
+    "fields": {
+        "owner": [
+            "Xzil"
+        ],
+        "name": "Home sweet home",
+        "country": "BE",
+        "city": "Gent",
+        "zipcode": "8000",
+        "street": "gaststraat",
+        "house_number": "250",
+        "date_added": "2016-05-16T16:05:12",
+        "price_per_kwh": 0.7
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 21,
+    "fields": {
+        "owner": [
+            "jens"
+        ],
+        "name": "sdlgjm",
+        "country": "4",
+        "city": "sdqlgkj",
+        "zipcode": "546",
+        "street": "sqdg",
+        "house_number": "465",
+        "date_added": "2016-05-16T16:05:12.168",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.home",
+    "pk": 22,
+    "fields": {
+        "owner": [
+            "thanh_danh"
+        ],
+        "name": "dfhgS",
+        "country": "3",
+        "city": "QSDG",
+        "zipcode": "22",
+        "street": "qdfg",
+        "house_number": "2",
+        "date_added": "2016-05-16T20:28:25.959",
+        "price_per_kwh": null
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 1,
+    "fields": {
+        "sender": [
+            "jens"
+        ],
+        "receiver": [
+            "thanh_danh"
+        ],
+        "status": 1,
+        "read": true,
+        "date_sent": "2016-05-16T16:05:12.174"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 2,
+    "fields": {
+        "sender": [
+            "Bart"
+        ],
+        "receiver": [
+            "Frank"
+        ],
+        "status": 1,
+        "read": true,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 3,
+    "fields": {
+        "sender": [
+            "Jon_Snow"
+        ],
+        "receiver": [
+            "Stark"
+        ],
+        "status": 1,
+        "read": true,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 4,
+    "fields": {
+        "sender": [
+            "Lannister"
+        ],
+        "receiver": [
+            "Stark"
+        ],
+        "status": 0,
+        "read": false,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 5,
+    "fields": {
+        "sender": [
+            "Xzil"
+        ],
+        "receiver": [
+            "Gaben"
+        ],
+        "status": 2,
+        "read": true,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 6,
+    "fields": {
+        "sender": [
+            "Jon_Snow"
+        ],
+        "receiver": [
+            "Sonney"
+        ],
+        "status": 1,
+        "read": true,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 7,
+    "fields": {
+        "sender": [
+            "Frank"
+        ],
+        "receiver": [
+            "Kathleen"
+        ],
+        "status": 0,
+        "read": false,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 8,
+    "fields": {
+        "sender": [
+            "Kathleen"
+        ],
+        "receiver": [
+            "Lannister"
+        ],
+        "status": 1,
+        "read": true,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 9,
+    "fields": {
+        "sender": [
+            "Xzil"
+        ],
+        "receiver": [
+            "Bart"
+        ],
+        "status": 1,
+        "read": true,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 10,
+    "fields": {
+        "sender": [
+            "Jon_Snow"
+        ],
+        "receiver": [
+            "Thomas"
+        ],
+        "status": 1,
+        "read": true,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.friendrequest",
+    "pk": 11,
+    "fields": {
+        "sender": [
+            "Thomas"
+        ],
+        "receiver": [
+            "Kathleen"
+        ],
+        "status": 1,
+        "read": true,
+        "date_sent": "2016-05-16T16:05:12"
+    }
+},
+{
+    "model": "backend.post",
+    "pk": 1,
+    "fields": {
+        "user": [
+            "Jon_Snow"
+        ],
+        "content": "I know nothing",
+        "plot": "",
+        "read": false,
+        "date_sent": "2016-05-17T00:30:47"
+    }
+},
+{
+    "model": "backend.post",
+    "pk": 2,
+    "fields": {
+        "user": [
+            "Lannister"
+        ],
+        "content": "a Lannister always pays his debt",
+        "plot": "",
+        "read": false,
+        "date_sent": "2016-05-17T00:30:47"
+    }
+}
+]
