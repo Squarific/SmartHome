@@ -59,6 +59,7 @@ const nl = {
 	shareGraph: "Deel Grafiek",
 	toggleEuroConversion: "Converteer naar euro",
 	clickToEdit: "Klik om aan te passen",
+	period: "Periode",
 }
 
 const en = {
@@ -120,6 +121,7 @@ const en = {
 	shareGraph: "Share Graph",
 	toggleEuroConversion: "Convert to euro",
 	clickToEdit: "Click to edit",
+	period: "Period",
 }
 
 module.exports = {
