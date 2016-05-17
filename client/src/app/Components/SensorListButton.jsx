@@ -16,6 +16,8 @@ const SensorListButton = React.createClass({
 		return {
 			sensorListOpen: false,
 			loading: true,
+			sensors: [],
+			tags: [],
 		}
 	},
 	componentDidMount: function () {
@@ -25,12 +27,22 @@ const SensorListButton = React.createClass({
 			this.setState({sensors: data.data});
 		}.bind(this));
 
+		this.props.rest.get(["api", "users", "me", "homes"], {}, function (data) {
+			this.setState({households: data.data});
+		}.bind(this));
+
 		this.props.rest.get(["api", "tags"], {}, function (data) {
 			this.setState({tags: data.data});
 		}.bind(this));
 	},
 	handleChange: function (event, index, value) {
 		this.setState({value});
+	},
+	handleSensorEditSave: function () {
+		console.log("TODO: implement sensor save");
+	},
+	handleSensorEditClose: function () {
+		this.setState({editing: false});
 	},
 	handleSensorListClose: function () {
 		this.setState({
@@ -43,19 +55,31 @@ const SensorListButton = React.createClass({
 		});
 	},
 	onRowSelection: function (selectedRows) {
-		this.setState({editing: selectedRows[0]});
+		this.setState({editing: selectedRows[0], values: {}});
 	},
 	getSensorTableRows: function () {
 		let rows = [];
+		for (let k = 0; k < this.state.sensors.length; k++) {
+			let tags = this.state.sensors[k].relationships.tags.data;
+			let ourTags = [];
 
-		rows.push((
-			<TableRow>
-				<TableRowColumn>Naam</TableRowColumn>
-				<TableRowColumn>
-					Een paar tags
-				</TableRowColumn>
-			</TableRow>
-		));
+			for (let k = 0; k < tags.length; k++) {
+				for (let i = 0; i < this.state.tags.length; i++) {
+					if (this.state.tags[i].id === tags[k].id) {
+						ourTags.push(this.state.tags[i].attributes.name);
+						break;
+					}
+				}
+			}
+
+			rows.push((
+				<TableRow key={k}>
+					<TableRowColumn>{this.state.sensors[k].attributes.name}</TableRowColumn>
+					<TableRowColumn>{this.state.sensors[k].attributes.power_unit}</TableRowColumn>
+					<TableRowColumn>{ourTags.join("\n")}</TableRowColumn>
+				</TableRow>
+			));
+		}
 
 		return rows;
 	},
@@ -64,8 +88,9 @@ const SensorListButton = React.createClass({
 			<Table onRowSelection={this.onRowSelection}>
 				<TableHeader>
 					<TableRow>
-						<TableHeaderColumn>Name</TableHeaderColumn>
-						<TableHeaderColumn>Tags</TableHeaderColumn>
+						<TableHeaderColumn>{this.props.lang.sensorName}</TableHeaderColumn>
+						<TableHeaderColumn>{this.props.lang.powerUnit}</TableHeaderColumn>
+						<TableHeaderColumn>{this.props.lang.sensorTags}</TableHeaderColumn>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -76,11 +101,24 @@ const SensorListButton = React.createClass({
 	},
 	render: function() {
 		const sensorListActions = [
-			<FlatButton style={styles.cancelButton}
+			<FlatButton
 				label={this.props.lang.cancel}
 				secondary={true}
 				onTouchTap={this.handleSensorListClose}/>,
 		];
+
+		const sensorEditActions = [
+			<FlatButton
+				label={this.props.lang.cancel}
+				secondary={true}
+				onTouchTap={this.handleSensorEditClose}/>,
+			<FlatButton
+				label={this.props.lang.save}
+				secondary={true}
+				onTouchTap={this.handleSensorEditSave}/>,
+		];
+
+		console.log(this.state.sensors, this.state.tags);
 
 		return (
 			<div style={styles.sensorlistbutton}>
@@ -88,7 +126,7 @@ const SensorListButton = React.createClass({
 					onTouchTap={this.handleSensorListOpen}
 					primary={true}/>
 
-				<Dialog style={styles.sensorlistbutton}
+				<Dialog
 					title={this.props.lang.sensors}
 					open={this.state.sensorListOpen}
 					onRequestClose={this.handleSensorListClose}
@@ -97,7 +135,17 @@ const SensorListButton = React.createClass({
 					{this.getSensorTable()}
 				</Dialog>
 
-				{/* TODO: SHOW A DIALOG IF this.state.editing IS NOT UNDEFINED*/}
+				<Dialog
+					title={this.props.lang.editSensor}
+					open={typeof this.state.editing === "number"}
+					onRequestClose={this.handleSensorEditClose}
+					actions={sensorEditActions}>
+					<form>
+						<TextField id="name" value={this.state.values.name} floatingLabelText={this.props.lang.sensorName} onChange={this.handleSensorEditFieldChange} />
+						<TextField id="powerunit" value={this.state.values.powerunit} floatingLabelText={this.props.lang.powerUnit} onChange={this.handleSensorEditFieldChange} />
+						<TextField id="tags" value={this.state.values.tags} floatingLabelText={this.props.lang.sensorTags} onChange={this.handleSensorEditFieldChange} />
+					</form>
+				</Dialog>
 			</div>
 		)
 	},

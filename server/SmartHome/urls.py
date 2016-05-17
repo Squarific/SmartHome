@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^api/homes/$', views.HomeList.as_view()),
     url(r'^api/homes/(?P<pk>[0-9]+)/$', views.HomeDetail.as_view()),
     url(r'^api/homes/(?P<home_id>[0-9]+)/sensors/$', views.SensorList.as_view()),
+    url(r'^api/homes/(?P<home_id>[0-9]+)/sensors/clusters/$', views.ClusterView.as_view()),
     url(r'^api/homes/(?P<home_id>[0-9]+)/data/(?P<period>today|last_month|last_year|past_years)/$', views.DataView.as_view()),
     url(r'^api/sensors/$', views.SensorList.as_view()),
     url(r'^api/sensors/(?P<pk>[0-9]+)/$', views.SensorDetail.as_view()),
@@ -52,6 +53,7 @@ urlpatterns = [
     url(r'^api/posts/$', views.PostList.as_view()),
     url(r'^api/posts/(?P<pk>[0-9]+)/$', views.PostDetail.as_view()),
     url(r'^api/stats/$', views.LocationStatsView.as_view()),
+    url(r'^api/update_clusters/$', views.ClusterMassUpdateView().as_view())
     #url(r'^api/data/home/(?P<home_id>[0-9]+)/$', views.HomeDataList.as_view()),
     #url(r'^api/data/user/today/(?P<user_id>[0-9]+)/$', views.RecentUserDataList.as_view()),
     #url(r'^api/data/user/last_month/(?P<user_id>[0-9]+)/$', views.DailyUserDataList.as_view()),

@@ -22,6 +22,7 @@ const nl = {
 	street: "Straat",
 	houseNumber: "Huisnummer",
 	createSensor: "Sensor aanmaken",
+	editSensor: "Sensor aanpassen",
 	sensors: "Sensoren",
 	sensorName: "Naam sensor",
 	sensorDescription: "Beschrijving",
@@ -29,6 +30,7 @@ const nl = {
 	powerUnit: "Eenheid",
 	cancel: "Annuleren",
 	create: "Aanmaken",
+	save: "Opslaan",
 	footerMessage: "Gemaakt door CertainlyNotEvilCorp",
 	home: "Home",
 	viewHouseholds: "Huishoudens bekijken",
@@ -59,6 +61,7 @@ const nl = {
 	shareGraph: "Deel Grafiek",
 	toggleEuroConversion: "Converteer naar euro",
 	clickToEdit: "Klik om aan te passen",
+	period: "Periode",
 }
 
 const en = {
@@ -82,7 +85,8 @@ const en = {
 	city: "City",
 	street: "Street",
 	houseNumber: "House number",
-	createSensor: "Create Sensor",
+	createSensor: "Create sensor",
+	editSensor: "Edit sensor",
 	sensors: "Sensoren",
 	sensorName: "Sensor name",
 	sensorDescription: "Description",
@@ -90,6 +94,7 @@ const en = {
 	powerUnit: "Power Unit",
 	cancel: "Cancel",
 	create: "Create",
+	save: "Save",
 	footerMessage: "Proudly presented to you by CertainlyNotEvilCorp",
 	home: "Home",
 	viewHouseholds: "View Households",
@@ -120,6 +125,7 @@ const en = {
 	shareGraph: "Share Graph",
 	toggleEuroConversion: "Convert to euro",
 	clickToEdit: "Click to edit",
+	period: "Period",
 }
 
 module.exports = {

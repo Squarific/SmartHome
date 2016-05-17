@@ -23,6 +23,8 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from itertools import chain, groupby
 
+from math import *
+
 
 def ParseConfig(data):
     for x in data:
@@ -337,8 +339,26 @@ class DataView(APIView):
         content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(queryset, lambda x: x['key'])]
         return Response(content)
 
+    def put(self, request, period, user_id=None, home_id=None, sensor_id=None):
+        usage = request.query_params.get('usage', None)
+        timestamp = request.query_params.get('timestamp', datetime.now())
+        if (usage != None):
+            data_class = RecentData
+            if period == 'today':
+                data_class = RecentData
+            elif period == 'last_month':
+                data_class = DailyData
+            elif period == 'last_year':
+                data_class = MonthlyData
+            elif period == 'past_years':
+                data_class = YearlyData
+
+            data_class(usage=usage, timestamp=timestamp).save()
+
+        return Response()
+
 class LocationStatsView(APIView):
-    permission_classes = (IsAuthenticated,IsAdminUser)
+    permission_classes = (IsAuthenticated,IsAdminUser,)
 
     def get(self, request, format=None):
         now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -389,7 +409,7 @@ class LocationStatsView(APIView):
         return Response(data)
 
 class ClusterView(APIView):
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, home_id, format=None):
         queryset = Sensor.objects.filter(home__id = home_id)
@@ -397,14 +417,67 @@ class ClusterView(APIView):
         data['low'] = queryset.filter(usage_category=0).values()
         data['medium'] = queryset.filter(usage_category=1).values()
         data['high'] = queryset.filter(usage_category=2).values()
+
         return Response(data)
 
-    def post(self, request, home_id, format=None):
-        self.k_means(home_id)
+    def put(self, request, home_id, format=None):
+        persist_k_means(home_id, 3)
+        return Response()
 
-    def k_means(self, home_id):
-        now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        sensor_totals = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id'), total_usage=Sum('usage')).values('id', 'total_usage')
-        clusters = [0, 0.5, 1]
-        while True:
-            pass
+class ClusterMassUpdateView(APIView):
+    permission_classes = (IsAuthenticated,IsAdminUser,)
+
+    def put(self, request, format=None):
+        homes = Home.objects.all().values('id')
+        for home in homes:
+            persist_k_means(home['id'], 3)
+        return Response()
+
+def k_means_scale(value, max_value):
+    return value*log(value*(exp(1)-1)/max_value + 1)
+
+'''
+k_means
+'''
+def k_means(home_id, n_clusters=3):
+    now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    sensor_totals = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id')).values('sensor_id').annotate(total_usage=Sum('usage'))
+    max_usage = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id'), total_usage=Sum('usage')).aggregate(max_usage=Max('total_usage'))['max_usage']
+
+    if (len(sensor_totals) == 0 or max_usage == None):
+        return [{'category': d, 'mean': 0, 'sensors': []} for d in range(0, n_clusters)]
+
+    clusters = [{'category': d, 'mean': k_means_scale((n_clusters+d*n_clusters/float(n_clusters-1))*max_usage/float(2*n_clusters), max_usage), 'sensors': []} for d in range(0, n_clusters)]
+    print(clusters)
+    converging = True
+    while converging == True:
+        # assignment step
+        for cluster in clusters:
+            cluster['sensors'] = []
+
+        for s in sensor_totals:
+            distances = [abs(k_means_scale(clusters[i]['mean'], max_usage) - k_means_scale(s['total_usage'], max_usage)) for i in range(0, n_clusters)]
+            cluster_index = distances.index(min(distances))
+            clusters[cluster_index]['sensors'].append(s)
+
+        # update step
+        locally_converging = False
+        for cluster in clusters:
+            n_sensors = len(cluster['sensors'])
+            if (n_sensors > 0):
+                new_mean = reduce(lambda x, y: x + y, [k_means_scale(c['total_usage'], max_usage) for c in cluster['sensors']])/n_sensors
+                locally_converging |= (new_mean != cluster['mean'])
+                cluster['mean'] = new_mean
+
+        converging = (locally_converging == False)
+
+    # finished
+    return clusters
+
+def persist_k_means(home_id, n_clusters=3):
+    clusters = k_means(home_id, n_clusters)
+    for cluster in clusters:
+        for sensor_id in [ s['sensor_id'] for s in cluster['sensors'] ]:
+            sensor = Sensor.objects.get(pk=sensor_id)
+            sensor.usage_category=cluster['category']
+            sensor.save()
