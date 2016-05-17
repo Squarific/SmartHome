@@ -155,7 +155,7 @@ class FriendList(generics.ListAPIView):
         # Note the use of `get_queryset()` instead of `self.queryset`
         if (user_id == 'me'):
             user_id = request.user.id
-        queryset = User.objects.all().filter(Q(sent_requests__status = 1, sent_requests__receiver_id = user_id) | Q(received_requests__status = 1, received_requests__sender_id=user_id))
+        queryset = User.objects.all().filter(Q(id=user_id) | Q(sent_requests__status = 1, sent_requests__receiver_id = user_id) | Q(received_requests__status = 1, received_requests__sender_id=user_id))
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -170,7 +170,7 @@ class FriendStats(APIView):
 
         if (user_id == 'me'):
             user_id = request.user.id
-        queryset = User.objects.all().filter(Q(sent_requests__status = 1, sent_requests__receiver_id = user_id) | Q(received_requests__status = 1, received_requests__sender_id=user_id))
+        queryset = User.objects.all().filter(Q(id=user_id) | Q(sent_requests__status = 1, sent_requests__receiver_id = user_id) | Q(received_requests__status = 1, received_requests__sender_id=user_id))
 
         friend_ids = queryset.values('id')
 
