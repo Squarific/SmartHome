@@ -8,6 +8,8 @@ import FlatButton from 'material-ui/FlatButton';
 import CardText from 'material-ui/Card/CardText';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
+import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui/SelectField';
 import {green500, grey500} from 'material-ui/styles/colors';
 import {Notification} from '../Components/Notification';
 
@@ -35,6 +37,7 @@ const AdminInterface = React.createClass({
 			dataCity: "",
 			dataStreet: "",
 			dataHouseNumber: "",
+			dataPeriod: "",
 			stateMessage: "",
 			dataLoading: false,
 		};
@@ -77,6 +80,11 @@ const AdminInterface = React.createClass({
 			dataHouseNumber: e.target.value,
 		});
 	},
+	handleDataPeriod: function (event, index, value) {
+		this.setState({
+			dataPeriod: value,
+		});
+	},
 	requestData: function() {
 		if (!this.state.dataLoading) {
 			this.setState({
@@ -110,12 +118,27 @@ const AdminInterface = React.createClass({
 				glueSign = "&"
 			}
 
+			if (this.state.dataPeriod !== "" && this.state.dataPeriod !== "no filter") {
+				parameterString += "period=[%22" + this.state.dataPeriod + "%22]";
+				glueSign = "&"
+			}
+
 			console.log("Parameters to be requested when server works: api/stats/" + parameterString);
 		}
 	},
 	render: function() {
 		if (!this.state.loading) {
 			console.log(this.state.user);
+		}
+
+		let periodMenuItems, periods;
+		periodMenuItems = [];
+		periods = ["no filter", "today", "last_month", "least_year", "past_years"];
+
+		for (let k = 0; k < periods.length; k++) {
+			periodMenuItems.push((
+				<MenuItem value={periods[k]} primaryText={periods[k].replace("_", " ")} key={k}/>
+			));
 		}
 
 		let adminInterface;
@@ -126,27 +149,35 @@ const AdminInterface = React.createClass({
 			adminInterface = <div>You need to be an administrator to use this function!</div>;
 		} else {
 			adminInterface = <div>
-				<form className="AdminGetData" style={styles.form}>
+				<form className="AdminGetLocationData" style={styles.form}>
+					<SelectField onChange={this.handleDataPeriod} value={this.state.dataPeriod} floatingLabelText={this.props.lang.period}>
+						{periodMenuItems}
+					</SelectField>
+					<br/>
+					<br/>
 					<TextField hintText="" floatingLabelText={this.props.lang.country}
 						value={this.state.dataCountry}
-						onChange={this.handleDataCountry}/>
+						onChange={this.handleDataCountry}
+						disable={false}/>
 					<br/>
 					<TextField hintText="" floatingLabelText={this.props.lang.city}
 						value={this.state.dataCity}
-						onChange={this.handleDataCity}/>
+						onChange={this.handleDataCity}
+						disabled={this.state.dataCountry === ""}/>
 					<br/>
 					<TextField hintText="" floatingLabelText={this.props.lang.street}
 						value={this.state.dataStreet}
-						onChange={this.handleDataStreet}/>
+						onChange={this.handleDataStreet}
+						disabled={this.state.dataCity === ""}/>
 					<br/>
 					<TextField hintText="" floatingLabelText={this.props.lang.houseNumber}
 						value={this.state.dataHouseNumber}
-						onChange={this.handleDataHouseNumber}/>
+						onChange={this.handleDataHouseNumber}
+						disabled={this.state.dataStreet === ""}/>
 					<br/>
 					<br/>
-					<FlatButton label={this.props.lang.getData} primary={true} onTouchTap={this.requestData}/>
 				</form>
-
+				<FlatButton label={this.props.lang.getData} primary={true} onTouchTap={this.requestData}/>
 				{this.state.stateMessage}
 			</div>;
 		}

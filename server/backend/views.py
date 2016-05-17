@@ -339,6 +339,24 @@ class DataView(APIView):
         content = [{'key':k, 'values':[{'timestamp':w['timestamp'], 'usage':w['usage']} for w in v]} for k,v in groupby(queryset, lambda x: x['key'])]
         return Response(content)
 
+    def put(self, request, period, user_id=None, home_id=None, sensor_id=None):
+        usage = request.query_params.get('usage', None)
+        timestamp = request.query_params.get('timestamp', datetime.now())
+        if (usage != None):
+            data_class = RecentData
+            if period == 'today':
+                data_class = RecentData
+            elif period == 'last_month':
+                data_class = DailyData
+            elif period == 'last_year':
+                data_class = MonthlyData
+            elif period == 'past_years':
+                data_class = YearlyData
+
+            data_class(usage=usage, timestamp=timestamp).save()
+
+        return Response()
+
 class LocationStatsView(APIView):
     permission_classes = (IsAuthenticated,IsAdminUser,)
 
