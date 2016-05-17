@@ -121,7 +121,11 @@ const CreateHousehold = React.createClass({
 		// 	});
 		// }.bind(this));
 	},
-	handleSubmit: function () {
+	handleSubmit: function (value) {
+		value: "",
+		this.setState({
+			value,
+		});
 		this.props.rest.post(["api", "homes"], {
 			name: this.state.name,
 			country: this.state.country,
@@ -149,6 +153,7 @@ const CreateHousehold = React.createClass({
 			}
 			this.props.handleCreateHouseHoldClose();
 		}.bind(this));
+		
 	},
 	render: function () {
 

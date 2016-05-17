@@ -14,7 +14,8 @@ const PowerUnitSelect = React.createClass({
 		return {value};
 	},
 	handleChange: function (event, index, value) {
-		this.setState({value, value: value});
+		this.setState({value});
+		this.props.handlePowerUnit(value);
 	},
 	render: function() {
 		// Create menuoptions (static atm)
@@ -27,7 +28,7 @@ const PowerUnitSelect = React.createClass({
 		}
 
 		return (
-			<SelectField style={styles.powerunitselect} value={this.state.value} onChange={this.props.handlePowerUnit, this.handleChange} floatingLabelText={this.props.lang.powerUnit}>
+			<SelectField style={styles.powerunitselect} value={this.state.value} onChange={this.handleChange} floatingLabelText={this.props.lang.powerUnit}>
 				{MenuItems}
 			</SelectField>
 		)

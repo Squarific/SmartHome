@@ -58,15 +58,16 @@ const CreateSensor = React.createClass({
 			description: event.target.value,
 		});
 	},
-	handleHousehold: function (event, index, value) {
+	handleHousehold: function (value) {
 		this.setState({
 			household: value,
 		});
 	},
-	handlePowerUnit: function (event, index, value) {
+	handlePowerUnit: function (value) {
 		this.setState({
 			powerUnit: value,
 		});
+
 	},
 	handleTag: function (event, index, value) {
 		this.setState({
@@ -76,10 +77,10 @@ const CreateSensor = React.createClass({
 	handleSubmit: function () {
 		this.props.rest.post(["api", "sensors"], {
 			name: this.state.name,
-			home: 1,
+			home: this.state.household,
 			description: this.state.description,
-			tags: this.state.tags,
-			power_unit: "wh",
+			tags: 1,
+			power_unit: this.state.powerUnit,
 		}, function(data) {
 			if (data.error) {
 				console.log(data.error);
