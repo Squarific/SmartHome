@@ -1,9 +1,9 @@
 TODO - David
 ============
-- Per user, #households, totaal verbruik over een week, maand en jaar (12/5)
-- User search op voornaam, achternaam, username (12/5)
+- ~~Per user, #households, totaal verbruik over een week, maand en jaar (12/5)~~
+- ~~User search op voornaam, achternaam, username (12/5)~~
 - Household, Sensor, Tags posten/putten/deleten (12/5)
-- Prijsgegevens per househould (12/5)
+- ~~Prijsgegevens per househould (12/5)~~
 - API: data toevoegen per minuut (12/5)
 - Ficiteve non-staff accounts: vrienden, households, posts, ... (13/5)
 - Tags in de sample data (13/5)
