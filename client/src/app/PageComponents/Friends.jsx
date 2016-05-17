@@ -83,7 +83,7 @@ const Friends = React.createClass({
 		];
 		let timePeriod;
 		
-		let FriendList= [];
+		let FriendList = [];
 		let friend = {};
 
 
@@ -91,34 +91,59 @@ const Friends = React.createClass({
 			if (timePeriod === 1) {
 				for (let i = 0; i < test.state.friends.length; i++) {
 					let user = test.state.friends[i].id;
-					FriendList.push(friend = {
-						ranking: i+1, 
-						name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
-						usage: test.state.stats[user].total_usage_today, 
-						households: test.state.friends[i].relationships.owned_homes.meta.count,
-					});
+					let duplicate = false;
+					for (let j = 0; j < FriendList.length; j++) {
+						if (test.state.friends[i].id === FriendList[j].id) {
+							duplicate = true;
+						}
+					}
+					if (duplicate === false) {
+						FriendList.push(friend = {
+							name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
+							usage: test.state.stats[user].total_usage_today, 
+							households: test.state.friends[i].relationships.owned_homes.meta.count,
+							id: test.state.friends[i].id,
+						});
+					}
 				}
 			}
 			else if (timePeriod === 2) {
 				for (let i = 0; i < test.state.friends.length; i++) {
 					let user = test.state.friends[i].id;
-					FriendList.push(friend = {
-						ranking: i+1, 
-						name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
-						usage: test.state.stats[user].total_usage_last_month, 
-						households: test.state.friends[i].relationships.owned_homes.meta.count,
-					});
+					let duplicate = false;
+					for (let j = 0; j < FriendList.length; j++) {
+						if (test.state.friends[i].id === FriendList[j].id) {
+							duplicate = true;
+						}
+					}
+					if (duplicate === false) {
+						FriendList.push(friend = {
+							name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
+							usage: test.state.stats[user].total_usage_last_month, 
+							households: test.state.friends[i].relationships.owned_homes.meta.count,
+							id: test.state.friends[i].id,
+						});
+					}
+
 				}
 			}
 			else {
 				for (let i = 0; i < test.state.friends.length; i++) {
 					let user = test.state.friends[i].id;
-					FriendList.push(friend = {
-						ranking: i+1, 
-						name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
-						usage: test.state.stats[user].total_usage_last_year, 
-						households: test.state.friends[i].relationships.owned_homes.meta.count,
-					});
+					let duplicate = false;
+					for (let j = 0; j < FriendList.length; j++) {
+						if (test.state.friends[i].id === FriendList[j].id) {
+							duplicate = true;
+						}
+					}
+					if (duplicate === false) {
+						FriendList.push(friend = {
+							name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
+							usage: test.state.stats[user].total_usage_last_year, 
+							households: test.state.friends[i].relationships.owned_homes.meta.count,
+							id: test.state.friends[i].id,
+						});
+					}
 				}
 			}
 			FriendList.sort(function(a, b){
