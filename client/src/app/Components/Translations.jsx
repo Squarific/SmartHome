@@ -62,6 +62,8 @@ const nl = {
 	toggleEuroConversion: "Converteer naar euro",
 	clickToEdit: "Klik om aan te passen",
 	period: "Periode",
+	adminDataRequest: "De gevraagde data wordt opgehaald...",
+	adminDataComplete: "De data is opgehaald!",
 }
 
 const en = {
@@ -126,6 +128,8 @@ const en = {
 	toggleEuroConversion: "Convert to euro",
 	clickToEdit: "Click to edit",
 	period: "Period",
+	adminDataRequest: "The data you requested is being retrieved...",
+	adminDataComplete: "The data has been succesfully retrieved!",
 }
 
 module.exports = {
