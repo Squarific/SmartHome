@@ -77,9 +77,9 @@ const Friends = React.createClass({
 		
 
 		const period = [
-			<MenuItem key={1} value={1} primaryText="Today" />,
-			<MenuItem key={2} value={2} primaryText="Last month" />,
-			<MenuItem key={3} value={3} primaryText="Last year" />,
+			<MenuItem key={1} value={1} primaryText={this.props.lang.today} />,
+			<MenuItem key={2} value={2} primaryText={this.props.lang.lastMonth} />,
+			<MenuItem key={3} value={3} primaryText={this.props.lang.lastYear} />,
 		];
 		let timePeriod;
 		
@@ -134,7 +134,7 @@ const Friends = React.createClass({
 		return (
 			<Card>
 			<CardHeader
-				title="Friends"
+				title={this.props.lang.friends}
 				subtitle={this.state.myName}/>
 
 				<div>
@@ -142,7 +142,7 @@ const Friends = React.createClass({
 						value={this.state.value}
 						onChange={this.handleChange}
 						autoWidth={true}
-						floatingLabelText="Time period">
+						floatingLabelText={this.props.lang.period}>
 						{period}
 					</SelectField>
 				<br />
@@ -151,10 +151,10 @@ const Friends = React.createClass({
 						<TableHeader
 							displaySelectAll={false}>
 							<TableRow>
-								<TableHeaderColumn tooltip="Rank">Ranking</TableHeaderColumn>
-								<TableHeaderColumn tooltip="Name">Name</TableHeaderColumn>
-								<TableHeaderColumn tooltip="Total Usage">Usage</TableHeaderColumn>
-								<TableHeaderColumn tooltip="Amount of Households">Households</TableHeaderColumn>
+								<TableHeaderColumn tooltip={this.props.lang.rank}>{this.props.lang.ranking}</TableHeaderColumn>
+								<TableHeaderColumn tooltip={this.props.lang.name}>{this.props.lang.name}</TableHeaderColumn>
+								<TableHeaderColumn tooltip={this.props.lang.totalUsage}>{this.props.lang.usage}</TableHeaderColumn>
+								<TableHeaderColumn tooltip={this.props.lang.householdsAmount}>{this.props.lang.households}</TableHeaderColumn>
 							</TableRow>
 						</TableHeader>
 						<TableBody>

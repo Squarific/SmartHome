@@ -62,6 +62,16 @@ const nl = {
 	toggleEuroConversion: "Converteer naar euro",
 	clickToEdit: "Klik om aan te passen",
 	period: "Periode",
+	today: "Vandaag",
+	lastMonth: "Vorige maand",
+	lastYear: "Vorig jaar",
+	rank: "Rang",
+	ranking: "Ranking",
+	name: "Naam",
+	totalUsage: "Totaal verbruik",
+	usage: "Verbruik",
+	households: "Huishoudens",
+	householdsAmount: "Aantal huishoudens",
 }
 
 const en = {
@@ -126,6 +136,16 @@ const en = {
 	toggleEuroConversion: "Convert to euro",
 	clickToEdit: "Click to edit",
 	period: "Period",
+	today: "Today",
+	lastMonth: "Last month",
+	lastYear: "Last year",
+	rank: "Rank",
+	ranking: "Ranking",
+	name: "Name",
+	totalUsage: "Total usage",
+	usage: "Usage",
+	households: "Households",
+	householdsAmount: "Amount of households",
 }
 
 module.exports = {
