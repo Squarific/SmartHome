@@ -72,6 +72,8 @@ const nl = {
 	usage: "Verbruik",
 	households: "Huishoudens",
 	householdsAmount: "Aantal huishoudens",
+	adminDataRequest: "De gevraagde data wordt opgehaald...",
+	adminDataComplete: "De data is opgehaald!",
 }
 
 const en = {
@@ -146,6 +148,8 @@ const en = {
 	usage: "Usage",
 	households: "Households",
 	householdsAmount: "Amount of households",
+	adminDataRequest: "The data you requested is being retrieved...",
+	adminDataComplete: "The data has been succesfully retrieved!",
 }
 
 module.exports = {

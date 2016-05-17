@@ -40,6 +40,7 @@ const AdminInterface = React.createClass({
 			dataPeriod: "",
 			stateMessage: "",
 			dataLoading: false,
+			data: "",
 		};
 	},
 	handleChange: function (event, index, value) {
@@ -88,42 +89,51 @@ const AdminInterface = React.createClass({
 	requestData: function() {
 		if (!this.state.dataLoading) {
 			this.setState({
-				stateMessage: "The data you requested is being retrieved...",
+				stateMessage: this.props.lang.adminDataRequest,
 				dataLoading: true,
 			});
 
 			// Create string for parameters
-			let parameterString, glueSign;
-
-			parameterString = "";
-			glueSign = "?";
+			let parameters;
+			parameters = {};
 
 			if (this.state.dataCountry !== "") {
-				parameterString += "country=%22" + this.state.dataCountry + "%22";
-				glueSign = "&"
+				parameters.country = this.state.dataCountry;
 			}
 
 			if (this.state.dataCity !== "") {
-				parameterString += "city=%22" + this.state.dataCity + "%22";
-				glueSign = "&"
+				parameters.city = this.state.dataCity;
 			}
 
 			if (this.state.dataStreet !== "") {
-				parameterString += "street=%22" + this.state.dataStreet + "%22";
-				glueSign = "&"
+				parameters.street = this.state.dataStreet;
 			}
 
 			if (this.state.dataHouseNumber !== "") {
-				parameterString += "housenumber=%22" + this.state.dataHouseNumber + "%22";
-				glueSign = "&"
+				parameters.housenumber = this.state.dataHouseNumber;
 			}
 
 			if (this.state.dataPeriod !== "" && this.state.dataPeriod !== "no filter") {
-				parameterString += "period=[%22" + this.state.dataPeriod + "%22]";
-				glueSign = "&"
+				parameters.period = [this.state.dataPeriod];
 			}
 
-			console.log("Parameters to be requested when server works: api/stats/" + parameterString);
+			this.props.rest.get(["api", "stats"], parameters, function (data) {
+				if (data.error) {
+					console.log(data.error);
+
+					this.setState({
+						stateMessage: "ERROR: " + data.error,
+					});
+
+					return;
+				}
+
+				this.setState({
+					data: data.data,
+					stateMessage: this.props.lang.adminDataComplete,
+					dataLoading: false,
+				});
+			}.bind(this));
 		}
 	},
 	render: function() {
@@ -178,6 +188,7 @@ const AdminInterface = React.createClass({
 					<br/>
 				</form>
 				<FlatButton label={this.props.lang.getData} primary={true} onTouchTap={this.requestData}/>
+				<br/>
 				{this.state.stateMessage}
 			</div>;
 		}

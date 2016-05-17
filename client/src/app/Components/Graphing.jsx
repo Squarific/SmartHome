@@ -25,6 +25,8 @@ import CardText from 'material-ui/Card/CardText';
 	}
 */
 
+let summedGraph = ["Doughnut", "Pie", "PolarArea"];
+
 const styles = {
 	chart: {
 		padding: 20,
@@ -48,6 +50,24 @@ const GraphCard = React.createClass({
 	componentWillUnmount: function () {
 		window.removeEventListener("resize", this.handleResize);
 	},
+	sumData: function (data) {
+		let newData = [];
+
+		for (let k = 0; k < data.datasets.length; k++) {
+			let sum = 0;
+
+			for (let i = 0; i < data.datasets[k].data.length; i++) {
+				sum += data.datasets[k].data[i];
+			}
+
+			newData.push({
+				value: sum,
+				color: data.datasets[k].fillColor || "gray",
+			});
+		}
+
+		return newData;
+	},
 	render: function() {
 		const Chart = Charts[this.state.value];
 
@@ -69,9 +89,17 @@ const GraphCard = React.createClass({
 				</SelectField>
 			);
 
+		if (!this.props.data) throw "GraphCard no data provided " + JSON.stringify(this.props);
+
 		// Hacky way to force the graph to rerender
 		let key = this.state.lastResize;
-		let ourChart = (<Chart data={this.props.data || {datasets: [], labels: []}} key={key} redraw/>);
+
+		let data = this.props.data;
+		if (summedGraph.indexOf(this.state.value) !== -1) {
+			data = sumData(data);
+		}
+
+		let ourChart = (<Chart data={data} key={key} redraw/>);
 
 		return (
 			<div style={styles.chart}>
