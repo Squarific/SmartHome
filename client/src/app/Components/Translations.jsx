@@ -74,6 +74,10 @@ const nl = {
 	householdsAmount: "Aantal huishoudens",
 	adminDataRequest: "De gevraagde data wordt opgehaald...",
 	adminDataComplete: "De data is opgehaald!",
+	toggleClusterGrouping: "Groepeer per gebruik",
+	highUsage: "Hoge verbruikers",
+	mediumUsage: "Medium verbruikers",
+	lowUsage: "Lage verbruikers",
 }
 
 const en = {
@@ -150,6 +154,10 @@ const en = {
 	householdsAmount: "Amount of households",
 	adminDataRequest: "The data you requested is being retrieved...",
 	adminDataComplete: "The data has been succesfully retrieved!",
+	toggleClusterGrouping: "Group by usage",
+	highUsage: "High usage",
+	mediumUsage: "Medium usage",
+	lowUsage: "Low usage",
 }
 
 module.exports = {
