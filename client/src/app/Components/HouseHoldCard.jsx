@@ -373,7 +373,7 @@ const HouseHoldCard = React.createClass({
 				{toggle}
 				<GraphCard data={data}
 						graphType="Bar"
-						graphTypes={["Line", "Bar", "Radar"]}/>
+						graphTypes={["Line", "Bar", "Radar", "Doughnut", "Pie", "PolarArea"]}/>
 			</CardMedia>
 			<CardText>
 			</CardText>
