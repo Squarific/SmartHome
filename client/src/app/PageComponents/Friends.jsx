@@ -48,6 +48,17 @@ const Friends = React.createClass({
 			});
 		}.bind(this));
 
+		this.props.rest.get(["api", "users", "me", "friends", "stats"], {}, function (data) {
+			if (data.error) {
+				console.log(data.error);
+				return;
+			}
+
+			this.setState({
+				stats: data.data,
+			});
+		}.bind(this));
+
 		this.props.rest.get(["api", "users", "me"], {}, function (data) {
 			if (data.error) {
 				console.log(data.error);
@@ -66,9 +77,9 @@ const Friends = React.createClass({
 		
 
 		const period = [
-			<MenuItem key={1} value={1} primaryText="Weekly" />,
-			<MenuItem key={2} value={2} primaryText="Monthly" />,
-			<MenuItem key={3} value={3} primaryText="Yearly" />,
+			<MenuItem key={1} value={1} primaryText="Today" />,
+			<MenuItem key={2} value={2} primaryText="Last month" />,
+			<MenuItem key={3} value={3} primaryText="Last year" />,
 		];
 		let timePeriod;
 		
@@ -76,14 +87,39 @@ const Friends = React.createClass({
 		let friend = {};
 
 
-		function makeFriendList (TimePeriod, test) {
-			for (let i = 0; i < test.state.friends.length; i++) {
-				FriendList.push(friend = {
-					ranking: i+1, 
-					name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
-					usage: Math.floor(Math.random()*20), 
-					households: test.state.friends[i].relationships.owned_homes.meta.count,
-				});
+		function makeFriendList (timePeriod, test) {
+			if (timePeriod === 1) {
+				for (let i = 0; i < test.state.friends.length; i++) {
+					let user = test.state.friends[i].id;
+					FriendList.push(friend = {
+						ranking: i+1, 
+						name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
+						usage: test.state.stats[user].total_usage_today, 
+						households: test.state.friends[i].relationships.owned_homes.meta.count,
+					});
+				}
+			}
+			else if (timePeriod === 2) {
+				for (let i = 0; i < test.state.friends.length; i++) {
+					let user = test.state.friends[i].id;
+					FriendList.push(friend = {
+						ranking: i+1, 
+						name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
+						usage: test.state.stats[user].total_usage_last_month, 
+						households: test.state.friends[i].relationships.owned_homes.meta.count,
+					});
+				}
+			}
+			else {
+				for (let i = 0; i < test.state.friends.length; i++) {
+					let user = test.state.friends[i].id;
+					FriendList.push(friend = {
+						ranking: i+1, 
+						name: test.state.friends[i].attributes.first_name+" "+test.state.friends[i].attributes.last_name, 
+						usage: test.state.stats[user].total_usage_last_year, 
+						households: test.state.friends[i].relationships.owned_homes.meta.count,
+					});
+				}
 			}
 			FriendList.sort(function(a, b){
 			    let keyA = new Date(a.usage/a.households),
@@ -106,8 +142,7 @@ const Friends = React.createClass({
 						value={this.state.value}
 						onChange={this.handleChange}
 						autoWidth={true}
-						floatingLabelText="Time period"
-						timePeriod = {this.state.value}>
+						floatingLabelText="Time period">
 						{period}
 					</SelectField>
 				<br />
@@ -123,7 +158,7 @@ const Friends = React.createClass({
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{makeFriendList(timePeriod, this).map( (row, index) => (
+							{makeFriendList(this.state.value, this).map( (row, index) => (
 								<TableRow key={index} selected={row.selected}>
 									<TableRowColumn>{index+1}</TableRowColumn>
 									<TableRowColumn>{row.name}</TableRowColumn>
