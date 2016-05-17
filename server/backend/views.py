@@ -298,7 +298,6 @@ class TagList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    pagination_class = None
 
 
 class TagDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -368,7 +367,7 @@ class LocationStatsView(APIView):
         now = datetime(2016, 3, 6) #datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         from_date = now - timedelta(days=1)
 
-        country = self.request.query_params.get('counry', None)
+        country = self.request.query_params.get('country', None)
         city = self.request.query_params.get('city', None)
         zipcode = self.request.query_params.get('zipcode', None)
         street = self.request.query_params.get('street', None)
@@ -383,6 +382,8 @@ class LocationStatsView(APIView):
 
         queryset = filterHomesByLocation(country, city, zipcode, street, housenumber)
 
+        if queryset.count() == 0:
+            raise Http404
 
         period = self.request.query_params.getlist('period[]', ['today', 'last_month', 'last_year', 'past_years'])
         data = {}
