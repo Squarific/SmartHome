@@ -17,7 +17,7 @@
 }
 
 %Gummi|065|=)
-\title{\textbf{Programming Project Databases - Rapport 2}\\
+\title{\textbf{Programming Project Databases - Final Report}\\
 		Groep 4}
 \author{Jens Bijtebier\\
 		David Danssaert\\
@@ -112,9 +112,15 @@
 		(Jens)
 		
   \subsection{Back end}
-	\subsubsection{IK DENK DAT DAVID DIT HET BEST EVEN INVULT?}
-	\subsubsection{Meerdere subsubsections om het proper te houden pls}
+	\subsubsection{Django}
+		The backend is entirely written in python using the Django web framework. This framework uses the Model View Controller design pattern. In our application, the View part exists of the REST Framework.
+		
+		(David)
+		
+	\subsubsection{Django Rest Framework}
+		The `Django Rest Framework' is used to implement the REST Server. This is implemented in the form of Django Views.
 
+		(David)	
   \subsection{Extra Functionalities}
 	\subsubsection{Ranking}
 		The first extra feature we have decided to add is the possibility to see a ranking among friends.
@@ -126,7 +132,16 @@
 		(Nisse)
 
 	\subsubsection{Clustering}
-		WILT FILIP OF DAVID DIT EVEN INVULLEN? KKTHXBYE
+		Clustering is used to divide sensors in groups according to power usage. Their are 3 categories right now: low-, medium- and high usage. The clustering is implemented using the k-means algorithm.\\
+		
+		At first, the clusters were placed at the minimum, half and maximum of the usage domain at the initial step. The results were, however, not very useful. The groups for low- and medium usage were usually small and their means were often very close to each other compared to the high usage group. Therefore we introduced a logarithmic weight function:
+		\[
+		w(val, max) = val*\log(\frac{val}{max} \cdot (e - 1) + 1)
+		\]
+		
+		This makes sure that difference between small values are equally important as those between large values. Furthermore, the clusters are initialy placed at 2/4, 3/4 and 4/4 of the domain maximum to make sure that the cluster for high usage doesn't take all datapoints. This gave useful clusters for data generated with ElecSim. The low usage cluster usually contains appliances that consume very little all the time (answer machine, clock, \ldots), the medium usage cluster contains appliances like fax machines, cooking gear, scanners, \ldots. The last cluster usually contains heavy appliances like washmachines, electrical showers, \ldots We concluded that this division is the most useful for end users.
+		
+		(David)
 
 \section{Design}
   \subsection{Client}
@@ -153,7 +168,9 @@
 		
   \subsection{Server}
 	\subsubsection{Django}
-		DAVID VUL HIER WAT MOOIE WOORDEN IN PLS
+		The server side implementation is written in Django python. This was chosen because of it's scalabilty, code-efficiency and cross-platform capabilities. The interface is implemented as a REST API Server.
+		
+		(David)
 
   \subsection{REST API}
 	\subsubsection{Retrieving data from the server}
@@ -198,81 +215,37 @@
 	An admin interface is accessible for users that are marked as staff.\\
 
   \subsection{Extra functionaliteit}
-	CLUSTERING NOG INVULLEN
+	A clustering algorithm has been implemented that divides sensors of each household in groups for low-, medium- and high power usage. The results seem consistent and useful.
 
 	We have also added a ranking feature that allows the user to compare energy usage amongst their friends.
 	Users that have a lower average consumption, will rank higher. This promotes saving energy, which is essentially what SmartHome is all about.
 
 \section{Appendix}
   \subsection{SQL Queries}
-  \subsubsection{Households}
+  Here are some of the most important queries in our application=
 \begin{lstlisting}[style=SQL]
-/* list all households */
-SELECT homes.id, homes.owner_id, homes.name, homes.country, homes.city, homes.zipcode, homes.street, homes.house_number, homes.date_added
-FROM homes;
+/* filter users by name */
+SELECT id, username, first_name, last_name, email, is_staff, is_active, date_joined FROM auth_user
+WHERE username LIKE <username> OR first_name LIKE <username> OR last_name LIKE <username>;
 
-/* retrieve household by home ID */
-SELECT homes.id, homes.owner_id, homes.name, homes.country, homes.city, homes.zipcode, homes.street, homes.house_number, homes.date_added
-FROM homes
-WHERE homes.id = $ID;
 
-/* retrieve household by user ID */
-SELECT homes.id, homes.owner_id, homes.name, homes.country, homes.city, homes.zipcode, homes.street, homes.house_number, homes.date_added
-FROM homes
-INNER JOIN users_homes
-ON (homes.id = users_homes.home_id)
-WHERE users_homes.user_id = $ID;
-\end{lstlisting}
+/* Friends are selected based on approved friend requests */
+SELECT auth_user.id, username, first_name, last_name, email, is_staff, is_active, date_joined FROM auth_user
+INNER JOIN friend_requests
+ON auth_user.id = friend_requests.sender_id
+WHERE (auth_user.id = <user_id>) OR (friend_requests.status = 1 AND friend_requests.receiver_id = <user_id>) OR (friend_requests.status = 1 AND friend_requests.sender_id = <user_id>);
 
-  \subsubsection{Sensors}
-\begin{lstlisting}[style=SQL]
-/* list all sensors */
-SELECT sensors.id, sensors.home_id, sensors.name, sensors.description, sensors.power_unit, sensors.date_created
-FROM sensors;
 
-/* retrieve sensor by id */
-SELECT sensors.id, sensors.home_id, sensors.name, sensors.description, sensors.power_unit, sensors.date_created
-FROM sensors
-WHERE sensors.id = $ID;
-
-/* retreive sensors by tag id */
-SELECT sensors.id, sensors.home_id, sensors.name, sensors.description, sensors.power_unit, sensors.date_created
-FROM sensors
-INNER JOIN sensors_tags
-ON (sensors.id = sensors_tags.sensor_id)
-WHERE sensors_tags.tag_id = $ID;
-\end{lstlisting}
-
-  \subsubsection{Sensor Tags}
-\begin{lstlisting}[style=SQL]
-/* list all tags */
-SELECT tags.id, tags.name, tags.description
-FROM tags;
-
-/* retrieve tag by id */
-SELECT tags.id, tags.name, tags.description
-FROM tags
-WHERE tags.id = $ID;
-
-/* retrieve tags for a given sensor (by id) */
-SELECT tags.id, tags.name, tags.description
-FROM tags
-INNER JOIN sensors_tags
-ON (tags.id = sensors_tags.tag_id)
-WHERE sensors_tags.sensor_id = $ID;
-\end{lstlisting}
-
-  \subsubsection{Sensor Data}
-\begin{lstlisting}[style=SQL]
 /* list the sum total usage of all sensors for each minute of today for a given user */
 SELECT recent_data.timestamp, sensors.home_id AS home_id, homes.name AS home_name, SUM(recent_data.usage) AS usage
 FROM recent_data
 INNER JOIN sensors
 ON (recent_data.sensor_id = sensors.id)
 INNER JOIN homes ON (sensors.home_id = homes.id)
-WHERE (homes.owner_id = $ID AND recent_data.timestamp >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND recent_data.timestamp < NOW() )
+WHERE (homes.owner_id = <user_id> AND recent_data.timestamp >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND recent_data.timestamp < NOW() )
 GROUP BY recent_data.timestamp, sensors.home_id, homes.name
 ORDER BY home_id ASC, recent_data.timestamp ASC;
+
 
 /* Aggregate all minutely data from today into one record for all sensors */
 INSERT INTO daily_data (sensor_id, timestamp, usage, n_measurements)
@@ -280,10 +253,10 @@ SELECT recent_data.sensor_id, CONCAT(DATE(NOW()), ' 00:00:00') AS new_date, AVG(
 FROM recent_data
 WHERE ( recent_data.timestamp >= new_date AND recent_data.timestamp < DATE_ADD(new_date, INTERVAL 1 DAY) )
 GROUP BY recent_data.sensor_id
-
 \end{lstlisting}
 
 \subsection{SQL Database Structure}
+This is the database structure. All tables that are custom defined, and not part of Django, are included. With exception for the `Users' table, because the authentication functionality from Django is used.
 \begin{lstlisting}[style=SQL]
 --
 -- Tabelstructuur voor tabel `account_emailaddress`

@@ -34,7 +34,6 @@ const CreateSensor = React.createClass({
 			household: "",
 			description: "",
 			powerUnit: "",
-			tags: "",	
 		};
 	},
 	componentDidMount: function () {

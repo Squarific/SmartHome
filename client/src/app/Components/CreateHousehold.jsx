@@ -134,7 +134,6 @@ const CreateHousehold = React.createClass({
 			street: this.state.street,
 			house_number: this.state.housenumber,
 			owner: this.state.me.id,
-			users: 1,
 		}, function (data) {
 			if (data.error) {
 				// If there was an error but no response something went wrong

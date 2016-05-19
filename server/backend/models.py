@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 
 class Home(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_homes')
-    users = models.ManyToManyField(User, through='UsersHomes', related_name='homes')
+    users = models.ManyToManyField(User, through='UsersHomes', related_name='homes', null=True)
     name = models.CharField(max_length=64)
     country = models.CharField(max_length=2)
     city = models.CharField(max_length=64)
@@ -41,7 +41,7 @@ class Sensor(models.Model):
     home = models.ForeignKey(Home, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256, blank=True)
-    tags = models.ManyToManyField('Tag', through='SensorsTags')
+    tags = models.ManyToManyField('Tag', through='SensorsTags', null=True)
     power_unit = models.CharField(max_length=3)
     usage_category = models.IntegerField(choices=USAGE_CATEGORY, null=True)
     date_created = models.DateTimeField(default=datetime.now())
