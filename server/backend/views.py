@@ -148,7 +148,7 @@ class FriendStats(APIView):
     serializer_class = UserSerializer
 
     def get(self, request, user_id, format=None):
-        now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) # #now = datetime(2016, 3, 6)
+        now = datetime(2016, 3, 6) #now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         from_date = now - timedelta(days=1)
 
         if (user_id == 'me'):
@@ -299,7 +299,7 @@ class DataView(APIView):
         if (user_id == 'me'):
             user_id = request.user.id
 
-        now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) #now = datetime(2016, 3, 6)
+        now = datetime(2016, 3, 6) #now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         from_date = now - timedelta(days=1)
         data_class = RecentData
         if period == 'today':
@@ -348,7 +348,7 @@ class LocationStatsView(APIView):
     permission_classes = (IsAuthenticated,IsAdminUser,)
 
     def get(self, request, format=None):
-        now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) #now = datetime(2016, 3, 6)
+        now = datetime(2016, 3, 6) #now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         from_date = now - timedelta(days=1)
 
         country = self.request.query_params.get('country', None)
@@ -435,7 +435,7 @@ The k-means algorithm. Takes a househould id and the number of clusters (should 
 The clusters are placed weighted (see above) on 2/4, 3/4 and 4/4 of the maximum usage of the given sensors.
 '''
 def k_means(home_id, n_clusters=3):
-    now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) #now = datetime(2016, 3, 6)
+    now = datetime(2016, 3, 6) #now = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     sensor_totals = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id')).values('sensor_id').annotate(total_usage=Sum('usage'))
     max_usage = DailyData.objects.filter(sensor__home__id = home_id, timestamp__gte = (now - relativedelta(months=1))).annotate(sensor_id=F('sensor__id'), total_usage=Sum('usage')).aggregate(max_usage=Max('total_usage'))['max_usage']
 
