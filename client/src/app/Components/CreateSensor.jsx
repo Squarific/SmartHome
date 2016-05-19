@@ -78,7 +78,6 @@ const CreateSensor = React.createClass({
 			name: this.state.name,
 			home: this.state.household,
 			description: this.state.description,
-			tags: 1,
 			power_unit: this.state.powerUnit,
 		}, function(data) {
 			if (data.error) {
