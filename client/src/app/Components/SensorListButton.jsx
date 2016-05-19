@@ -40,12 +40,13 @@ const SensorListButton = React.createClass({
 		this.setState({value});
 	},
 	handleSensorEditSave: function () {
-		// this.props.rest.post(["api", "users", "me", "sensors"], {
-		// 	name: ,
-		// 	power_unit: ,
-		// }, function (data) {
-		// 	console.log(data);
-		// });
+		this.props.rest.put(["api", "users", "me", "sensors"], {
+			name: this.state.values.name,
+			power_unit: this.state.values.powerunit,
+			tags: this.state.values.tags,
+		}, function (data) {
+			this.setState({editing: false});
+		});
 	},
 	handleSensorEditClose: function () {
 		this.setState({editing: false});

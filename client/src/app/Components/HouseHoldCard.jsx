@@ -288,13 +288,13 @@ const HouseHoldCard = React.createClass({
 		return (
 			<div>
 				<div style={{margin: "1em"}}>
-					{this.props.lang.highUsage}: {this.state.clusters.high.join(", ")} ({data[0].value} Wh)
+					{this.props.lang.highUsage}: {this.state.clusters.high.join(", ")} ({Math.round(data[0].value * 100) / 100} {this.state.convertToEuro ? "Euro" : "Wh"})
 				</div>
 				<div style={{margin: "1em"}}>
-					{this.props.lang.mediumUsage}: {this.state.clusters.medium.join(", ")} ({data[1].value} Wh)
+					{this.props.lang.mediumUsage}: {this.state.clusters.medium.join(", ")} ({Math.round(data[1].value * 100) / 100} {this.state.convertToEuro ? "Euro" : "Wh"})
 				</div>
 				<div style={{margin: "1em"}}>
-					{this.props.lang.lowUsage}: {this.state.clusters.low.join(", ")} ({data[2].value} Wh)
+					{this.props.lang.lowUsage}: {this.state.clusters.low.join(", ")} ({Math.round(data[2].value * 100) / 100} {this.state.convertToEuro ? "Euro" : "Wh"})
 				</div>
 			</div>
 		);
