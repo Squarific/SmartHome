@@ -74,6 +74,7 @@ const CreateSensor = React.createClass({
 		});
 	},
 	handleSubmit: function () {
+		this.props.handleCreateSensorClose();
 		this.props.rest.post(["api", "sensors"], {
 			name: this.state.name,
 			home: this.state.household,
