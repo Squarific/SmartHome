@@ -112,10 +112,6 @@ class SensorData(models.Model):
             usage = results.aggregate(Avg('usage'))['usage__avg'] or 0
             n_measurements = results.aggregate(Sum('n_measurements'))['n_measurements__sum'] or 0
 
-            #try:
-            #    existing = RollupClass.objects.get(sensor_id = self.sensor_id, timestamp = rollup_time)
-            #    RollupClass.objects.filter(id=existing.id).update(usage=usage, n_measurements=n_measurements)
-            #except ObjectDoesNotExist:
             RollupClass.objects.create(sensor_id = self.sensor_id, timestamp = rollup_time, usage = usage, n_measurements = n_measurements) # data aggregation
 
         super(SensorData, self).save(*args, **kwargs) # Call the "real" save() method.
@@ -161,25 +157,6 @@ class MonthlyData(SensorData):
 
     class Meta:
         db_table = 'monthly_data'
-
-
-#class WeeklyData(SensorData):
-#
-#    def needs_rollup(self, max_timestamp, timestamp):
-#        return max_timestamp.month <> timestamp.month
-#
-#    def get_cleanup_time(self, timestamp):
-#        return timestamp.replace(day=1)
-#
-#    def get_rollup_time(self, timestamp):
-#        return timestamp.replace(day=1)
-#
-#    def get_rollup_class(self):
-#        return MonthlyData
-#
-#    class Meta:
-#        db_table = 'weekly_data'
-
 
 class DailyData(SensorData):
 
